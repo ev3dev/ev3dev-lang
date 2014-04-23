@@ -26,9 +26,64 @@ require 'class'
 
 local sys_class   = "/sys/class/"
 local sys_msensor = "/sys/class/msensor/"
+local sys_motor   = "/sys/class/tacho-motor/"
 local sys_button  = "/sys/devices/platform/ev3dev/button"
 local sys_sound   = "/sys/devices/platform/snd-legoev3/"
 local sys_power   = "/sys/class/power_supply/legoev3-battery/"
+
+------------------------------------------------------------------------------
+-- Device
+
+Device = class()
+
+function Device:getAttrInt(name)
+	
+	result = 0
+	if (self._path ~= nil) then
+		local tf = io.open(self._path..name, "r")
+		if (tf ~= nil) then
+			result = tf:read("*n")
+		end
+  end
+  
+  return result;
+end
+
+function Device:setAttrInt(name, value)
+	
+	if (self._path ~= nil) then
+		local tf = io.open(self._path..name, "w")
+		if (tf ~= nil) then
+		  tf:write(tostring(value))
+			tf:close()
+		end
+  end
+end
+
+function Device:getAttrString(name)
+	
+	if (self._path ~= nil) then
+		local tf = io.open(self._path..name, "r")
+		if (tf ~= nil) then
+			local s = tf:read("*l")
+			tf:close()
+			return s
+		end
+  end
+  
+  return nil;
+end
+
+function Device:setAttrString(name, value)
+	
+	if (self._path ~= nil) then
+		local tf = io.open(self._path..name, "w")
+		if (tf ~= nil) then
+			tf:write(value)
+			tf:close()
+		end
+  end
+end
 
 ------------------------------------------------------------------------------
 -- Sensor
@@ -58,7 +113,7 @@ function Sensor:connected()
 end
 
 function Sensor:type()
-	return self._port
+	return self._type
 end
 
 function Sensor:port()
@@ -196,6 +251,212 @@ InfraredSensor = class(MSensor)
 
 function InfraredSensor:init(port)
 	MSensor.init(self, 33, port)
+end
+
+------------------------------------------------------------------------------
+-- Motor
+
+Motor = class(Device)
+
+Motor.Large  = "tacho"
+Motor.Medium = "minitacho"
+
+Motor.ModeOff = "off"
+Motor.ModeOn  = "on"
+
+Motor.RunModeForever  = "forever"
+Motor.RunModeTime     = "time"
+Motor.RunModePosition = "position"
+    
+Motor.PolarityModePositive = "positive"
+Motor.PolarityModeNegative = "negative"
+    
+Motor.PositionModeAbsolute = "absolute"
+Motor.PositionModeRelative = "relative"
+
+function Motor:init(motor_type, port)
+
+	self._type = 0
+	self._port = 0
+ 
+  local fromPort = 1
+  local toPort = 4
+  if ((port ~= nil) and (port > 0)) then
+    fromPort = port
+    toPort = port
+  end
+  
+	for p = fromPort, toPort do
+		self._path = sys_motor.."out"..string.format("%c", p+64)..":motor:tacho/"
+		
+		local tf = io.open(self._path.."type", "r")
+		if (tf ~= nil) then
+			self._type = tf:read("*l")
+			
+			if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
+				self._port = p;
+				break;
+			end
+		end
+	end
+end
+
+function Motor:connected()
+  return (self._port ~= 0)
+end
+
+function Motor:type()
+  return self._type
+end
+
+function Motor:port()
+  return self._port
+end
+
+function Motor:run(run)
+  if ((run == nil) or (run ~= 0)) then
+    self:setAttrInt("run", 1)
+  else
+    self:setAttrInt("run", 0)
+  end
+end
+
+function Motor:stop()
+  self:setAttrInt("run", 0)
+end
+
+function Motor:reset()
+  self:setAttrInt("reset", 1)
+end
+
+function Motor:running()
+  return (self:getAttrInt("run") ~= 0)
+end
+
+function Motor:state()
+  return self:getAttrString("state")
+end
+
+function Motor:power()
+  return self:getAttrInt("power")
+end
+
+function Motor:speed()
+  return self:getAttrInt("speed")
+end
+
+function Motor:position()
+  return self:getAttrInt("position")
+end
+
+function Motor:pulsesPerSecond()
+  return self:getAttrInt("pulses_per_second")
+end
+  
+function Motor:runMode()
+  return self:getAttrString("run_mode")
+end
+
+function Motor:setRunMode(value)
+  self:setAttrString("run_mode", value)
+end
+  
+function Motor:brakeMode()
+  return self:getAttrString("brake_mode")
+end
+
+function Motor:setBrakeMode(value)
+  self:setAttrString("brake_mode", value)
+end
+  
+function Motor:holdMode()
+  return self:getAttrString("hold_mode")
+end
+
+function Motor:setHoldMode(value)
+  self:setAttrString("hold_mode", value)
+end
+
+function Motor:regulationMode()
+  return self:getAttrString("regulation_mode")
+end
+
+function Motor:setRegulationMode(value)
+  self:setAttrString("regulation_mode", value)
+end
+
+function Motor:positionMode()
+  return self:getAttrString("position_mode")
+end
+
+function Motor:setPositionMode(value)
+  self:setAttrString("position_mode", value)
+end
+
+function Motor:polarityMode()
+  return self:getAttrString("polarity_mode")
+end
+
+function Motor:setPolarityMode(value)
+  self:setAttrString("polarity_mode", value)
+end
+  
+function Motor:speedSetpoint()
+  return self:getAttrInt("speed_setpoint")
+end
+
+function Motor:setSpeedSetpoint(value)
+  self:setAttrInt("speed_setpoint", value)
+end
+  
+function Motor:timeSetpoint()
+  return self:getAttrInt("time_setpoint")
+end
+
+function Motor:setTimeSetpoint(value)
+  self:setAttrInt("time_setpoint", value)
+end
+
+function Motor:position_setpoint()
+  return self:getAttrInt("position_setpoint")
+end
+
+function Motor:setPositionSetpoint(value)
+  self:setAttrInt("position_setpoint", value)
+end
+
+function Motor:rampUp()
+  return self:getAttrInt("ramp_up")
+end
+
+function Motor:setRampUp(value)
+  self:setAttrInt("ramp_up", value)
+end
+  
+function Motor:rampDown()
+  return self:getAttrInt("ramp_down")
+end
+
+function Motor:setRampDown(value)
+  self:setAttrInt("ramp_down", value)
+end
+
+------------------------------------------------------------------------------
+-- LargeMotor
+
+LargeMotor = class(Motor)
+
+function LargeMotor:init(port)
+	Motor.init(self, "tacho", port)
+end
+
+------------------------------------------------------------------------------
+-- MediumMotor
+
+MediumMotor = class(Motor)
+
+function MediumMotor:init(port)
+	Motor.init(self, "minitacho", port)
 end
 
 ------------------------------------------------------------------------------

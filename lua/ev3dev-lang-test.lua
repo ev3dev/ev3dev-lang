@@ -23,6 +23,26 @@
 
 require 'ev3dev'
 
+function printMotorInfo(o)
+  print("  Current state is "..o:state())
+  print("    power: "..o:power().."   speed: "..o:speed().."\n")
+  print("  Current run mode is "..o:runMode())
+  print("    brake mode: "..o:brakeMode().."   hold mode: "..o:holdMode())
+  print("    regulation mode: "..o:regulationMode().."   polarity mode: "..o:polarityMode().."\n")
+  print("  Speed setpoint is "..o:speedSetpoint())
+  
+  if (o:runMode() == o.runModeTime) then
+    print("  Time setpoint is "..o:timeSetpoint())
+  end
+  
+  if (o:runMode() == o.runModePosition) then
+    print("  Position setpoint is "..m:positionSetpoint())
+  end
+  
+  print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
+
+end
+
 s = TouchSensor()
 if (s:connected()) then
 	print("Connected to touch sensor @ in"..s:port())
@@ -61,6 +81,22 @@ if (i:connected()) then
 	print ("Value is "..i:value())
 else
 	print("No IR sensor connected")
+end
+
+m = MediumMotor()
+if (m:connected()) then
+	print("Connected to medium motor @ out"..string.format("%c", m:port()+64))
+	printMotorInfo(m)
+else
+	print("No medium motor connected")
+end
+
+l = LargeMotor()
+if (l:connected()) then
+	print("Connected to large motor @ out"..string.format("%c", l:port()+64))
+	printMotorInfo(l)
+else
+	print("No large motor connected")
 end
 
 print("Level of left green led is "..ledGreenLeft:level())
