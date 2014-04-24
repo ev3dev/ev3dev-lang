@@ -719,3 +719,133 @@ function Battery.current()
 	
 	return 0
 end
+
+------------------------------------------------------------------------------
+--RemoteControl
+RemoteControl = class()
+
+function RemoteControl:init(sensor, channel)
+  if (sensor ~= nil) then
+    if (sensor:type() == MSensor.EV3Infrared) then
+      self._sensor = sensor
+    end
+  else
+    self._sensor = InfraredSensor()
+  end
+
+  if (self._sensor ~= nil) then
+    self._sensor:setMode(InfraredSensor.ModeIRRemote)
+  end
+
+  if (channel ~= nil) then
+    self._channel = channel-1
+  else
+    self._channel = 0
+  end
+  
+  self._lastValue = 0
+  self._redUp     = false
+  self._redDown   = false
+  self._blueUp    = false
+  self._blueDown  = false
+  self._beacon    = false
+end
+
+function RemoteControl:connected()
+  if (self._sensor ~= nil) then
+    return self._sensor:connected()
+  end
+  
+  return false
+end
+
+function RemoteControl:process()
+
+  if (self._sensor ~= nil) then
+    
+    local value = self._sensor:value(self._channel)
+    if (value ~= self._lastValue) then
+      self:onNewValue(value)
+      self._lastValue = value
+      return true
+    end
+    
+  end
+  
+end
+
+function RemoteControl:onNewValue(value)
+
+  local redUp    = false
+  local redDown  = false
+  local blueUp   = false
+  local blueDown = false
+  local beacon   = false
+  
+  if     (value == 1) then
+    redUp = true
+  elseif (value == 2) then
+    redDown = true
+  elseif (value == 3) then
+    blueUp = true
+  elseif (value == 4) then
+    blueDown = true
+  elseif (value == 5) then
+    redUp  = true
+    blueUp = true
+  elseif (value == 6) then
+    redUp    = true
+    blueDown = true
+  elseif (value == 7) then
+    redDown = true
+    blueUp  = true
+  elseif (value == 8) then
+    redDown  = true
+    blueDown = true
+  elseif (value == 9) then
+    beacon = true
+  elseif (value == 10) then
+    redUp   = true
+    redDown = true
+  elseif (value == 11) then
+    blueUp   = true
+    blueDown = true
+  end
+  
+  if (redUp ~= self._redUp) then
+    self:onRedUp(redUp)
+    self._redUp = redUp
+  end
+  if (redDown ~= self._redDown) then
+    self:onRedDown(redDown)
+    self._redDown = redDown
+  end
+  if (blueUp ~= self._blueUp) then
+    self:onBlueUp(blueUp)
+    self._blueUp = blueUp
+  end
+  if (blueDown ~= self._blueDown) then
+    self:onBlueDown(blueDown)
+    self._blueDown = blueDown
+  end
+  if (beacon ~= self._beacon) then
+    self:onBeacon(beacon)
+    self._beacon = beacon
+  end
+  
+end
+
+function RemoteControl:onRedUp(pressed)
+end
+
+function RemoteControl:onRedDown(pressed)
+end
+  
+function RemoteControl:onBlueUp(pressed)
+end
+
+function RemoteControl:onBlueDown(pressed)
+end
+
+function RemoteControl:onBeacon(on)
+end
