@@ -38,7 +38,7 @@ Device = class()
 
 function Device:getAttrInt(name)
 	
-	result = 0
+	local result = 0
 	if (self._path ~= nil) then
 		local tf = io.open(self._path..name, "r")
 		if (tf ~= nil) then
@@ -71,7 +71,7 @@ function Device:getAttrString(name)
 		end
   end
   
-  return nil;
+  return nil
 end
 
 function Device:setAttrString(name, value)
@@ -124,6 +124,19 @@ end
 -- MSensor
 
 MSensor = class(Sensor)
+
+MSensor.NXTTouch       = 1
+MSensor.NXTLight       = 2
+MSensor.NXTSound       = 3
+MSensor.NXTColor       = 4
+MSensor.NXTUltrasonic  = 5
+MSensor.NXTTemperature = 6
+    
+MSensor.EV3Touch       = 16
+MSensor.EV3Color       = 29
+MSensor.EV3Ultrasonic  = 30
+MSensor.EV3Gyro        = 32
+MSensor.EV3Infrared    = 33
 
 function MSensor:init(sensor_type, port)
 
@@ -222,6 +235,10 @@ end
 
 ColorSensor = class(MSensor)
 
+ColorSensor.ModeReflect = "COL-REFLECT"
+ColorSensor.ModeAmbient = "COL-AMBIENT"
+ColorSensor.ModeColor   = "COL-COLOR"
+
 function ColorSensor:init(port)
 	MSensor.init(self, 29, port)
 end
@@ -230,6 +247,12 @@ end
 -- UltrasonicSensor
 
 UltrasonicSensor = class(MSensor)
+
+UltrasonicSensor.ModeDistCM   = "US-DIST-CM"
+UltrasonicSensor.ModeDistIN   = "US-DIST-IN"
+UltrasonicSensor.ModeListen   = "US-LISTEN"
+UltrasonicSensor.ModeSingleCM = "US-SI-CM"
+UltrasonicSensor.ModeSingleIN = "US-SI-IN"
 
 function UltrasonicSensor:init(port)
 	MSensor.init(self, 30, port)
@@ -240,6 +263,10 @@ end
 
 GyroSensor = class(MSensor)
 
+GyroSensor.ModeAngle         = "GYRO-ANG"
+GyroSensor.ModeSpeed         = "GYRO-RATE"
+GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
+
 function GyroSensor:init(port)
 	MSensor.init(self, 32, port)
 end
@@ -248,6 +275,10 @@ end
 -- InfraredSensor
 
 InfraredSensor = class(MSensor)
+
+InfraredSensor.ModeProximity = "IR-PROX"
+InfraredSensor.ModeIRSeeker  = "IR-SEEK"
+InfraredSensor.ModeIRRemote  = "IR-REMOTE"
 
 function InfraredSensor:init(port)
 	MSensor.init(self, 33, port)
@@ -664,7 +695,7 @@ function Sound.setVolume(levelInPercent)
 end
 
 ------------------------------------------------------------------------------
---Sound
+--Battery
 Battery = class()
 
 function Battery.voltage()
