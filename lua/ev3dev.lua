@@ -328,12 +328,12 @@ function Motor:state()
   return self:getAttrString("state")
 end
 
-function Motor:power()
-  return self:getAttrInt("power")
+function Motor:dutyCycle()
+  return self:getAttrInt("duty_cycle")
 end
 
-function Motor:speed()
-  return self:getAttrInt("speed")
+function Motor:pulsesPerSecond()
+  return self:getAttrInt("pulses_per_second")
 end
 
 function Motor:position()
@@ -344,10 +344,6 @@ function Motor:setPosition(value)
   self:setAttrInt("position", value)
 end
 
-function Motor:pulsesPerSecond()
-  return self:getAttrInt("pulses_per_second")
-end
-  
 function Motor:runMode()
   return self:getAttrString("run_mode")
 end
@@ -356,22 +352,14 @@ function Motor:setRunMode(value)
   self:setAttrString("run_mode", value)
 end
   
-function Motor:brakeMode()
-  return self:getAttrString("brake_mode")
+function Motor:stopMode()
+  return self:getAttrString("stop_mode")
 end
 
-function Motor:setBrakeMode(value)
-  self:setAttrString("brake_mode", value)
+function Motor:setStopMode(value)
+  self:setAttrString("stop_mode", value)
 end
   
-function Motor:holdMode()
-  return self:getAttrString("hold_mode")
-end
-
-function Motor:setHoldMode(value)
-  self:setAttrString("hold_mode", value)
-end
-
 function Motor:regulationMode()
   return self:getAttrString("regulation_mode")
 end
@@ -388,52 +376,52 @@ function Motor:setPositionMode(value)
   self:setAttrString("position_mode", value)
 end
 
-function Motor:polarityMode()
-  return self:getAttrString("polarity_mode")
+function Motor:dutyCycleSetpoint()
+  return self:getAttrInt("duty_cycle_sp")
 end
 
-function Motor:setPolarityMode(value)
-  self:setAttrString("polarity_mode", value)
-end
-  
-function Motor:speedSetpoint()
-  return self:getAttrInt("speed_setpoint")
+function Motor:setDutyCycleSetpoint(value)
+  self:setAttrInt("duty_cycle_sp", value)
 end
 
-function Motor:setSpeedSetpoint(value)
-  self:setAttrInt("speed_setpoint", value)
+function Motor:pulsesPerSecondSetpoint()
+  return self:getAttrInt("pulses_per_second_sp")
+end
+
+function Motor:setPulsesPerSecondSetpoint(value)
+  self:setAttrInt("pulses_per_second_sp", value)
 end
   
 function Motor:timeSetpoint()
-  return self:getAttrInt("time_setpoint")
+  return self:getAttrInt("time_sp")
 end
 
 function Motor:setTimeSetpoint(value)
-  self:setAttrInt("time_setpoint", value)
+  self:setAttrInt("time_sp", value)
 end
 
 function Motor:positionSetpoint()
-  return self:getAttrInt("position_setpoint")
+  return self:getAttrInt("position_sp")
 end
 
 function Motor:setPositionSetpoint(value)
-  self:setAttrInt("position_setpoint", value)
+  self:setAttrInt("position_sp", value)
 end
 
 function Motor:rampUp()
-  return self:getAttrInt("ramp_up")
+  return self:getAttrInt("ramp_up_sp")
 end
 
 function Motor:setRampUp(value)
-  self:setAttrInt("ramp_up", value)
+  self:setAttrInt("ramp_up_sp", value)
 end
   
 function Motor:rampDown()
-  return self:getAttrInt("ramp_down")
+  return self:getAttrInt("ramp_down_sp")
 end
 
 function Motor:setRampDown(value)
-  self:setAttrInt("ramp_down", value)
+  self:setAttrInt("ramp_down_sp", value)
 end
 
 ------------------------------------------------------------------------------

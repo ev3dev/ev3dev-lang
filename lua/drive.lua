@@ -35,14 +35,14 @@ function MotorControl:turn(direction)
   self._leftMotor:setRunMode(Motor.RunModePosition)
   --self._leftMotor:setPositionMode(Motor.PositionModeRelative)
   self._leftMotor:setPosition(0)
-  self._leftMotor:setRegulationMode(Motor.ModeOn)
-  self._leftMotor:setSpeedSetpoint(50)
+  --self._leftMotor:setRegulationMode(Motor.ModeOn)
+  self._leftMotor:setDutyCycleSetpoint(50)
 
   self._rightMotor:setRunMode(Motor.RunModePosition)
   --self._rightMotor:setPositionMode(Motor.PositionModeRelative)
   self._rightMotor:setPosition(0)
-  self._rightMotor:setRegulationMode(Motor.ModeOn)
-  self._rightMotor:setSpeedSetpoint(50)
+  --self._rightMotor:setRegulationMode(Motor.ModeOn)
+  self._rightMotor:setDutyCycleSetpoint(50)
 
   if (direction > 0) then
     self._leftMotor:setPositionSetpoint(MotorControl.ninetyDegrees)
@@ -69,10 +69,10 @@ end
 
 function MotorControl:drive(speed)
   self._leftMotor:setRunMode(Motor.RunModeForever)
-  self._leftMotor:setSpeedSetpoint(-speed)
+  self._leftMotor:setDutyCycleSetpoint(-speed)
 
   self._rightMotor:setRunMode(Motor.RunModeForever)
-  self._rightMotor:setSpeedSetpoint(-speed)
+  self._rightMotor:setDutyCycleSetpoint(-speed)
 
   self._state = MotorControl.driving
   self._leftMotor:run()  
