@@ -267,29 +267,27 @@ Motor.PositionModeRelative = "relative"
 
 function Motor:init(motor_type, port)
 
-	self._type = 0
-	self._port = 0
- 
-  local fromPort = 1
-  local toPort = 4
-  if ((port ~= nil) and (port > 0)) then
-    fromPort = port
-    toPort = port
-  end
-  
-	for p = fromPort, toPort do
-		self._path = sys_motor.."out"..string.format("%c", p+64)..":motor:tacho/"
-		
-		local tf = io.open(self._path.."type", "r")
-		if (tf ~= nil) then
-			self._type = tf:read("*l")
-			
-			if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
-				self._port = p;
-				break;
-			end
+	for i = 0, 9 do
+		self._path = sys_motor.."tacho-motor"..i.."/"
+
+		local pf = io.open(self._path.."port_name", "r")
+		if (pf ~= nil) then
+		  self._port = string.byte(pf:read("*l"), 4) - 64;
+		  pf:close()
+
+			if ((port == nil) or (port == 0) or (self._port == port)) then		
+		    self._type = self:getAttrString("type")
+
+		    if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then		    
+		      return
+		    end
+		  end
 		end
 	end
+
+	self._type = 0
+	self._port = 0
+	self._path = nil	
 end
 
 function Motor:connected()

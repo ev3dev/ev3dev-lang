@@ -25,11 +25,11 @@ require 'ev3dev'
 
 function printMotorInfo(o)
   print("  Current state is "..o:state())
-  print("    power: "..o:power().."   speed: "..o:speed().."\n")
+  print("    duty cycle: "..o:dutyCycle().."   pulses/sec: "..o:pulsesPerSecond().."\n")
   print("  Current run mode is "..o:runMode())
-  print("    brake mode: "..o:brakeMode().."   hold mode: "..o:holdMode())
-  print("    regulation mode: "..o:regulationMode().."   polarity mode: "..o:polarityMode().."\n")
-  print("  Speed setpoint is "..o:speedSetpoint())
+  print("    stop mode: "..o:stopMode())
+  print("    regulation mode: "..o:regulationMode().."\n")
+  --print("  Speed setpoint is "..o:speedSetpoint())
   
   if (o:runMode() == o.runModeTime) then
     print("  Time setpoint is "..o:timeSetpoint())
@@ -39,7 +39,7 @@ function printMotorInfo(o)
     print("  Position setpoint is "..m:positionSetpoint())
   end
   
-  print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
+  --print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
 
 end
 
