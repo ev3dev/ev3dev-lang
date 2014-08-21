@@ -15,6 +15,7 @@ Implementation Notes
 `Motor` (class)
 -----
 Direct attribute mappings:
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Duty Cycle|Number|Read
@@ -41,6 +42,7 @@ Time SP|Number|Read/Write
 Type|String|Read
 
 Special properties:
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Device Index|Number|Read
