@@ -1,8 +1,6 @@
-ev3dev Language Wrapper Specification (Draft)
+ev3dev Language Wrapper Specification (ver 0.9 rev 5, draft)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
-
-
 
 General Notes
 ---
@@ -58,6 +56,7 @@ Type|String|Read
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Device Index|Number|Read
+Connected|Boolean|Read
 
 <hr/>
 
@@ -84,13 +83,14 @@ Modes|String Array|Read
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Device Index|Number|Read
+Connected|Boolean|Read
 
 ###Methods:
 
 Method Name|Return Type|Arguments|Description
 ---|---|---|---
-GetRawValue|Number (int)|ValueIndex : Number|Gets the raw value at the specified index
-GetValue|Number (float)|ValueIndex : Number|Gets the value at the specified index, adjusted for the sensor's `dp` value
+Get Value|Number (int)|Value Index : Number|Gets the raw value at the specified index
+Get Float Value|Number (float)|Value Index : Number|Gets the value at the specified index, adjusted for the sensor's `dp` value
 
 <hr/>
 
@@ -116,6 +116,9 @@ IO Device (abstract)
 ---
 An IO Device handles control tasks for a single port or index. These  classes must chose one device out of the available ports to control. Given an IO port (in the constructor), an implementation should:
 
-- If the specified port is `0` or undefined, the available devices should be enumerated until a suitable device is found. Any device is suitable when it's type is known to be compatible with the controlling class. If no suitable device is found, an error should be thrown.
-- If the specified port is non-zero and in the valid port range for that device, the available devices should be enumerated until a device is found that is plugged in to the specified port. If no suitable device is found, an error should be thrown.
+* If the specified port is `0` or undefined, the available devices should be enumerated until a suitable device is found. Any device is suitable when it's type is known to be compatible with the controlling class.
+* If the specified port is non-zero and in the valid port range for that device, the available devices should be enumerated until a device is found that is plugged in to the specified port.
+
+All IO devices should have a `connected` variable. If a valid device is found while enumerating the ports, the `connected` variable should be set to `true` (by default, it should be false). If an error is thrown anywhere in the class, `connected` should be reset to false. If `connected` is false when an attempt is made to read from or write to a property file, an error should be thrown (except while in the consructor).
+
 
