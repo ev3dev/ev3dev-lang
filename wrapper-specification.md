@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (ver 0.9 rev 5, draft)
+ev3dev Language Wrapper Specification (ver 0.9, draft rev 6)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -57,6 +57,12 @@ Property Name|Type|Accessibility|Description
 ---|---|---|---
 Device Index|Number|Read
 Connected|Boolean|Read
+
+###Methods:
+
+Method Name|Return Type|Arguments|Description
+---|---|---|---
+Reset|Void|None|Sets the `reset` motor property to `1`, which causes the motor driver to reset all of the parameters.
 
 <hr/>
 
