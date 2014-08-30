@@ -37,53 +37,43 @@ local sys_power   = "/sys/class/power_supply/legoev3-battery/"
 Device = class()
 
 function Device:getAttrInt(name)
-	
-	local result = 0
-	if (self._path ~= nil) then
-		local tf = io.open(self._path..name, "r")
-		if (tf ~= nil) then
-			result = tf:read("*n")
-			tf:close()
-		end
-  end
+
+	local tf = io.open(self._path..name, "r")
+  assert(tf ~= nil)
+
+	local result = tf:read("*n")
+	tf:close()
   
   return result;
 end
 
 function Device:setAttrInt(name, value)
-	
-	if (self._path ~= nil) then
-		local tf = io.open(self._path..name, "w")
-		if (tf ~= nil) then
-		  tf:write(tostring(value))
-			tf:close()
-		end
-  end
+
+	local tf = io.open(self._path..name, "w")
+  assert(tf ~= nil)
+
+	tf:write(tostring(value))
+	tf:close()
 end
 
 function Device:getAttrString(name)
 	
-	if (self._path ~= nil) then
-		local tf = io.open(self._path..name, "r")
-		if (tf ~= nil) then
-			local s = tf:read("*l")
-			tf:close()
-			return s
-		end
-  end
-  
-  return nil
+	local tf = io.open(self._path..name, "r")
+  assert(tf ~= nil)
+
+	local s = tf:read("*l")
+	tf:close()
+			
+	return s
 end
 
 function Device:setAttrString(name, value)
 	
-	if (self._path ~= nil) then
-		local tf = io.open(self._path..name, "w")
-		if (tf ~= nil) then
-			tf:write(value)
-			tf:close()
-		end
-  end
+	local tf = io.open(self._path..name, "w")
+  assert(tf ~= nil)
+	
+	tf:write(value)
+	tf:close()
 end
 
 ------------------------------------------------------------------------------
