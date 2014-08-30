@@ -6,7 +6,7 @@ class Motor extends Device {
     private port: number;
     private motorDeviceDir = '/sys/class/tacho-motor/';
 
-    private _deviceIndex: number;
+    private _deviceIndex: number = -1;
     get deviceIndex(): number {
         return this._deviceIndex;
     }
@@ -72,7 +72,13 @@ class Motor extends Device {
                     break;
                 }
             }
+
+            if (this.deviceIndex == -1) {
+                this.connected = false;
+                return;
+            }
         }
+
         catch (e) {
             console.log(e);
             this.connected = false;
