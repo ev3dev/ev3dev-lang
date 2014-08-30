@@ -91,45 +91,20 @@ end
 
 Sensor = class(Device)
 
-function Sensor:init(sensor_path)
-
-	self._path = sensor_path
-	self._type = 0
-	self._port = 0
-	
-end
-
-function Sensor:connected()
-	return (self._port ~= 0)
-end
-
-function Sensor:type()
-	return self._type
-end
-
-function Sensor:port()
-	return self._port
-end
-
-------------------------------------------------------------------------------
--- MSensor
-
-MSensor = class(Sensor)
-
-MSensor.NXTTouch       = 1
-MSensor.NXTLight       = 2
-MSensor.NXTSound       = 3
-MSensor.NXTColor       = 4
-MSensor.NXTUltrasonic  = 5
-MSensor.NXTTemperature = 6
+Sensor.NXTTouch       = 1
+Sensor.NXTLight       = 2
+Sensor.NXTSound       = 3
+Sensor.NXTColor       = 4
+Sensor.NXTUltrasonic  = 5
+Sensor.NXTTemperature = 6
     
-MSensor.EV3Touch       = 16
-MSensor.EV3Color       = 29
-MSensor.EV3Ultrasonic  = 30
-MSensor.EV3Gyro        = 32
-MSensor.EV3Infrared    = 33
+Sensor.EV3Touch       = 16
+Sensor.EV3Color       = 29
+Sensor.EV3Ultrasonic  = 30
+Sensor.EV3Gyro        = 32
+Sensor.EV3Infrared    = 33
 
-function MSensor:init(sensor_type, port)
+function Sensor:init(sensor_type, port)
 
 	self._type = 0
 	self._port = 0
@@ -156,19 +131,31 @@ function MSensor:init(sensor_type, port)
 	end
 end
 
-function MSensor:mode()
+function Sensor:connected()
+	return (self._port ~= 0)
+end
+
+function Sensor:type()
+	return self._type
+end
+
+function Sensor:port()
+	return self._port
+end
+
+function Sensor:mode()
   return self:getAttrString("mode")
 end
 
-function MSensor:modes()
+function Sensor:modes()
   return self:getAttrString("modes")
 end
 
-function MSensor:setMode(mode)
+function Sensor:setMode(mode)
   self:setAttrString("mode", mode)
 end
 
-function MSensor:value(id)
+function Sensor:value(id)
 
 	if (id == nil) then
 		id = 0
@@ -180,10 +167,10 @@ end
 ------------------------------------------------------------------------------
 -- TouchSensor
 
-TouchSensor = class(MSensor)
+TouchSensor = class(Sensor)
 
 function TouchSensor:init(port)
-	MSensor.init(self, 16, port)
+	Sensor.init(self, 16, port)
 end
 
 function TouchSensor:pressed()
@@ -193,20 +180,20 @@ end
 ------------------------------------------------------------------------------
 -- ColorSensor
 
-ColorSensor = class(MSensor)
+ColorSensor = class(Sensor)
 
 ColorSensor.ModeReflect = "COL-REFLECT"
 ColorSensor.ModeAmbient = "COL-AMBIENT"
 ColorSensor.ModeColor   = "COL-COLOR"
 
 function ColorSensor:init(port)
-	MSensor.init(self, 29, port)
+	Sensor.init(self, 29, port)
 end
 
 ------------------------------------------------------------------------------
 -- UltrasonicSensor
 
-UltrasonicSensor = class(MSensor)
+UltrasonicSensor = class(Sensor)
 
 UltrasonicSensor.ModeDistCM   = "US-DIST-CM"
 UltrasonicSensor.ModeDistIN   = "US-DIST-IN"
@@ -215,33 +202,33 @@ UltrasonicSensor.ModeSingleCM = "US-SI-CM"
 UltrasonicSensor.ModeSingleIN = "US-SI-IN"
 
 function UltrasonicSensor:init(port)
-	MSensor.init(self, 30, port)
+	Sensor.init(self, 30, port)
 end
 
 ------------------------------------------------------------------------------
 -- GyroSensor
 
-GyroSensor = class(MSensor)
+GyroSensor = class(Sensor)
 
 GyroSensor.ModeAngle         = "GYRO-ANG"
 GyroSensor.ModeSpeed         = "GYRO-RATE"
 GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
 
 function GyroSensor:init(port)
-	MSensor.init(self, 32, port)
+	Sensor.init(self, 32, port)
 end
 
 ------------------------------------------------------------------------------
 -- InfraredSensor
 
-InfraredSensor = class(MSensor)
+InfraredSensor = class(Sensor)
 
 InfraredSensor.ModeProximity = "IR-PROX"
 InfraredSensor.ModeIRSeeker  = "IR-SEEK"
 InfraredSensor.ModeIRRemote  = "IR-REMOTE"
 
 function InfraredSensor:init(port)
-	MSensor.init(self, 33, port)
+	Sensor.init(self, 33, port)
 end
 
 ------------------------------------------------------------------------------
@@ -648,7 +635,7 @@ RemoteControl = class()
 
 function RemoteControl:init(sensor, channel)
   if (sensor ~= nil) then
-    if (sensor:type() == MSensor.EV3Infrared) then
+    if (sensor:type() == Sensor.EV3Infrared) then
       self._sensor = sensor
     end
   else
