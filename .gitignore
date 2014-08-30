@@ -7,3 +7,4 @@ js/bin/*
 *.TMP
 /js/node_modules
 /js/bin
+/vala/bin
