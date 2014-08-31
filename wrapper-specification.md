@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (ver 0.9, draft rev 6)
+ev3dev Language Wrapper Specification (ver 0.9, draft rev 7)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -22,7 +22,8 @@ Implementation Notes (important)
 
 Argument Name|Type|Description
 ---|---|---
-Port|Number|The port to control. Specify `0` for an automatic search. It is recommended to use the `OUTPUT_*` constants. 
+Port|Number|The port to control. Specify `0` for an automatic search. It is recommended to use the `OUTPUT_*` constants.
+Type|String|The type of motor to accept. Can be left empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
 
@@ -73,6 +74,7 @@ Reset|Void|None|Sets the `reset` motor property to `1`, which causes the motor d
 Argument Name|Type|Description
 ---|---|---
 Port|Number|The port to control. Specify `0` for an automatic search. It is recommended to use the `INPUT_*` constants. 
+Types|Number Array|The types of sensors (device IDs) to allow. Leave the array empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
 
