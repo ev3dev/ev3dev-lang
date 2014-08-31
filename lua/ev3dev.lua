@@ -38,8 +38,15 @@ Device = class()
 
 function Device:getAttrInt(name)
 
+  if (self._path == nil) then
+    error("no device connected")
+  end
+	
 	local tf = io.open(self._path..name, "r")
-  assert(tf ~= nil)
+
+  if (tf == nil) then
+    error("no such attribute: "..self._path..name)
+  end
 
 	local result = tf:read("*n")
 	tf:close()
@@ -49,8 +56,15 @@ end
 
 function Device:setAttrInt(name, value)
 
+  if (self._path == nil) then
+    error("no device connected")
+  end
+	
 	local tf = io.open(self._path..name, "w")
-  assert(tf ~= nil)
+
+  if (tf == nil) then
+    error("no such attribute: "..self._path..name)
+  end
 
 	tf:write(tostring(value))
 	tf:close()
@@ -58,8 +72,15 @@ end
 
 function Device:getAttrString(name)
 	
+  if (self._path == nil) then
+    error("no device connected")
+  end
+	
 	local tf = io.open(self._path..name, "r")
-  assert(tf ~= nil)
+
+  if (tf == nil) then
+    error("no such attribute: "..self._path..name)
+  end
 
 	local s = tf:read("*l")
 	tf:close()
@@ -69,8 +90,15 @@ end
 
 function Device:setAttrString(name, value)
 	
+  if (self._path == nil) then
+    error("no device connected")
+  end
+	
 	local tf = io.open(self._path..name, "w")
-  assert(tf ~= nil)
+
+  if (tf == nil) then
+    error("no such attribute: "..self._path..name)
+  end
 	
 	tf:write(value)
 	tf:close()
