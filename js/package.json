@@ -14,7 +14,7 @@
     "email": "WasabiFan@outlook.com"
   },
   "dependencies": {
-    /*"linq": "3.x"*/
+    
   },
   "devDependencies": {
     "grunt": "^0.4.5",

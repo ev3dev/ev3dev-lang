@@ -49,7 +49,7 @@ class Motor extends Device {
         };
     }
 
-    constructor(port: number) {
+    constructor(port: number, type: string) {
         super();
 
         this.port = port;
@@ -65,10 +65,20 @@ class Motor extends Device {
                     path.join(rootPath, this.motorProperties.portName)
                     ).toString().trim();
 
-                var satisfiesCondition = (port == ports.OUTPUT_AUTO) || (portName === ('out' + this.motorPorts[port]));
+                var motorType = fs.readFileSync(
+                    path.join(rootPath, this.motorProperties.type)
+                    ).toString().trim();
+
+                var satisfiesCondition = (
+                    (port == ports.OUTPUT_AUTO)
+                    || (portName === ('out' + this.motorPorts[port]))
+                ) && (
+                    (type == undefined || type == '')
+                    || motorType == type
+                );
 
                 if (satisfiesCondition) {
-                    this._deviceIndex = Number(file.substring(11));
+                    this._deviceIndex = Number(file.substring('tacho-motor'.length));
                     break;
                 }
             }
