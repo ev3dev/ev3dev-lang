@@ -3,6 +3,7 @@ ev3dev-lang-demo
 ev3dev-lang-test
 remote_control-test
 drive-test
+button-test
 js/bin/*
 *.TMP
 /js/node_modules
