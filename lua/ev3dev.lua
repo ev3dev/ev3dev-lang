@@ -122,7 +122,7 @@ Sensor.EV3Ultrasonic  = 30
 Sensor.EV3Gyro        = 32
 Sensor.EV3Infrared    = 33
 
-function Sensor:init(sensor_type, port)
+function Sensor:init(port, sensor_type)
 
 	self._type = 0
 	self._port = 0
@@ -188,7 +188,7 @@ end
 TouchSensor = class(Sensor)
 
 function TouchSensor:init(port)
-	Sensor.init(self, 16, port)
+	Sensor.init(self, port, 16)
 end
 
 function TouchSensor:pressed()
@@ -205,7 +205,7 @@ ColorSensor.ModeAmbient = "COL-AMBIENT"
 ColorSensor.ModeColor   = "COL-COLOR"
 
 function ColorSensor:init(port)
-	Sensor.init(self, 29, port)
+	Sensor.init(self, port, 29)
 end
 
 ------------------------------------------------------------------------------
@@ -220,7 +220,7 @@ UltrasonicSensor.ModeSingleCM = "US-SI-CM"
 UltrasonicSensor.ModeSingleIN = "US-SI-IN"
 
 function UltrasonicSensor:init(port)
-	Sensor.init(self, 30, port)
+	Sensor.init(self, port, 30)
 end
 
 ------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ GyroSensor.ModeSpeed         = "GYRO-RATE"
 GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
 
 function GyroSensor:init(port)
-	Sensor.init(self, 32, port)
+	Sensor.init(self, port, 32)
 end
 
 ------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ InfraredSensor.ModeIRSeeker  = "IR-SEEK"
 InfraredSensor.ModeIRRemote  = "IR-REMOTE"
 
 function InfraredSensor:init(port)
-	Sensor.init(self, 33, port)
+	Sensor.init(self, port, 33)
 end
 
 ------------------------------------------------------------------------------
@@ -270,7 +270,7 @@ Motor.PolarityModeNegative = "negative"
 Motor.PositionModeAbsolute = "absolute"
 Motor.PositionModeRelative = "relative"
 
-function Motor:init(motor_type, port)
+function Motor:init(port, motor_type)
 
 	for i = 0, 9 do
 		self._path = sys_motor.."tacho-motor"..i.."/"
@@ -433,7 +433,7 @@ end
 LargeMotor = class(Motor)
 
 function LargeMotor:init(port)
-	Motor.init(self, "tacho", port)
+	Motor.init(self, port, "tacho")
 end
 
 ------------------------------------------------------------------------------
@@ -442,7 +442,7 @@ end
 MediumMotor = class(Motor)
 
 function MediumMotor:init(port)
-	Motor.init(self, "minitacho", port)
+	Motor.init(self, port, "minitacho")
 end
 
 ------------------------------------------------------------------------------
