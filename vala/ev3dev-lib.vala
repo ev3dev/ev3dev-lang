@@ -1,3 +1,4 @@
+using GLib;
 
 namespace ev3dev
 {
@@ -9,79 +10,79 @@ namespace ev3dev
 
 	public class Device : GLib.Object
 	{
-		string DeviceRoot { get; protected set; }
-		public bool Connected { get; protected set; }
+		string device_root { get; protected set; }
+		public bool connected { get; protected set; }
 	
-		private string ConnectError = "You must connect to a device before you can read from it.";
-		private string ReadError = "There was an error reading from the file.";
-		private string WriteError = "There was an error writing to the file.";
+		private string connect_error = "You must connect to a device before you can read from it.";
+		private string read_error = "There was an error reading from the file.";
+		private string write_error = "There was an error writing to the file.";
 
 		public Device()
 		{
 		}
 
-		public void Connect(string DeviceRootPath)
+		public void connect(string device_root_path)
 		{
-			this.DeviceRoot = DeviceRootPath;
-			this.Connected = true;
+			this.device_root = device_root_path;
+			this.connected = true;
 		}
 
-		private string ConstructPropertyPath(string Property)
+		private string construct_property_path(string property)
 		{
-			return GLib.Path.build_filename(this.DeviceRoot, Property);
+			return GLib.Path.build_filename(this.device_root, property);
 		}
 
-		public int ReadInt(string Property) throws DeviceError
+		public int read_int(string property) throws DeviceError
 		{
-			string StrValue = this.ReadString(Property);
+			string str_value = this.read_string(property);
 
-			int Result;
-			Result = int.parse(StrValue);
+			int result;
+			result = int.parse(str_value);
 
-			return Result;
+			return result;
 		}
 
-		public string ReadString(string Property) throws DeviceError
+		public string read_string(string property) throws DeviceError
 		{
-			if(!this.Connected)
-				throw new DeviceError.NOT_CONNECTED(this.ConnectError);
+			if(!this.connected)
+				throw new DeviceError.NOT_CONNECTED(this.connect_error);
 
-			string Result;
+			string result;
 			try
 			{
-				var File = File.new_for_path(this.ConstructPropertyPath(Property));
-				var InputStream = new DataInputStream(File.read());
-				Result = InputStream.read_line();
+				var file = File.new_for_path(this.construct_property_path(property));
+				var input_stream = new DataInputStream(file.read());
+				result = input_stream.read_line();
 			}
 			catch (GLib.Error error)
 			{
-				throw new DeviceError.IO_ERROR(this.ReadError + ": " + error.message + ": " + this.ConstructPropertyPath(Property));
+				throw new DeviceError.IO_ERROR(this.read_error + ": " + error.message + ": \"" + this.construct_property_path(property) + "\"");
 			}
 
-			return Result;
+			return result;
 		}
 
-		/* Note: All write methods have a limit of 255 bytes to increase write speed */
+		/* Note: All write methods have a limit of 256 bytes to increase write speed */
 
-		public void WriteInt(string Property, int Value) throws DeviceError
+		public void write_int(string property, int value) throws DeviceError
 		{
-			this.WriteString(Property, Value.to_string());
+			this.write_string(property, value.to_string());
 		}
 
-		public void WriteString(string Property, string Value) throws DeviceError
+		public void write_string(string property, string value) throws DeviceError
 		{
-			if(!this.Connected)
-				throw new DeviceError.NOT_CONNECTED(this.ConnectError);
+			if(!this.connected)
+				throw new DeviceError.NOT_CONNECTED(this.connect_error);
 
 			try
 			{
-				var File = File.new_for_path(this.ConstructPropertyPath(Property));
-				var OutputStream = new DataOutputStream(new BufferedOutputStream.sized(File.open_readwrite().output_stream, 256));
-				OutputStream.put_string(Value);
+				var file = File.new_for_path(this.construct_property_path(property));
+				var out_stream = new DataOutputStream(new BufferedOutputStream.sized(file.open_readwrite().output_stream, 256));
+				out_stream.put_string(value);
 			}
-			catch
+			catch (Error e)
 			{
-				throw new DeviceError.IO_ERROR(this.WriteError);
+				throw new DeviceError.IO_ERROR(this.write_error + ": " + e.message);
 			}
 		}
 	}
@@ -104,319 +105,463 @@ namespace ev3dev
 
 	public class Motor : Device
 	{
-		private int Port;
-		private string MotorDeviceDir = "/sys/class/tacho-motor";
-		private int DeviceIndex { get; private set; default = -1; }
+		private int port;
+		private const string motor_device_dir = "/sys/class/tacho-motor";
+		private int device_index { get; private set; default = -1; }
 
-		private string[] MotorPorts = {"*", "A", "B", "C", "D"};
+		private const string[] motor_ports = {"*", "A", "B", "C", "D"};
 
-		public Motor (int Port)
+		public Motor (int port, string? type)
 		{
-			this.Port = Port;
-			string RootPath = "";
+			this.port = port;
+			string root_path = "";
 
 			try
 			{
-				var Directory = File.new_for_path(this.MotorDeviceDir);
-				var Enumerator = Directory.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+				var directory = File.new_for_path(this.motor_device_dir);
+				var enumerator = directory.enumerate_children(FileAttribute.STANDARD_NAME, 0);
 
-				FileInfo DeviceFile;
-				while((DeviceFile = Enumerator.next_file()) != null)
+				FileInfo device_file;
+				while((device_file = enumerator.next_file()) != null)
 				{
-					if(DeviceFile.get_file_type() == FileType.DIRECTORY)
+					if(device_file.get_file_type() == FileType.DIRECTORY)
 						continue;
 
-					string DeviceFileName = DeviceFile.get_name();
+					string device_file_name = device_file.get_name();
 
-					RootPath = Path.build_path("/", this.MotorDeviceDir, DeviceFileName);
+					root_path = Path.build_path("/", this.motor_device_dir, device_file_name);
+					
+					string port_name;
+					string motor_type;
+					
+					{ //We don't need a bunch of IO streams and such floating around
+						var port_name_file = File.new_for_path(Path.build_path("/", root_path, "port_name"));
+						var port_input_stream = new DataInputStream(port_name_file.read());
+						port_name = port_input_stream.read_line();
+						
+						var type_file = File.new_for_path(Path.build_path("/", root_path, "type"));
+						var type_input_stream = new DataInputStream(type_file.read());
+						motor_type = type_input_stream.read_line();
+					}
 
-					var PortNameFile = File.new_for_path(Path.build_path("/", RootPath, "port_name"));
-					var InputStream = new DataInputStream(PortNameFile.read());
-					string PortName = InputStream.read_line();
+					bool satisfies_condition = (
+						(port == Ports.OUTPUT_AUTO)
+						|| (port_name == ("out" + this.motor_ports[port]))
+					) && (
+						(type == null || type == "")
+						|| motor_type == type
+					);
 
-					bool SatisfiesCondition = (Port == Ports.OUTPUT_AUTO) || (PortName == ("out" + this.MotorPorts[Port]));
-
-					if(SatisfiesCondition)
+					if(satisfies_condition)
 					{
-						this.DeviceIndex = int.parse(DeviceFileName.substring(11));
+						this.device_index = int.parse(device_file_name.substring("tacho-motor".length));
 						break;
 					}
 				}
 
-				if(this.DeviceIndex == -1)
+				if(this.device_index == -1)
 				{
-					this.Connected = false;
+					this.connected = false;
 					return;
 				}
 			}
 			catch
 			{
-				this.Connected = false;
+				this.connected = false;
 				return;
 			}
 
-			this.Connect(RootPath);
+			this.connect(root_path);
 		}
 
-		public void Reset()
+		public void reset()
 		{
-			this.WriteInt("reset", 1);
+			this.write_int("reset", 1);
 		}
 
 		//PROPERTIES
-		public string PortName
+		public string port_name
 		{
 			owned get
 			{
-				return this.ReadString("port_name");
+				return this.read_string("port_name");
 			}
 		}
 
-		public int DutyCycle
+		public int duty_cycle
 		{
 			get
 			{
-				return this.ReadInt("duty_cycle");
+				return this.read_int("duty_cycle");
 			}
 		}
 
-		public int DutyCycleSP
+		public int duty_cycle_sp
 		{
 			get
 			{
-				return this.ReadInt("duty_cycle_sp");
+				return this.read_int("duty_cycle_sp");
 			}
 
 			set
 			{
-				this.WriteInt("duty_cycle_sp", value);
+				this.write_int("duty_cycle_sp", value);
 			}
 		}
 		
-		public int Position
+		public int position
 		{
 			get
 			{
-				return this.ReadInt("position");
+				return this.read_int("position");
 			}
 
 			set
 			{
-				this.WriteInt("position", value);
+				this.write_int("position", value);
 			}
 		}
 		
-		public string PositionMode
+		public string position_mode
 		{
 			owned get
 			{
-				return this.ReadString("position_mode");
+				return this.read_string("position_mode");
 			}
 			
 			set
 			{
-				this.WriteString("position_mode", value);
+				this.write_string("position_mode", value);
 			}
 		}
 		
-		public int PositionSP
+		public int position_sp
 		{
 			get
 			{
-				return this.ReadInt("position_sp");
+				return this.read_int("position_sp");
 			}
 
 			set
 			{
-				this.WriteInt("position_sp", value);
+				this.write_int("position_sp", value);
 			}
 		}
 		
-		public int PulsesPerSecond
+		public int pulses_per_second
 		{
 			get
 			{
-				return this.ReadInt("pulses_per_second");
+				return this.read_int("pulses_per_second");
 			}
 		}
 		
-		public int PulsesPerSecondSP
+		public int pulses_per_second_sp
 		{
 			get
 			{
-				return this.ReadInt("pulses_per_second_sp");
+				return this.read_int("pulses_per_second_sp");
 			}
 			
 			set
 			{
-				this.WriteInt("pulses_per_second_sp", value);
+				this.write_int("pulses_per_second_sp", value);
 			}
 		}
 		
-		public int RampDownSP
+		public int ramp_down_sp
 		{
 			get
 			{
-				return this.ReadInt("ramp_down_sp");
+				return this.read_int("ramp_down_sp");
 			}
 
 			set
 			{
-				this.WriteInt("ramp_down_sp", value);
+				this.write_int("ramp_down_sp", value);
 			}
 		}
 		
-		public int RampUpSP
+		public int ramp_up_sp
 		{
 			get
 			{
-				return this.ReadInt("ramp_up_sp");
+				return this.read_int("ramp_up_sp");
 			}
 
 			set
 			{
-				this.WriteInt("ramp_up_sp", value);
+				this.write_int("ramp_up_sp", value);
 			}
 		}
 		
-		public string RegulationMode
+		public string regulation_mode
 		{
 			owned get
 			{
-				return this.ReadString("regulation_mode");
+				return this.read_string("regulation_mode");
 			}
 			
 			set
 			{
-				this.WriteString("regulation_mode", value);
+				this.write_string("regulation_mode", value);
 			}
 		}
 		
-		public int Run
+		public int run
 		{
 			get
 			{
-				return this.ReadInt("run");
+				return this.read_int("run");
 			}
 
 			set
 			{
-				this.WriteInt("run", value);
+				this.write_int("run", value);
 			}
 		}
 
-		public string RunMode
+		public string run_mode
 		{
 			owned get
 			{
-				return this.ReadString("run_mode");
+				return this.read_string("run_mode");
 			}
 			
 			set
 			{
-				this.WriteString("run_mode", value);
+				this.write_string("run_mode", value);
 			}
 		}
 		
-		public int SpeedRegulationP
+		public int speed_regulation_P
 		{
 			get
 			{
-				return this.ReadInt("speed_regulation_P");
+				return this.read_int("speed_regulation_P");
 			}
 
 			set
 			{
-				this.WriteInt("speed_regulation_P", value);
+				this.write_int("speed_regulation_P", value);
 			}
 		}
 		
-		public int SpeedRegulationI
+		public int speed_regulation_I
 		{
 			get
 			{
-				return this.ReadInt("speed_regulation_I");
+				return this.read_int("speed_regulation_I");
 			}
 
 			set
 			{
-				this.WriteInt("speed_regulation_I", value);
+				this.write_int("speed_regulation_I", value);
 			}
 		}
 		
-		public int SpeedRegulationD
+		public int speed_regulation_D
 		{
 			get
 			{
-				return this.ReadInt("speed_regulation_D");
+				return this.read_int("speed_regulation_D");
 			}
 
 			set
 			{
-				this.WriteInt("speed_regulation_D", value);
+				this.write_int("speed_regulation_D", value);
 			}
 		}
 		
-		public int SpeedRegulationK
+		public int speed_regulation_K
 		{
 			get
 			{
-				return this.ReadInt("speed_regulation_K");
+				return this.read_int("speed_regulation_K");
 			}
 
 			set
 			{
-				this.WriteInt("speed_regulation_K", value);
+				this.write_int("speed_regulation_K", value);
 			}
 		}
 		
-		public string State
+		public string state
 		{
 			owned get
 			{
-				return this.ReadString("state");
+				return this.read_string("state");
 			}
 		}
 		
-		public string StopMode
+		public string stop_mode
 		{
 			owned get
 			{
-				return this.ReadString("stop_mode");
+				return this.read_string("stop_mode");
 			}
 			
 			set
 			{
-				this.WriteString("stop_mode", value);
+				this.write_string("stop_mode", value);
 			}
 		}
 		
-		public string[] StopModes
+		public string[] stop_modes
 		{
 			owned get
 			{
-				return this.ReadString("stop_modes").split(" ");
+				return this.read_string("stop_modes").split(" ");
 			}
 		}
 		
-		public int TimeSP
+		public int time_sp
 		{
 			get
 			{
-				return this.ReadInt("time_sp");
+				return this.read_int("time_sp");
 			}
 
 			set
 			{
-				this.WriteInt("time_sp", value);
+				this.write_int("time_sp", value);
 			}
 		}
 		
-		public string Type
+		public string motor_type //"type" is a reserved property name in Vala
 		{
 			owned get
 			{
-				return this.ReadString("type");
+				return this.read_string("type");
+			}
+		}
+	}
+	
+	public class Sensor : Device
+	{
+		private int port;
+		private const string sensor_device_dir = "/sys/class/msensor";
+		private int device_index { get; private set; default = -1; }
+
+		private const string[] sensor_ports = {"*", "1", "2", "3", "4"};
+
+		public Sensor (int port, int[]? types)
+		{
+			this.port = port;
+			string root_path = "";
+
+			try
+			{
+				var directory = File.new_for_path(this.sensor_device_dir);
+				var enumerator = directory.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+
+				FileInfo device_file;
+				while((device_file = enumerator.next_file()) != null)
+				{
+					if(device_file.get_file_type() == FileType.DIRECTORY)
+						continue;
+
+					string device_file_name = device_file.get_name();
+
+					root_path = Path.build_path("/", this.sensor_device_dir, device_file_name);
+					
+					string port_name;
+					int type_id;
+					
+					{ //We don't need a bunch of IO streams and such floating around
+						var port_name_file = File.new_for_path(Path.build_path("/", root_path, "port_name"));
+						var port_input_stream = new DataInputStream(port_name_file.read());
+						port_name = port_input_stream.read_line();
+						
+						var type_file = File.new_for_path(Path.build_path("/", root_path, "type_id"));
+						var type_input_stream = new DataInputStream(type_file.read());
+						type_id = int.parse(type_input_stream.read_line());
+					}
+
+					bool satisfies_condition = (
+						(port == Ports.INPUT_AUTO)
+						|| (port_name == ("in" + this.sensor_ports[port]))
+					) && (
+						(types == null || types.length < 1)
+						|| type_id in types
+					);
+
+					if(satisfies_condition)
+					{
+						this.device_index = int.parse(device_file_name.substring("sensor".length));
+						break;
+					}
+				}
+
+				if(this.device_index == -1)
+				{
+					this.connected = false;
+					return;
+				}
+			}
+			catch
+			{
+				this.connected = false;
+				return;
+			}
+
+			this.connect(root_path);
+		}
+
+		public int get_value(int value_index)
+		{
+			return this.read_int("value" + value_index.to_string());
+		}
+		
+		public float get_float_value(int value_index)
+		{
+			double decimal_factor = Math.pow((double)10, (double)this.read_int("dp"));
+			return (float) ((double)this.read_int("value" + value_index.to_string()) / decimal_factor);
+		}
+
+		//PROPERTIES
+		public string port_name
+		{
+			owned get
+			{
+				return this.read_string("port_name");
+			}
+		}
+
+		public int num_values
+		{
+			get
+			{
+				return this.read_int("num_values");
+			}
+		}
+
+		public int type_id
+		{
+			get
+			{
+				return this.read_int("type_id");
+			}
+		}
+		
+		public string mode
+		{
+			owned get
+			{
+				return this.read_string("mode");
+			}
+			
+			set
+			{
+				this.write_string("mode", value);
+			}
+		}
+		
+		public string[] modes
+		{
+			owned get
+			{
+				return this.read_string("modes").split(" ");
 			}
 		}
 	}
