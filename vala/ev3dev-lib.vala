@@ -10,12 +10,12 @@ namespace ev3dev
 
 	public class Device : GLib.Object
 	{
-		string device_root { get; protected set; }
+		public string device_root { get; protected set; }
 		public bool connected { get; protected set; }
 	
 		private string connect_error = "You must connect to a device before you can read from it.";
-		private string read_error = "There was an error reading from the file.";
-		private string write_error = "There was an error writing to the file.";
+		private string read_error = "There was an error reading from the file";
+		private string write_error = "There was an error writing to the file";
 
 		public Device()
 		{
@@ -54,9 +54,10 @@ namespace ev3dev
 				var input_stream = new DataInputStream(file.read());
 				result = input_stream.read_line();
 			}
-			catch (GLib.Error error)
+			catch (Error error)
 			{
-				throw new DeviceError.IO_ERROR(this.read_error + ": " + error.message + ": \"" + this.construct_property_path(property) + "\"");
+				this.connected = false;
+				throw new DeviceError.IO_ERROR(this.read_error + ": " + error.message);
 			}
 
 			return result;
@@ -76,13 +77,17 @@ namespace ev3dev
 
 			try
 			{
-				var file = File.new_for_path(this.construct_property_path(property));
-				var out_stream = new DataOutputStream(new BufferedOutputStream.sized(file.open_readwrite().output_stream, 256));
+				string property_path = this.construct_property_path(property);
+				var file = File.new_for_path(property_path);
+				var read_write_stream = file.open_readwrite();
+				var out_stream = new DataOutputStream(new BufferedOutputStream.sized(read_write_stream.output_stream, 256));
 				out_stream.put_string(value);
+				out_stream.flush();
 			}
-			catch (Error e)
+			catch (Error error)
 			{
-				throw new DeviceError.IO_ERROR(this.write_error + ": " + e.message);
+				this.connected = false;
+				throw new DeviceError.IO_ERROR(this.write_error + ": " + error.message);
 			}
 		}
 	}
