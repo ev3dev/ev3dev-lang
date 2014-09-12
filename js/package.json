@@ -1,13 +1,13 @@
 {
   "name": "ev3dev",
-  "version": "0.9.0-beta",
+  "version": "0.9.0",
   "description": "An interface to control an EV3 running ev3dev from JavaScript.",
   "keywords": [
     "ev3dev"
   ],
-  "homepage": "http://github.com/fdetro/ev3dev-lang",
+  "homepage": "http://github.com/ev3dev/ev3dev-lang",
   "bugs": {
-    "url": "http://github.com/fdetro/ev3dev-lang/issues"
+    "url": "http://github.com/ev3dev/ev3dev-lang/issues"
   },
   "author": {
     "name": "WasabiFan",
@@ -32,6 +32,6 @@
   "main": "bin/index.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/fdetro/ev3dev-lang.git"
+    "url": "http://github.com/ev3dev/ev3dev-lang.git"
   }
 }
