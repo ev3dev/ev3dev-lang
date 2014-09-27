@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (ver 0.9, draft rev 7)
+ev3dev Language Wrapper Specification (ver TBD, rev 1)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -22,7 +22,7 @@ Implementation Notes (important)
 
 Argument Name|Type|Description
 ---|---|---
-Port|Number|The port to control. Specify `0` for an automatic search. It is recommended to use the `OUTPUT_*` constants.
+Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `OUTPUT_*` constants.
 Type|String|The type of motor to accept. Can be left empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
@@ -73,7 +73,7 @@ Reset|Void|None|Sets the `reset` motor property to `1`, which causes the motor d
 
 Argument Name|Type|Description
 ---|---|---
-Port|Number|The port to control. Specify `0` for an automatic search. It is recommended to use the `INPUT_*` constants. 
+Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `INPUT_*` constants. 
 Types|Number Array|The types of sensors (device IDs) to allow. Leave the array empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
@@ -102,21 +102,38 @@ Get Float Value|Number (float)|Value Index : Number|Gets the value at the specif
 
 <hr/>
 
-Global Constants
+`I2CSensor` (class) : extends `Sensor`
+-----
+###Constructor:
+
+Argument Name|Type|Description
+---|---|---
+I2C Address (optional)|String|The I2C address that will be used to narrow down the search. Only necessary if multiple I2C devices are connected to the same port.
+
+###Direct attribute mappings:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Poll MS|Number|Read/Write
+FW Version|String|Read
+
+<hr/>
+
+`Ports` Enum
 ---
 
-Constant Name|Value|Description
+Name|Value|Description
 ---|---|---
-INPUT_AUTO|0|Automatic input selection
-OUTPUT_AUTO|0|Automatic output selection
-INPUT_1|1|Sensor port 1
-INPUT_2|2|Sensor port 2
-INPUT_3|3|Sensor port 3
-INPUT_4|4|Sensor port 4
-OUTPUT_A|1|Motor port A
-OUTPUT_B|2|Motor port B
-OUTPUT_C|3|Motor port C
-OUTPUT_D|4|Motor port D
+INPUT_AUTO|"" (blank string)|Automatic input selection
+OUTPUT_AUTO|"" (blank string)|Automatic output selection
+INPUT_1|"in1"|Sensor port 1
+INPUT_2|"in2"|Sensor port 2
+INPUT_3|"in3"|Sensor port 3
+INPUT_4|"in4"|Sensor port 4
+OUTPUT_A|"outA"|Motor port A
+OUTPUT_B|"outB"|Motor port B
+OUTPUT_C|"outC"|Motor port C
+OUTPUT_D|"outD"|Motor port D
 
 <hr/>
 
@@ -124,8 +141,8 @@ IO Device (abstract)
 ---
 An IO Device handles control tasks for a single port or index. These  classes must chose one device out of the available ports to control. Given an IO port (in the constructor), an implementation should:
 
-* If the specified port is `0` or undefined, the available devices should be enumerated until a suitable device is found. Any device is suitable when it's type is known to be compatible with the controlling class.
-* If the specified port is non-zero and in the valid port range for that device, the available devices should be enumerated until a device is found that is plugged in to the specified port.
+* If the specified port is blank or unspecified/undefined/null, the available devices should be enumerated until a suitable device is found. Any device is suitable when it's type is known to be compatible with the controlling class, and it meets any other requirements specified by the caller.
+* If the specified port name is not blank, the available devices should be enumerated until a device is found that is plugged in to the specified port. The supplied port name should be compared directly to the value from the file, so that advanced port strings will match, such as `in1:mux3`.
 
 All IO devices should have a `connected` variable. If a valid device is found while enumerating the ports, the `connected` variable should be set to `true` (by default, it should be false). If an error is thrown anywhere in the class, `connected` should be reset to false. If `connected` is false when an attempt is made to read from or write to a property file, an error should be thrown (except while in the consructor).
 
