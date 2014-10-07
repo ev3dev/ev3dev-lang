@@ -147,3 +147,12 @@ An IO Device handles control tasks for a single port or index. These  classes mu
 All IO devices should have a `connected` variable. If a valid device is found while enumerating the ports, the `connected` variable should be set to `true` (by default, it should be false). If an error is thrown anywhere in the class, `connected` should be reset to false. If `connected` is false when an attempt is made to read from or write to a property file, an error should be thrown (except while in the consructor).
 
 
+Compatibility
+---
+Starting after version `0.9`, we will be documenting the versions of ev3dev that the libraries are compatible with.
+
+Compatibility table:
+
+Language Binding Version|ev3dev Kernel Version(s)
+---|---
+vNext| `3.16.1-3-ev3dev`+
