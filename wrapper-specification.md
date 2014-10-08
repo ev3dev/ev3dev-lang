@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (ver TBD, rev 1)
+ev3dev Language Wrapper Specification (DRAFT ver `0.9.1`, rev 2)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -124,8 +124,8 @@ FW Version|String|Read
 
 Name|Value|Description
 ---|---|---
-INPUT_AUTO|"" (blank string)|Automatic input selection
-OUTPUT_AUTO|"" (blank string)|Automatic output selection
+INPUT_AUTO|instance-specific (see below for details)|Automatic input selection
+OUTPUT_AUTO|instance-specific (see below for details)|Automatic output selection
 INPUT_1|"in1"|Sensor port 1
 INPUT_2|"in2"|Sensor port 2
 INPUT_3|"in3"|Sensor port 3
@@ -134,6 +134,8 @@ OUTPUT_A|"outA"|Motor port A
 OUTPUT_B|"outB"|Motor port B
 OUTPUT_C|"outC"|Motor port C
 OUTPUT_D|"outD"|Motor port D
+
+The values for the `*_AUTO` constants can be chosen by the implementation. They can have any value that signifies an auto-search.
 
 <hr/>
 
@@ -155,4 +157,4 @@ Compatibility table:
 
 Language Binding Version|ev3dev Kernel Version(s)
 ---|---
-vNext| `3.16.1-3-ev3dev`+
+`v0.9.1`| `3.16.1-3-ev3dev`+
