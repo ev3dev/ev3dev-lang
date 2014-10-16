@@ -51,7 +51,7 @@ function Device:getAttrInt(name)
 	local result = tf:read("*n")
 	tf:close()
   
-  return result;
+  return result
 end
 
 function Device:setAttrInt(name, value)
@@ -105,6 +105,21 @@ function Device:setAttrString(name, value)
 end
 
 ------------------------------------------------------------------------------
+-- Port constants
+
+INPUT_AUTO = nil
+INPUT_1    = "in1"
+INPUT_2    = "in2"
+INPUT_3    = "in3"
+INPUT_4    = "in4"
+ 
+OUTPUT_AUTO = nil
+OUTPUT_A    = "outA"
+OUTPUT_B    = "outB"
+OUTPUT_C    = "outC"
+OUTPUT_D    = "outD"
+
+------------------------------------------------------------------------------
 -- Sensor
 
 Sensor = class(Device)
@@ -125,7 +140,7 @@ Sensor.EV3Infrared    = 33
 function Sensor:init(port, sensor_type)
 
 	self._type = 0
-	self._port = 0
+	self._port = nil
 
 	for i = 0, 9 do
 		self._path = sys_msensor.."sensor"..i.."/"
@@ -136,13 +151,13 @@ function Sensor:init(port, sensor_type)
 			
 			if ((sensor_type == nil) or (sensor_type == 0) or (self._type == sensor_type)) then
 				local pf = io.open(self._path.."port_name", "r")
-				self._port = string.match(pf:read(), "%d+")
+				self._port = pf:read("*l")
 				pf:close()
 
-				if ((port == nil) or (port == 0) or (self._port == port)) then
+				if ((port == nil) or (self._port == port)) then
 				  break
 				else
-					self._port = 0
+					self._port = nil
 				end
 			end	
 		end
@@ -150,7 +165,7 @@ function Sensor:init(port, sensor_type)
 end
 
 function Sensor:connected()
-	return (self._port ~= 0)
+	return (self._port ~= nil)
 end
 
 function Sensor:type()
@@ -277,10 +292,10 @@ function Motor:init(port, motor_type)
 
 		local pf = io.open(self._path.."port_name", "r")
 		if (pf ~= nil) then
-		  self._port = string.byte(pf:read("*l"), 4) - 64;
+		  self._port = pf:read("*l")
 		  pf:close()
 
-			if ((port == nil) or (port == 0) or (self._port == port)) then		
+			if ((port == nil) or (self._port == port)) then		
 		    self._type = self:getAttrString("type")
 
 		    if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then		    
@@ -291,12 +306,12 @@ function Motor:init(port, motor_type)
 	end
 
 	self._type = 0
-	self._port = 0
+	self._port = nil
 	self._path = nil	
 end
 
 function Motor:connected()
-  return (self._port ~= 0)
+  return (self._port ~= nil)
 end
 
 function Motor:type()
@@ -558,7 +573,7 @@ function Button:init(name)
 end
 
 function Button:pressed()
-	if (self._port ~= 0) then	
+	if (self._port ~= nil) then	
 		local fvalue = io.open(self._fname)
 		local val = fvalue:read("*n")
 		fvalue:close()
