@@ -3,7 +3,7 @@
 ///<reference path="io.ts" />
 
 class Motor extends Device {
-    private port: number;
+    private port: string;
     private motorDeviceDir = '/sys/class/tacho-motor/';
 
     private _deviceIndex: number = -1;
@@ -39,17 +39,7 @@ class Motor extends Device {
         };
     }
 
-    get motorPorts(): any {
-        return {
-            0: '*',
-            1: 'A',
-            2: 'B',
-            3: 'C',
-            4: 'D'
-        };
-    }
-
-    constructor(port: number, type: string) {
+    constructor(port: string, type: string) {
         super();
 
         this.port = port;
@@ -71,7 +61,8 @@ class Motor extends Device {
 
                 var satisfiesCondition = (
                     (port == ports.OUTPUT_AUTO)
-                    || (portName === ('out' + this.motorPorts[port]))
+                    || (port == undefined)
+                    || (portName === port)
                 ) && (
                     (type == undefined || type == '')
                     || motorType == type

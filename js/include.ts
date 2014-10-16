@@ -7,16 +7,16 @@ var path = require('path');
 /* CONSTANTS */
 
 var ports = {
-    INPUT_AUTO: 0,
-    OUTPUT_AUTO: 0,
+    INPUT_AUTO: undefined,
+    OUTPUT_AUTO: undefined,
 
-    INPUT_1: 1,
-    INPUT_2: 2,
-    INPUT_3: 3,
-    INPUT_4: 4,
+    INPUT_1: 'in1',
+    INPUT_2: 'in2',
+    INPUT_3: 'in3',
+    INPUT_4: 'in4',
 
-    OUTPUT_A: 1,
-    OUTPUT_B: 2,
-    OUTPUT_C: 3,
-    OUTPUT_D: 4
+    OUTPUT_A: 'outA',
+    OUTPUT_B: 'outB',
+    OUTPUT_C: 'outC',
+    OUTPUT_D: 'outD'
 }

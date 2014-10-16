@@ -3,7 +3,7 @@
 ///<reference path="io.ts" />
 
 class Sensor extends Device {
-    private port: number;
+    private port: string;
     private sensorDeviceDir = '/sys/class/msensor/';
 
     private sensorTypes : number[] = [];
@@ -18,24 +18,17 @@ class Sensor extends Device {
             portName: 'port_name',
             numValues: 'num_values',
             typeId: 'type_id',
+            address: 'address',
             mode: 'mode',
             modes: 'modes',
             value: 'value',
-            dp: 'dp'
+            dp: 'dp',
+            pollMS: 'poll_ms',
+            fwVersion: 'fw_version'
         };
     }
 
-    get sensorPorts(): any {
-        return {
-            0: '*',
-            1: '1',
-            2: '2',
-            3: '3',
-            4: '4'
-        };
-    }
-
-    constructor(port: number, types: number[]) {
+    constructor(port: string, types: number[], i2cAddress?: string) {
         super();
 
         this.port = port;
@@ -56,14 +49,22 @@ class Sensor extends Device {
                         path.join(rootPath, this.sensorProperties.typeId)
                     ).toString().trim());
 
+                var i2cDeviceAddress = fs.readFileSync(
+                        path.join(rootPath, this.sensorProperties.address)
+                    ).toString().trim();
+
                 var satisfiesCondition = (
                         (port == ports.INPUT_AUTO)
-                        || (portName === ('in' + this.sensorPorts[port]))
+                        || (port == undefined)
+                        || (portName === port)
                     ) && (
                         (types == undefined || types == [])
                         || types.indexOf(typeId) != -1
+                    ) && (
+                        (i2cAddress == undefined)
+                        || (i2cAddress == i2cDeviceAddress)
                     );
-
+                
                 if (satisfiesCondition) {
                     this._deviceIndex = Number(file.substring('sensor'.length));
                     break;
@@ -116,5 +117,23 @@ class Sensor extends Device {
 
     get modes(): string[] {
         return this.getProperty(this.sensorProperties.modes).split(' ');
+    }
+}
+
+class I2CSensor extends Sensor {
+    constructor(port: string, types: number[], i2cAddress: string) {
+        super(port, types, i2cAddress);
+    }
+
+    get pollMS(): number {
+        return this.getProperty(this.sensorProperties.pollMS);
+    }
+
+    set pollMS(value: number) {
+        this.setProperty(this.sensorProperties.pollMS, value);
+    }
+
+    get fwVersion(): string {
+        return this.getProperty(this.sensorProperties.fwVersion);
     }
 }
