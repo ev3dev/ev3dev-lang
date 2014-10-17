@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (DRAFT ver `0.9.1`, rev 2)
+ev3dev Language Wrapper Specification (DRAFT ver `0.9.1`, rev 3)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -102,7 +102,7 @@ Get Float Value|Number (float)|Value Index : Number|Gets the value at the specif
 
 <hr/>
 
-`I2CSensor` (class) : extends `Sensor`
+`I2C Sensor` (class) : extends `Sensor`
 -----
 ###Constructor:
 
@@ -116,6 +116,61 @@ Property Name|Type|Accessibility|Description
 ---|---|---|---
 Poll MS|Number|Read/Write
 FW Version|String|Read
+
+<hr/>
+
+`Power Supply` (class)
+-----
+###Constructor:
+
+Argument Name|Type|Description
+---|---|---
+Device (optional)|String|The name of the device to control (as listed in `/sys/class/power_supply/`). If left blank or unspecified, the default `legoev3-battery` should be used. `Connected` should be set to true if the device is found.
+
+###Direct attribute mappings:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Current Now|Number (int)|Read
+Voltage Now|Number (int)|Read
+Voltage Max Design|Number (int)|Read
+Voltage Min Design|Number (int)|Read
+Technology|String|Read
+Type|String|Read
+
+###Special properties:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Current Amps|Number (float)|Read|The amount of current, in amps, coming from the device (`current_now` / 1000000)
+Voltage Volts|Number (float)|Read|The number of volts (not µV) coming from the device (`voltage_now` / 1000000)
+Connected|Boolean|Read
+
+**NOTE:** The integer measures for current and voltage are in µA and µV, respectively, as returned from the sysfs attribute.
+
+<hr/>
+
+`LED` (class)
+-----
+###Constructor:
+
+Argument Name|Type|Description
+---|---|---
+Device|String|The name of the device to control (as listed in `/sys/class/leds/`). `Connected` should be set to true if the device is found. If left blank or unspecified, `Connected` shold be set to false.
+
+###Direct attribute mappings:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Max Brightness|Number (int)|Read
+Brightness|Number (int)|Read/Write
+Trigger|String|Read/Write
+
+###Special properties:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Connected|Boolean|Read
 
 <hr/>
 
@@ -151,7 +206,7 @@ All IO devices should have a `connected` variable. If a valid device is found wh
 
 Compatibility
 ---
-Starting after version `0.9`, we will be documenting the versions of ev3dev that the libraries are compatible with.
+Starting after version `0.9.0`, we will be documenting the versions of ev3dev that the libraries are compatible with.
 
 Compatibility table:
 
