@@ -74,7 +74,7 @@ Reset|Void|None|Sets the `reset` motor property to `1`, which causes the motor d
 Argument Name|Type|Description
 ---|---|---
 Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `INPUT_*` constants. 
-Types|Number Array|The types of sensors (device IDs) to allow. Leave the array empty or undefined (in the languages that support it) to specify a wildcard.
+Types|String Array|The types of sensors (device IDs) to allow. Leave the array empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
 
