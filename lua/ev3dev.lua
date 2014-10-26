@@ -27,9 +27,8 @@ require 'class'
 local sys_class   = "/sys/class/"
 local sys_msensor = "/sys/class/msensor/"
 local sys_motor   = "/sys/class/tacho-motor/"
-local sys_button  = "/sys/devices/platform/ev3dev/button"
 local sys_sound   = "/sys/devices/platform/snd-legoev3/"
-local sys_power   = "/sys/class/power_supply/legoev3-battery/"
+local sys_power   = "/sys/class/power_supply/"
 
 ------------------------------------------------------------------------------
 -- Device
@@ -124,30 +123,28 @@ OUTPUT_D    = "outD"
 
 Sensor = class(Device)
 
-Sensor.NXTTouch       = 1
-Sensor.NXTLight       = 2
-Sensor.NXTSound       = 3
-Sensor.NXTColor       = 4
-Sensor.NXTUltrasonic  = 5
-Sensor.NXTTemperature = 6
-    
-Sensor.EV3Touch       = 16
-Sensor.EV3Color       = 29
-Sensor.EV3Ultrasonic  = 30
-Sensor.EV3Gyro        = 32
-Sensor.EV3Infrared    = 33
+Sensor.NXTTouch       = "lego-nxt-touch"
+Sensor.NXTLight       = "lego-nxt-light"
+Sensor.NXTSound       = "lego-nxt-sound"
+Sensor.NXTUltrasonic  = "lego-nxt-ultrasonic"
+
+Sensor.EV3Touch       = "lego-ev3-touch"
+Sensor.EV3Color       = "ev3-uart-29"
+Sensor.EV3Ultrasonic  = "ev3-uart-30"
+Sensor.EV3Gyro        = "ev3-uart-32"
+Sensor.EV3Infrared    = "ev3-uart-33"
 
 function Sensor:init(port, sensor_type)
 
-	self._type = 0
+	self._type = nil
 	self._port = nil
 
 	for i = 0, 9 do
 		self._path = sys_msensor.."sensor"..i.."/"
 		
-		local tf = io.open(self._path.."type_id", "r")
+		local tf = io.open(self._path.."name", "r")
 		if (tf ~= nil) then
-			self._type = tf:read("*n")
+			self._type = tf:read("*l")
 			
 			if ((sensor_type == nil) or (sensor_type == 0) or (self._type == sensor_type)) then
 				local pf = io.open(self._path.."port_name", "r")
@@ -172,7 +169,7 @@ function Sensor:type()
 	return self._type
 end
 
-function Sensor:port()
+function Sensor:portName()
 	return self._port
 end
 
@@ -197,13 +194,27 @@ function Sensor:value(id)
   return self:getAttrInt("value"..id)
 end
 
+function Sensor:floatValue(id)
+
+	if (id == nil) then
+		id = 0
+	end
+
+  local scale = math.pow(10, -self:getAttrInt("dp"))
+  return self:getAttrInt("value"..id) * scale
+end
+
+function Sensor:dp()
+  return self:getAttrInt("dp")
+end
+
 ------------------------------------------------------------------------------
 -- TouchSensor
 
 TouchSensor = class(Sensor)
 
 function TouchSensor:init(port)
-	Sensor.init(self, port, 16)
+	Sensor.init(self, port, Sensor.EV3Touch)
 end
 
 function TouchSensor:pressed()
@@ -220,7 +231,7 @@ ColorSensor.ModeAmbient = "COL-AMBIENT"
 ColorSensor.ModeColor   = "COL-COLOR"
 
 function ColorSensor:init(port)
-	Sensor.init(self, port, 29)
+	Sensor.init(self, port, Sensor.EV3Color)
 end
 
 ------------------------------------------------------------------------------
@@ -235,7 +246,7 @@ UltrasonicSensor.ModeSingleCM = "US-SI-CM"
 UltrasonicSensor.ModeSingleIN = "US-SI-IN"
 
 function UltrasonicSensor:init(port)
-	Sensor.init(self, port, 30)
+	Sensor.init(self, port, Sensor.EV3Ultrasonic)
 end
 
 ------------------------------------------------------------------------------
@@ -248,7 +259,7 @@ GyroSensor.ModeSpeed         = "GYRO-RATE"
 GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
 
 function GyroSensor:init(port)
-	Sensor.init(self, port, 32)
+	Sensor.init(self, port, Sensor.EV3Gyro)
 end
 
 ------------------------------------------------------------------------------
@@ -261,7 +272,7 @@ InfraredSensor.ModeIRSeeker  = "IR-SEEK"
 InfraredSensor.ModeIRRemote  = "IR-REMOTE"
 
 function InfraredSensor:init(port)
-	Sensor.init(self, port, 33)
+	Sensor.init(self, port, Sensor.EV3Infrared)
 end
 
 ------------------------------------------------------------------------------
@@ -305,7 +316,7 @@ function Motor:init(port, motor_type)
 		end
 	end
 
-	self._type = 0
+	self._type = nil
 	self._port = nil
 	self._path = nil	
 end
@@ -318,7 +329,7 @@ function Motor:type()
   return self._type
 end
 
-function Motor:port()
+function Motor:portName()
   return self._port
 end
 
@@ -466,15 +477,19 @@ end
 LED = class(Device)
 
 function LED:init(name)
-  self._path = sys_class.."leds/ev3:"..name.."/"
+  self._path = sys_class.."leds/"..name.."/"
 end
 
-function LED:level()
+function LED:brightness()
   return self:getAttrInt("brightness")
 end
 
+function LED:maxBrightness()
+  return self:getAttrInt("max_brightness")
+end
+
 function LED:on()
-  self:setAttrInt("brightness", 1)
+  self:setAttrInt("brightness", self:maxBrightness())
 end
 
 function LED:off()
@@ -527,10 +542,10 @@ function LED:setTrigger(trigger)
   self:setAttrString("trigger", trigger)
 end
 
-ledRedRight   = LED("red:right")
-ledRedLeft    = LED("red:left")
-ledGreenRight = LED("green:right")
-ledGreenLeft  = LED("green:left")
+ledRedRight   = LED("ev3:red:right")
+ledRedLeft    = LED("ev3:red:left")
+ledGreenRight = LED("ev3:green:right")
+ledGreenLeft  = LED("ev3:green:left")
 
 function LED.redOn()
   ledRedRight:on()
@@ -561,33 +576,6 @@ function LED.allOff()
   self:redOff()
   self:greenOff()
 end
-
-------------------------------------------------------------------------------
--- Button
-
-Button = class()
-
-function Button:init(name)
-	self._fname = sys_button..name
-	self._sf = io.open(self._fname)
-end
-
-function Button:pressed()
-	if (self._port ~= nil) then	
-		local fvalue = io.open(self._fname)
-		local val = fvalue:read("*n")
-		fvalue:close()
-		return (val ~= 0)
-	end
-	return false
-end
-
-btnBack  = Button("back")
-btnLeft  = Button("left")
-btnRight = Button("right")
-btnUp    = Button("up")
-btnDown  = Button("down")
-btnEnter = Button("enter")
 
 ------------------------------------------------------------------------------
 --Sound
@@ -637,31 +625,68 @@ function Sound.setVolume(levelInPercent)
 end
 
 ------------------------------------------------------------------------------
---Battery
-Battery = class()
+--PowerSupply
+PowerSupply = class()
 
-function Battery.voltage()
-	local file = io.open(sys_power.."voltage_now")
+PowerSupply = class(Device)
+
+function PowerSupply:init(device)
+  if (device ~= nil) then
+    self._path = sys_power..device.."/"
+	else
+    self._path = sys_power.."legoev3-battery/"
+	end
+
+	local file = io.open(self._path.."voltage_now")
 	if (file ~= nil) then	
-		local val = file:read("*n")
 		file:close()
-		return val / 1000000
-	end	
-	
-	return 0
+  else
+    self._path = nil
+  end			
 end
 
-function Battery.current()
-	local file = io.open(sys_power.."current_now")
-	if (file ~= nil) then	
-		local val = file:read("*n")
-		file:close()
-		return val / 1000
-	end	
-	
-	return 0
+function PowerSupply:connected()
+	return (self._path ~= nil)
 end
 
+function PowerSupply:currentNow()
+  return self:getAttrInt("current_now")
+end
+
+function PowerSupply:currentAmps()
+  return self:getAttrInt("current_now") / 1000
+end
+
+function PowerSupply:voltageNow()
+  return self:getAttrInt("voltage_now")
+end
+
+function PowerSupply:voltageVolts()
+  return self:getAttrInt("voltage_now") / 1000000
+end
+
+function PowerSupply:currentMaxDesign()
+  return self:getAttrInt("current_max_design")
+end
+
+function PowerSupply:voltageMaxDesign()
+  return self:getAttrInt("voltage_max_design")
+end
+
+function PowerSupply:technology()
+  return self:getAttrInt("technology")
+end
+
+function PowerSupply:technology()
+  return self:getAttrInt("technology")
+end
+
+function PowerSupply:type()
+  return self:getAttrInt("type")
+end
+
+Battery = PowerSupply()
+ 
 ------------------------------------------------------------------------------
 --RemoteControl
 RemoteControl = class()
