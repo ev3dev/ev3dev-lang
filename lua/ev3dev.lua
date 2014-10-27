@@ -504,6 +504,17 @@ LED = class(Device)
 
 function LED:init(name)
   self._path = sys_class.."leds/"..name.."/"
+
+	local file = io.open(self._path.."brightness")
+	if (file ~= nil) then	
+		file:close()
+  else
+    self._path = nil
+  end
+end
+
+function LED:connected()
+	return (self._path ~= nil)
 end
 
 function LED:brightness()
@@ -700,15 +711,11 @@ function PowerSupply:voltageMaxDesign()
 end
 
 function PowerSupply:technology()
-  return self:getAttrInt("technology")
-end
-
-function PowerSupply:technology()
-  return self:getAttrInt("technology")
+  return self:getAttrString("technology")
 end
 
 function PowerSupply:type()
-  return self:getAttrInt("type")
+  return self:getAttrString("type")
 end
 
 Battery = PowerSupply()
