@@ -6,7 +6,7 @@ class Sensor extends Device {
     private port: string;
     private sensorDeviceDir = '/sys/class/msensor/';
 
-    private sensorTypes : number[] = [];
+    private sensorTypes : string[] = [];
 
     private _deviceIndex: number = -1;
     get deviceIndex(): number {
@@ -28,7 +28,7 @@ class Sensor extends Device {
         };
     }
 
-    constructor(port: string, types: number[], i2cAddress?: string) {
+    constructor(port: string, types: string[], i2cAddress?: string) {
         super();
 
         this.port = port;
@@ -45,9 +45,9 @@ class Sensor extends Device {
                         path.join(rootPath, this.sensorProperties.portName)
                     ).toString().trim();
 
-                var typeId = parseInt(fs.readFileSync(
+                var typeName = fs.readFileSync(
                         path.join(rootPath, this.sensorProperties.typeId)
-                    ).toString().trim());
+                    ).toString().trim();
 
                 var i2cDeviceAddress = fs.readFileSync(
                         path.join(rootPath, this.sensorProperties.address)
@@ -59,7 +59,7 @@ class Sensor extends Device {
                         || (portName === port)
                     ) && (
                         (types == undefined || types == [])
-                        || types.indexOf(typeId) != -1
+                        || types.indexOf(typeName) != -1
                     ) && (
                         (i2cAddress == undefined)
                         || (i2cAddress == i2cDeviceAddress)
@@ -121,7 +121,7 @@ class Sensor extends Device {
 }
 
 class I2CSensor extends Sensor {
-    constructor(port: string, types: number[], i2cAddress: string) {
+    constructor(port: string, types: string[], i2cAddress: string) {
         super(port, types, i2cAddress);
     }
 
