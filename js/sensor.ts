@@ -17,7 +17,7 @@ class Sensor extends Device {
         return {
             portName: 'port_name',
             numValues: 'num_values',
-            typeId: 'type_id',
+            name: 'name',
             address: 'address',
             mode: 'mode',
             modes: 'modes',
@@ -46,7 +46,7 @@ class Sensor extends Device {
                     ).toString().trim();
 
                 var typeName = fs.readFileSync(
-                        path.join(rootPath, this.sensorProperties.typeId)
+                        path.join(rootPath, this.sensorProperties.name)
                     ).toString().trim();
 
                 var i2cDeviceAddress = fs.readFileSync(
@@ -103,8 +103,8 @@ class Sensor extends Device {
         return this.getNumber(this.sensorProperties.numValues);
     }
 
-    get typeId(): number {
-        return this.getNumber(this.sensorProperties.typeId);
+    get typeName(): number {
+        return this.getNumber(this.sensorProperties.name);
     }
 
     get mode(): string {
