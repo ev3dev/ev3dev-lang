@@ -139,8 +139,19 @@ function Sensor:init(port, sensor_type)
 	self._type = nil
 	self._port = nil
 
-	for i = 0, 9 do
-		self._path = sys_msensor.."sensor"..i.."/"
+  -- check that msensor dir exists
+  local r = io.popen("find "..sys_class.." -name 'msensor'")
+  local dir = r:read("*l")
+  r:close()
+  
+  if (dir == nil) then
+    return
+  end
+  
+  -- lookup all sensor entries
+  local sensors = io.popen("find "..sys_msensor.." -name 'sensor*'")
+	for s in sensors:lines() do
+		self._path = s.."/"
 		
 		local tf = io.open(self._path.."name", "r")
 		if (tf ~= nil) then
@@ -159,6 +170,7 @@ function Sensor:init(port, sensor_type)
 			end	
 		end
 	end
+	sensors:close();
 end
 
 function Sensor:connected()
@@ -298,8 +310,19 @@ Motor.PositionModeRelative = "relative"
 
 function Motor:init(port, motor_type)
 
-	for i = 0, 9 do
-		self._path = sys_motor.."tacho-motor"..i.."/"
+  -- check that tacho-motor dir exists
+  local r = io.popen("find "..sys_class.." -name 'tacho-motor'")
+  local dir = r:read("*l")
+  r:close()
+  
+  if (dir == nil) then
+    return
+  end
+  
+  -- lookup all tacho-motor entries
+  local motors = io.popen("find "..sys_motor.." -name 'tacho-motor*'")
+	for m in motors:lines() do
+		self._path = m.."/"
 
 		local pf = io.open(self._path.."port_name", "r")
 		if (pf ~= nil) then
@@ -309,12 +332,15 @@ function Motor:init(port, motor_type)
 			if ((port == nil) or (self._port == port)) then		
 		    self._type = self:getAttrString("type")
 
-		    if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then		    
+		    if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
+		      motors:close()
 		      return
 		    end
 		  end
 		end
 	end
+
+	motors:close()
 
 	self._type = nil
 	self._port = nil
@@ -478,6 +504,17 @@ LED = class(Device)
 
 function LED:init(name)
   self._path = sys_class.."leds/"..name.."/"
+
+	local file = io.open(self._path.."brightness")
+	if (file ~= nil) then	
+		file:close()
+  else
+    self._path = nil
+  end
+end
+
+function LED:connected()
+	return (self._path ~= nil)
 end
 
 function LED:brightness()
@@ -674,15 +711,11 @@ function PowerSupply:voltageMaxDesign()
 end
 
 function PowerSupply:technology()
-  return self:getAttrInt("technology")
-end
-
-function PowerSupply:technology()
-  return self:getAttrInt("technology")
+  return self:getAttrString("technology")
 end
 
 function PowerSupply:type()
-  return self:getAttrInt("type")
+  return self:getAttrString("type")
 end
 
 Battery = PowerSupply()

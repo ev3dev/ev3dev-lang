@@ -82,7 +82,7 @@ Property Name|Type|Accessibility|Description
 ---|---|---|---
 Port Name|String|Read
 Num Values|Number|Read
-Type ID|Number|Read
+Type Name|String|Read
 Mode|String|Read/Write
 Modes|String Array|Read
 

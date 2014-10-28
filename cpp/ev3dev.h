@@ -28,6 +28,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include <map>
 #include <set>
 #include <string>
 #include <functional>
@@ -58,8 +59,6 @@ const port_type OUTPUT_B { "outB" }; //!< Motor port B
 const port_type OUTPUT_C { "outC" }; //!< Motor port C
 const port_type OUTPUT_D { "outD" }; //!< Motor port D
 
-const address_type ADRESS_AUTO;      //!< Automatic address selection
-  
 //-----------------------------------------------------------------------------
 
 class device
@@ -117,7 +116,11 @@ public:
   void set_mode(const mode_type&);
   
 protected:
-  bool init(port_type port_, const std::set<sensor_type> &types_) noexcept;
+  sensor(port_type port_, const std::set<sensor_type> &types_,
+         const std::map<std::string, std::string> &attributes_);
+  
+  bool init(port_type port_, const std::set<sensor_type> &types_,
+            const std::map<std::string, std::string> &attributes_) noexcept;
   void read_mode_values();
   
 protected:
@@ -137,7 +140,8 @@ protected:
 class i2c_sensor : public sensor
 {
 public:
-  i2c_sensor(port_type port_ = INPUT_AUTO, address_type address_ = ADRESS_AUTO);
+  i2c_sensor(port_type port_ = INPUT_AUTO);
+  i2c_sensor(port_type port_, address_type address_);
 };
 
 //-----------------------------------------------------------------------------
@@ -322,9 +326,15 @@ public:
 class led : protected device
 {
 public:
-  led(const std::string &name);
- 
-  int  level() const;
+  led(std::string name);
+
+  inline bool connected() const { return !_path.empty(); }
+  
+  int brightness() const;
+  void set_brightness(int);
+
+  inline int max_brightness() const { return _max_brightness; }
+  
   void on();
   void off();
   void flash(unsigned interval_ms);
@@ -346,6 +356,32 @@ public:
   static void green_off();
   static void all_on   ();
   static void all_off  ();
+  
+protected:
+  int _max_brightness = 0;
+};
+
+//-----------------------------------------------------------------------------
+
+class power_supply : protected device
+{
+public:
+  power_supply(std::string name);
+  
+  inline bool connected() const { return !_path.empty(); }
+  
+  int   current_now() const;
+  float current_amps() const;
+  int   current_max_design() const;
+
+  int voltage_now() const;
+  float voltage_volts() const;
+  int voltage_max_design() const;
+  
+  std::string technology() const;
+  std::string type() const;
+  
+  static power_supply battery;
 };
 
 //-----------------------------------------------------------------------------
@@ -390,15 +426,6 @@ public:
   
   static unsigned volume();
   static void set_volume(unsigned);
-};
-
-//-----------------------------------------------------------------------------
-
-class battery
-{
-public:
-  static float voltage();
-  static float current();
 };
 
 //-----------------------------------------------------------------------------

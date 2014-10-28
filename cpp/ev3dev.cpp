@@ -54,7 +54,7 @@
 
 #define SYS_BUTTON SYS_ROOT "/devices/platform/ev3dev/button"
 #define SYS_SOUND  SYS_ROOT "/devices/platform/snd-legoev3/"
-#define SYS_POWER  SYS_ROOT "/class/power_supply/legoev3-battery/"
+#define SYS_POWER  SYS_ROOT "/class/power_supply/"
 
 //-----------------------------------------------------------------------------
 
@@ -176,19 +176,28 @@ const sensor::sensor_type sensor::nxt_i2c_sensor  { "nxt-i2c-sensor" };
 
 sensor::sensor(port_type port_)
 {
-  init(port_, std::set<sensor_type>());
+  init(port_, std::set<sensor_type>(), std::map<std::string, std::string>());
 }
 
 //-----------------------------------------------------------------------------
 
 sensor::sensor(port_type port_, const std::set<sensor_type> &types_)
 {
-  init(port_, types_);
+  init(port_, types_, std::map<std::string, std::string>());
 }
 
 //-----------------------------------------------------------------------------
 
-bool sensor::init(port_type port_, const std::set<sensor_type> &types_) noexcept
+sensor::sensor(port_type port_, const std::set<sensor_type> &types_,
+               const std::map<std::string, std::string> &attributes_)
+{
+  init(port_, types_, attributes_);
+}
+
+//-----------------------------------------------------------------------------
+
+bool sensor::init(port_type port_, const std::set<sensor_type> &types_,
+                  const std::map<std::string, std::string> &attributes_) noexcept
 {
   using namespace std;
   
@@ -213,15 +222,28 @@ bool sensor::init(port_type port_, const std::set<sensor_type> &types_) noexcept
             _type = get_attr_string("name");
             if (types_.empty() || (types_.find(_type) != types_.cend()))
             {
-              _device_index = 0;
-              for (unsigned i=6; dp->d_name[i]!=0; ++i)
+              bool bMatch = true;
+              for (auto a : attributes_)
               {
-                _device_index *= 10;
-                _device_index += dp->d_name[i]-'0';
+                if (get_attr_string(a.first) != a.second)
+                {
+                  bMatch = false;
+                  break;
+                }
               }
               
-              read_mode_values();
-            
+              if (bMatch)
+              {
+                _device_index = 0;
+                for (unsigned i=6; dp->d_name[i]!=0; ++i)
+                {
+                  _device_index *= 10;
+                  _device_index += dp->d_name[i]-'0';
+                }
+                
+                read_mode_values();
+              }
+              
               return true;
             }
           }
@@ -358,8 +380,15 @@ void sensor::set_mode(const mode_type &mode_)
     
 //-----------------------------------------------------------------------------
 
-i2c_sensor::i2c_sensor(port_type port_, address_type address_) :
+i2c_sensor::i2c_sensor(port_type port_) :
   sensor(port_, { nxt_i2c_sensor })
+{
+}
+
+//-----------------------------------------------------------------------------
+
+i2c_sensor::i2c_sensor(port_type port_, address_type address_) :
+  sensor(port_, { nxt_i2c_sensor }, { { "address", address_ } } )
 {
 }
 
@@ -780,30 +809,39 @@ large_motor::large_motor(port_type port_) : motor(port_, motor_large)
 
 //-----------------------------------------------------------------------------
 
-led::led(const std::string &name)
+led::led(std::string name)
 {
-  std::string p(SYS_ROOT "/class/leds/ev3:" + name);
+  std::string p(SYS_ROOT "/class/leds/" + name);
   
   DIR *dfd;
   if ((dfd = opendir(p.c_str())) != NULL)
   {
     _path = p + '/';
     closedir(dfd);
+    
+    _max_brightness = get_attr_int("max_brightness");
   }
 }
 
 //-----------------------------------------------------------------------------
 
-int led::level() const
+int led::brightness() const
 {
   return get_attr_int("brightness");
 }
 
 //-----------------------------------------------------------------------------
 
+void led::set_brightness(int value)
+{
+  set_attr_int("brightness", value);
+}
+    
+//-----------------------------------------------------------------------------
+
 void led::on()
 {
-  set_attr_int("brightness", 1);
+  set_attr_int("brightness", _max_brightness);
 }
 
 //-----------------------------------------------------------------------------
@@ -928,10 +966,10 @@ void led::set_trigger(const mode_type &trigger_)
 
 //-----------------------------------------------------------------------------
 
-led led::red_right   { "red:right"   };
-led led::red_left    { "red:left"    };
-led led::green_right { "green:right" };
-led led::green_left  { "green:left"  };
+led led::red_right   { "ev3:red:right"   };
+led led::red_left    { "ev3:red:left"    };
+led led::green_right { "ev3:green:right" };
+led led::green_left  { "ev3:green:left"  };
 
 //-----------------------------------------------------------------------------
 
@@ -941,6 +979,83 @@ void led::green_on () { green_right.on();  green_left.on();  }
 void led::green_off() { green_right.off(); green_left.off(); }
 void led::all_on   () { red_on();  green_on();  }
 void led::all_off  () { red_off(); green_off(); }
+
+//-----------------------------------------------------------------------------
+
+power_supply::power_supply(std::string name)
+{
+  if (name.empty())
+    name = "legoev3-battery";
+  
+  std::string p(SYS_POWER + name);
+  
+  DIR *dfd;
+  if ((dfd = opendir(p.c_str())) != NULL)
+  {
+    _path = p + '/';
+    closedir(dfd);
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+int power_supply::current_now() const
+{
+  return get_attr_int("current_now");
+}
+
+//-----------------------------------------------------------------------------
+
+float power_supply::current_amps() const
+{
+  return get_attr_int("current_now") / 1000.f;
+}
+
+//-----------------------------------------------------------------------------
+
+int power_supply::current_max_design() const
+{
+  return get_attr_int("current_max_design");
+}
+
+//-----------------------------------------------------------------------------
+
+int power_supply::voltage_now() const
+{
+  return get_attr_int("voltage_now");
+}
+
+//-----------------------------------------------------------------------------
+
+float power_supply::voltage_volts() const
+{
+  return get_attr_int("voltage_now") / 1000000.f;
+}
+
+//-----------------------------------------------------------------------------
+
+int power_supply::voltage_max_design() const
+{
+  return get_attr_int("voltage_max_design");
+}
+
+//-----------------------------------------------------------------------------
+
+std::string power_supply::technology() const
+{
+  return get_attr_string("technology");
+}
+
+//-----------------------------------------------------------------------------
+
+std::string power_supply::type() const
+{
+  return get_attr_string("type");
+}
+
+//-----------------------------------------------------------------------------
+
+power_supply power_supply::battery { "" };
 
 //-----------------------------------------------------------------------------
 
@@ -1049,36 +1164,6 @@ void sound::set_volume(unsigned v)
   {
     os << v;
   }
-}
-
-//-----------------------------------------------------------------------------
-
-float battery::voltage()
-{
-  unsigned result = 0;
-  
-  std::ifstream is(SYS_POWER "/voltage_now");
-  if (is.is_open())
-  {
-    is >> result;
-  }
-  
-  return (result / 1000000.f);
-}
-
-//-----------------------------------------------------------------------------
-
-float battery::current()
-{
-  unsigned result = 0;
-  
-  std::ifstream is(SYS_POWER "/current_now");
-  if (is.is_open())
-  {
-    is >> result;
-  }
-  
-  return (result / 1000.f);
 }
 
 //-----------------------------------------------------------------------------
