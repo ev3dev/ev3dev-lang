@@ -3,6 +3,7 @@
 ///<reference path="io.ts" />
 ///<reference path="motor.ts" />
 ///<reference path="sensor.ts" />
+///<reference path="extras.ts" />
 
 module.exports.ports = ports;
 
@@ -10,3 +11,5 @@ module.exports.ports = ports;
 module.exports.Device = Device;
 module.exports.Motor = Motor;
 module.exports.Sensor = Sensor;
+module.exports.I2CSensor = I2CSensor;
+module.exports.PowerSupply = PowerSupply;
