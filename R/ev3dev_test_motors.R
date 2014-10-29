@@ -1,4 +1,4 @@
-#   Simple test for EV3 motors
+#   Simple test for EV3 motors in position mode
 #   
 #   Prerequsities: 
 #   -functions and classes from ev3dev.R in memory (e.g. source("ev3dev.R"))
@@ -84,12 +84,15 @@ if( Connected(left) && Connected(right) )
 {
   InitDriveMotor(left)
   InitDriveMotor(right)
-
+  
   Speak("Drive test")  
-  Drive(left, right, 3)
+  
+  Drive(left, right, 10)
   
   Speak("Rotation test")
+  
   Rotate(left, right, 90)  
+    
 } else
     Speak("Large motors required on ports B and C")
 

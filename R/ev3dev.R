@@ -19,21 +19,15 @@
  
 #   Compatibility with ev3dev-jessie-2014-10-07 (pre-release)
 
-#DONE - check for connected state, more helpfull error handling on Get/SetAttr funcitons level, set connected to false in case of error
-#TO DO - TypeId for sensor or Name? Name currently
-#DONE - possible Performance issuse for FloatValue (reading dp every time)
-#TO DO - function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
-#DONE - use explicit integers where possible (e.g. 1L instead of 1), no FPU!
-#DONE - stick to S3/S4/R5 classes only (one of), S4 now so copy constructible initializers would be better
+#TO DO - TypeId for sensor or Name? Name currently, no type_id in ev3dev-jessie-2014-10-07 (pre-release)
+#TO DO - is it an issue really? function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
 #TO DO - documentation
-#DONE - DeviceIndex for motor and sensor
 
 # Constants 
 
-
 ports=list(INPUT_AUTO="" , INPUT_1="in1", INPUT_2="in2", INPUT_3="in3", INPUT_4="in4",
            OUTPUT_AUTO="", OUTPUT_A="outA", OUTPUT_B="outB", OUTPUT_C="outC", OUTPUT_D="outD")
-lockBinding("ports", globalenv())
+
 
 
 # device 
@@ -46,7 +40,7 @@ setMethod("initialize", "device",
             callNextMethod(.Object, cache=cache, ...)
           })
 
-setGeneric("GetAttrString", function(.Object, namore) standardGeneric("GetAttrString"))
+setGeneric("GetAttrString", function(.Object, name) standardGeneric("GetAttrString"))
 setGeneric("GetAttrStringArray", function(.Object, name) standardGeneric("GetAttrStringArray"))
 setGeneric("SetAttrString", function(.Object, name, value) standardGeneric("SetAttrString"))
 setGeneric("SetAttrStringArray", function(.Object, name, value) standardGeneric("SetAttrStringArray"))
@@ -167,8 +161,8 @@ setMethod("Connected","device",function(.Object){
 
 setMethod("initialize", "motor",
           function(.Object, port="", type="", ... ){
-            path="~/test/sys/class/tacho-motor"
-            #path="/sys/class/tacho-motor"            
+            #path="~/test/sys/class/tacho-motor"
+            path="/sys/class/tacho-motor"            
             device_path=""
             
             CheckSystemPath(path)
@@ -379,10 +373,10 @@ setMethod("RunMode","motor",function(.Object){
     GetAttrString(.Object, "run_mode")
 })
 
-setMethod("SetRunMode","motor",function(.Object, value){
-    SetAttrString(.Object, "run_mode", match.arg(value,c("forever", "position")))
+setMethod("SetRunMode","motor",function(.Object, value=c("forever", "position", "time")){
+  value=match.arg(value)  
+  SetAttrString(.Object, "run_mode", value)
 })
-
 
 #Speed Regulation P|Number|Read/Write
 
@@ -501,11 +495,12 @@ setMethod("initialize", "sensor",
           function(.Object, port="", name="", ... ){            
   
   callNextMethod(.Object, "", ...)            
+  .Object@cache$.path=""
   .Object@cache$.dp_scale=1
   .Object@cache$.num_values=0
     
-  path="~/test/sys/class/msensor"
-  #path="/sys/class/msensor"
+  #path="~/test/sys/class/msensor"
+  path="/sys/class/msensor"
   
   CheckSystemPath(path)
   
@@ -630,6 +625,9 @@ setMethod("initialize", "power.supply",
   
   callNextMethod(.Object, path=device_path, ...)
 }
+)
+
+power.supply=function(dev="") {.power.supply(dev=dev)}
 
 #Current Now|Number (int)|Read
 
@@ -690,7 +688,7 @@ setMethod("VoltageVolts","power.supply",function(.Object){
 
 .led=setClass(Class="led", contains="device")
 
-setMethod("initialize", led,
+setMethod("initialize", "led",
           function(.Object, dev="", ... ){            
 
   path="/sys/class/leds"
@@ -711,7 +709,9 @@ setMethod("initialize", led,
     }
   
   callNextMethod(.Object, path=device_path, ...)
-}
+})
+
+led=function(dev="") {.led(dev=dev)}
 
 #Max Brightness|Number (int)|Read
 
