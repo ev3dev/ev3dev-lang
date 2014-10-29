@@ -20,28 +20,28 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-speak("Beginning sensor test")
+Speak("Beginning sensor test")
 
 infrared=infrared.sensor()
 
 if( Connected(infrared))
 {
-  speak("Beginning infrared sensor test")
+  Speak("Beginning infrared sensor test")
   
-  speak("Setting proximity mode")
+  Speak("Setting proximity mode")
   SetMode(infrared, "IR-PROX")
   
-  speak("The proximity reading is ", Value(infrared))  
+  Speak("The proximity reading is ", Value(infrared))  
 }
 
 touch=touch.sensor()
 
 if( Connected(touch))
 {
-  speak("Beginning touch sensor test")
+  Speak("Beginning touch sensor test")
         
   if(Value(touch))
-    speak("The button is pressed")  
+    Speak("The button is pressed")  
   else
-    speak("The button is not pressed")
+    Speak("The button is not pressed")
 }

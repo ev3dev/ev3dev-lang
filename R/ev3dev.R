@@ -21,14 +21,15 @@
 
 #DONE - check for connected state, more helpfull error handling on Get/SetAttr funcitons level, set connected to false in case of error
 #TO DO - TypeId for sensor or Name? Name currently
-#TO DO - possible Performance issuse for FloatValue (reading dp every time)
+#DONE - possible Performance issuse for FloatValue (reading dp every time)
 #TO DO - function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
-#TO DO - use explicit integers where possible (e.g. 1L instead of 1), no FPU!
+#DONE - use explicit integers where possible (e.g. 1L instead of 1), no FPU!
 #DONE - stick to S3/S4/R5 classes only (one of), S4 now so copy constructible initializers would be better
 #TO DO - documentation
 #DONE - DeviceIndex for motor and sensor
 
 # Constants 
+
 
 ports=list(INPUT_AUTO="" , INPUT_1="in1", INPUT_2="in2", INPUT_3="in3", INPUT_4="in4",
            OUTPUT_AUTO="", OUTPUT_A="outA", OUTPUT_B="outB", OUTPUT_C="outC", OUTPUT_D="outD")
@@ -45,7 +46,7 @@ setMethod("initialize", "device",
             callNextMethod(.Object, cache=cache, ...)
           })
 
-setGeneric("GetAttrString", function(.Object, name) standardGeneric("GetAttrString"))
+setGeneric("GetAttrString", function(.Object, namore) standardGeneric("GetAttrString"))
 setGeneric("GetAttrStringArray", function(.Object, name) standardGeneric("GetAttrStringArray"))
 setGeneric("SetAttrString", function(.Object, name, value) standardGeneric("SetAttrString"))
 setGeneric("SetAttrStringArray", function(.Object, name, value) standardGeneric("SetAttrStringArray"))
@@ -145,7 +146,7 @@ setMethod("GetAttrInt","device",function(.Object, name){
 setMethod("SetAttrInt","device",function(.Object, name, value){
   stopifnot(Connected(.Object))
   tryCatch( 
-    cat(value, file=paste(.Object@cache$.path,name,sep=""))
+    cat(as.integer(value), file=paste(.Object@cache$.path,name,sep=""))
     , error=function(e)
     {
       msg=ErrorMessage(.Object@cache$.path, name)
@@ -351,21 +352,21 @@ setGeneric("Run", function(.Object, value=TRUE) standardGeneric("Run"))
 
 setMethod("Run","motor",function(.Object, value=TRUE){
   if(missing(value) || value!=FALSE)      
-    SetAttrInt(.Object, "run", 1)
+    SetAttrInt(.Object, "run", 1L)
   else
-    SetAttrInt(.Object, "run", 0)
+    SetAttrInt(.Object, "run", 0L)
 })
 
 setGeneric("Stop", function(.Object) standardGeneric("Stop"))
 
 setMethod("Stop","motor",function(.Object){
-    SetAttrInt(.Object, "run", 0)
+    SetAttrInt(.Object, "run", 0L)
 })
 
 setGeneric("Running", function(.Object) standardGeneric("Running"))
 
 setMethod("Running","motor",function(.Object){
-  (GetAttrInt(.Object, "run")==1)
+  (GetAttrInt(.Object, "run")==1L)
 })
 
 #Run Mode|String|Read/Write
@@ -489,7 +490,7 @@ setMethod("Type","motor",function(.Object){
 
 setGeneric("Reset", function(.Object) standardGeneric("Reset"))
 setMethod("Reset","motor",function(.Object){
-  SetAttrInt(.Object, "reset", 1)
+  SetAttrInt(.Object, "reset", 1L)
 })
 
 # sensor, infraredSensor
@@ -498,9 +499,13 @@ setMethod("Reset","motor",function(.Object){
 
 setMethod("initialize", "sensor",
           function(.Object, port="", name="", ... ){            
+  
+  callNextMethod(.Object, "", ...)            
+  .Object@cache$.dp_scale=1
+  .Object@cache$.num_values=0
+    
   path="~/test/sys/class/msensor"
   #path="/sys/class/msensor"
-  device_path=""  
   
   CheckSystemPath(path)
   
@@ -517,12 +522,13 @@ setMethod("initialize", "sensor",
     if(missing(port) || port=="" || port==device_port )    
       if(missing(name)  || name=="" || device_name %in% name)
       {
-        device_path=paste(files[f],"/",sep="")
+        .Object@cache$.path=paste(files[f],"/",sep="")
+        .Object@cache$.dp_scale=try(10^GetAttrInt(.Object, "dp"))
+        .Object@cache$.num_values=try(NumValues(.Object))                
         break
       }
   }
-      
-  callNextMethod(.Object, path=device_path, ...)
+  .Object  
 })
 
 sensor=function(port="", name="", ...) {.sensor(port, name,...)}
@@ -572,7 +578,10 @@ setMethod("Mode","sensor",function(.Object){
 
 setMethod("SetMode","sensor",function(.Object, value){
     modes=Modes(.Object)
-    SetAttrString(.Object, "mode", match.arg(value,modes))  
+    mode=SetAttrString(.Object, "mode", match.arg(value,modes))  
+    .Object@cache$.dp_scale=10^GetAttrInt(.Object, "dp")
+    .Object@cache$.num_values=NumValues(.Object)  
+    mode
 })
 
 #Modes|String Array|Read
@@ -585,17 +594,18 @@ setMethod("Modes","sensor",function(.Object){
 
 #Get Value|Number (int)|Value Index : Number|Gets the raw value at the specified index
 
-setGeneric("Value", function(.Object, index=0) standardGeneric("Value"))
+setGeneric("Value", function(.Object, index=0L) standardGeneric("Value"))
 setMethod("Value","sensor",function(.Object, index){
+  stopifnot(index<.Object@cache$.num_values)
   GetAttrInt(.Object, paste("value", index, sep=""))
 })
 
 #Get Float Value|Number (float)|Value Index : Number|Gets the value at the specified index, adjusted for the sensor's `dp` value
 
-setGeneric("FloatValue", function(.Object, index=0) standardGeneric("FloatValue"))
+setGeneric("FloatValue", function(.Object, index=0L) standardGeneric("FloatValue"))
 setMethod("FloatValue","sensor",function(.Object, index){
-  dp=GetAttrInt(.Object,"dp")
-  GetAttrInt(.Object, paste("value", index, sep="")) / 10^dp
+  stopifnot(index<.Object@cache$.num_values)
+  GetAttrInt(.Object, paste("value", index, sep="")) / .Object@cache$.dp_scale 
 })
 
 .power.supply=setClass(Class="power.supply", contains="device")
@@ -634,7 +644,6 @@ setGeneric("VoltageNow", function(.Object) standardGeneric("VoltageNow"))
 setMethod("VoltageNow","power.supply",function(.Object){
   return (GetAttrInt(.Object, "voltage_now"))
 })
-
 
 #Voltage Max Design|Number (int)|Read
 

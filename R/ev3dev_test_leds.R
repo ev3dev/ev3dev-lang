@@ -20,21 +20,21 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-speak("Beginning led test")
+Speak("Beginning led test")
 Sys.sleep(1)
 
-speak("Testing red left led")
+Speak("Testing red left led")
 led1=led("ev3:red:left")
 
-speak("Max brightness is ", MaxBrightness(led1))
+Speak("Max brightness is ", MaxBrightness(led1))
 
-speak("Brightness is ", Brightness(led1) )
+Speak("Brightness is ", Brightness(led1) )
 
-speak("Setting brightness to 100")
+Speak("Setting brightness to 100")
 SetBrightness(led1, 100)
 Sys.sleep(1)
 
-speak("Setting brightness to 0")
+Speak("Setting brightness to 0")
 SetBrightness(led1, 0)
 
-speak("The triggers are ", Trigger(led1))
+Speak("The triggers are ", Trigger(led1))

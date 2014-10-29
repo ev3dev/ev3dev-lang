@@ -20,7 +20,7 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-speak("Beginning motor test")
+Speak("Beginning motor test")
 
 Sleep=function(time)
 {
@@ -85,11 +85,11 @@ if( Connected(left) && Connected(right) )
   InitDriveMotor(left)
   InitDriveMotor(right)
 
-  speak("Drive test")  
+  Speak("Drive test")  
   Drive(left, right, 3)
   
-  speak("Rotation test")
+  Speak("Rotation test")
   Rotate(left, right, 90)  
 } else
-    speak("Large motors required on ports B and C")
+    Speak("Large motors required on ports B and C")
 
