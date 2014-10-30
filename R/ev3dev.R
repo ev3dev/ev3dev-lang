@@ -752,7 +752,7 @@ Speak=function(..., sync=TRUE)
   text=paste(list(...), collapse="")
   command=paste("espeak -a 200 --stdout \"", text, "\" | aplay", collapse="")  
   if(!sync) command=paste(command, "&")
-  system(command)
+  system(command, intern=TRUE, ignore.stderr=TRUE)
 }
 
 print("Creating a new generic function for ‘Position’ in the global environment")

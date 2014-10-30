@@ -11,6 +11,7 @@
 #   -R and Rserve installed on EV3
 #   -RSclient package installed on PC
 #   -remote connections enabled for Rserve on EV3
+#   -ssh client installed on PC and in the system path (e.g. www.openssh.org/ for Windows)
 #   -ssh keys for user of PC stored on EV3, same PC/EV3 user (doesn't ask for password)
 #   -ssh connected at least once from command line (so machine trusted)
 #   -working directory set to location of files (setwd on PC)
