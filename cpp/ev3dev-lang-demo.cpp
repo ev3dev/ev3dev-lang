@@ -27,6 +27,21 @@
 using namespace std;
 using namespace ev3dev;
 
+void print_values(sensor &s)
+{
+  auto dp = s.dp();
+  unsigned m = s.num_values();
+  for (unsigned i=0; i<m; ++i)
+  {
+    if (i) cout << "; ";
+    if (dp)
+      cout << s.float_value(i);
+    else
+      cout << s.value(i);
+  }
+  cout << " " << s.units();
+}
+
 void sensor_action(sensor &s)
 {
   char c = 0;
@@ -38,6 +53,7 @@ void sensor_action(sensor &s)
          << "(s)how modes"  << endl
          << "(c)hange mode" << endl
          << "(v)alue"       << endl
+         << "(m)onitor"     << endl
          << endl
          << "(b)ack"        << endl
          << endl
@@ -65,7 +81,30 @@ void sensor_action(sensor &s)
       }
       break;
     case 'v':
-      cout << endl << "value is " << s.value() << endl;
+      cout << endl << "value is "; print_values(s); cout << endl;
+      break;
+    case 'm':
+      {
+        bool bStop = false;
+        thread t([&] () {
+          char cc; cin >> cc;
+          bStop = true;
+        });
+       
+        int value, lastValue = -99999;
+        while (!bStop)
+        {
+          value = s.value();
+          if (value != lastValue)
+          {
+            lastValue = value;
+            print_values(s);
+            cout << endl;
+          }
+          this_thread::sleep_for(chrono::milliseconds(100));
+        }
+        t.join();
+      }
       break;
     }
   }
@@ -383,18 +422,18 @@ void button_menu()
   do
   {
     cout << endl
-    << "*** button menu ***" << endl
-    << endl
-    << "(1) back"  << endl
-    << "(2) left"  << endl
-    << "(3) right" << endl
-    << "(4) up"    << endl
-    << "(5) down"  << endl
-    << "(6) enter" << endl
-    << endl
-    << "(b)ack"    << endl
-    << endl
-    << "Choice: ";
+         << "*** button menu ***" << endl
+         << endl
+         << "(1) back"  << endl
+         << "(2) left"  << endl
+         << "(3) right" << endl
+         << "(4) up"    << endl
+         << "(5) down"  << endl
+         << "(6) enter" << endl
+         << endl
+         << "(b)ack"    << endl
+         << endl
+         << "Choice: ";
     cin >> c;
     
     switch (c)
@@ -430,17 +469,17 @@ void sound_menu()
   do
   {
     cout << endl
-    << "*** sound menu ***" << endl
-    << endl
-    << "b(e)ep"          << endl
-    << "(t)one"          << endl
-    << "tone (d)uration" << endl
-    << "(p)lay"          << endl
-    << "(s)peak"         << endl
-    << "(v)olume"        << endl
-    << "(b)ack"          << endl
-    << endl
-    << "Choice: ";
+         << "*** sound menu ***" << endl
+         << endl
+         << "b(e)ep"          << endl
+         << "(t)one"          << endl
+         << "tone (d)uration" << endl
+         << "(p)lay"          << endl
+         << "(s)peak"         << endl
+         << "(v)olume"        << endl
+         << "(b)ack"          << endl
+         << endl
+         << "Choice: ";
     cin >> c;
     
     switch (c)
@@ -492,23 +531,23 @@ void battery_menu()
   do
   {
     cout << endl
-    << "*** battery menu ***" << endl
-    << endl
-    << "(v)oltage" << endl
-    << "(c)urrent" << endl
-    << endl
-    << "(b)ack"  << endl
-    << endl
-    << "Choice: ";
+         << "*** battery menu ***" << endl
+         << endl
+         << "(v)oltage" << endl
+         << "(c)urrent" << endl
+         << endl
+         << "(b)ack"  << endl
+         << endl
+         << "Choice: ";
     cin >> c;
     
     switch (c)
     {
     case 'v':
-      cout << endl << "voltage is " << battery::voltage() << " Volt" << endl << endl;
+      cout << endl << "voltage is " << power_supply::battery.voltage_volts() << " Volt" << endl << endl;
       break;
     case 'c':
-      cout << endl << "current is " << battery::current() << " mA" << endl << endl;
+      cout << endl << "current is " << power_supply::battery.current_amps() << " mA" << endl << endl;
       break;
     }
   }

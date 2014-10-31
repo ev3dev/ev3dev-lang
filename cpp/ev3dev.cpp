@@ -54,11 +54,91 @@
 
 #define SYS_BUTTON SYS_ROOT "/devices/platform/ev3dev/button"
 #define SYS_SOUND  SYS_ROOT "/devices/platform/snd-legoev3/"
-#define SYS_POWER  SYS_ROOT "/class/power_supply/legoev3-battery/"
 
 //-----------------------------------------------------------------------------
 
 namespace ev3dev {
+
+//-----------------------------------------------------------------------------
+
+bool device::connect(const std::string &dir,
+                     const std::string &pattern,
+                     const std::map<std::string,
+                                    std::set<std::string>> match) noexcept
+{
+  using namespace std;
+  
+  const size_t pattern_length = pattern.length();
+  
+  struct dirent *dp;
+  DIR *dfd;
+  
+  if ((dfd = opendir(dir.c_str())) != nullptr)
+  {
+    while ((dp = readdir(dfd)) != nullptr)
+    {
+      if (strncmp(dp->d_name, pattern.c_str(), pattern_length)==0)
+      {
+        try
+        {
+          _path = dir + dp->d_name + '/';
+          
+          bool bMatch = true;
+          for (auto &m : match)
+          {
+            const auto &attribute = m.first;
+            const auto &matches   = m.second;
+            const auto strValue   = get_attr_string(attribute);
+
+            if (!matches.empty() && !matches.begin()->empty() &&
+                (matches.find(strValue) == matches.end()))
+            {
+              bMatch = false;
+              break;
+            }
+          }
+          
+          if (bMatch)
+            return true;
+        }
+        catch (...) { }
+        
+        _path.clear();
+      }
+    }
+    
+    closedir(dfd);
+  }
+  
+  return false;
+  
+}
+
+//-----------------------------------------------------------------------------
+
+int device::device_index() const
+{
+  using namespace std;
+  
+  if (_path.empty())
+    throw system_error(make_error_code(errc::function_not_supported), "no device connected");
+
+  if (_device_index < 0)
+  {
+    unsigned f = 1;
+    _device_index = 0;
+    for (auto it=_path.rbegin(); it!=_path.rend(); ++it)
+    {
+      if ((*it < '0') || (*it > '9'))
+        break;
+      
+      _device_index += (*it -'0') * f;
+      f *= 10;
+    }
+  }
+  
+  return _device_index;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -160,6 +240,77 @@ std::string device::get_attr_line(const std::string &name) const
 
 //-----------------------------------------------------------------------------
 
+mode_set device::get_attr_set(const std::string &name,
+                              std::string *pCur) const
+{
+  using namespace std;
+
+  string s = get_attr_line(name);
+
+  mode_set result;
+  size_t pos, last_pos = 0;
+  string t;
+  do {
+    pos = s.find(' ', last_pos);
+    
+    if (pos != string::npos)
+    {
+      t = s.substr(last_pos, pos-last_pos);
+      last_pos = pos+1;
+    }
+    else
+      t = s.substr(last_pos);
+    
+    if (!t.empty())
+    {
+      if (*t.begin()=='[')
+      {
+        t = t.substr(1, t.length()-2);
+        if (pCur)
+          *pCur = t;
+      }
+      result.insert(t);
+    }
+  } while (pos!=string::npos);
+  
+  return result;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string device::get_attr_from_set(const std::string &name) const
+{
+  using namespace std;
+  
+  string s = get_attr_line(name);
+  
+  size_t pos, last_pos = 0;
+  string t;
+  do {
+    pos = s.find(' ', last_pos);
+    
+    if (pos != string::npos)
+    {
+      t = s.substr(last_pos, pos-last_pos);
+      last_pos = pos+1;
+    }
+    else
+      t = s.substr(last_pos);
+    
+    if (!t.empty())
+    {
+      if (*t.begin()=='[')
+      {
+        return t.substr(1, t.length()-2);
+      }
+    }
+  } while (pos!=string::npos);
+  
+  return { "none" };
+}
+
+//-----------------------------------------------------------------------------
+
 const sensor::sensor_type sensor::ev3_touch       { "lego-ev3-touch" };
 const sensor::sensor_type sensor::ev3_color       { "ev3-uart-29" };
 const sensor::sensor_type sensor::ev3_ultrasonic  { "ev3-uart-30" };
@@ -170,74 +321,43 @@ const sensor::sensor_type sensor::nxt_touch       { "lego-nxt-touch" };
 const sensor::sensor_type sensor::nxt_light       { "lego-nxt-light" };
 const sensor::sensor_type sensor::nxt_sound       { "lego-nxt-sound" };
 const sensor::sensor_type sensor::nxt_ultrasonic  { "lego-nxt-ultrasonic" };
-const sensor::sensor_type sensor::nxt_temperature { "tmp275" };
-  
+const sensor::sensor_type sensor::nxt_i2c_sensor  { "nxt-i2c-sensor" };
+
 //-----------------------------------------------------------------------------
 
-sensor::sensor(port_type port_)
+sensor::sensor(port_type port)
 {
-  init(port_, std::set<sensor_type>());
+  connect({{ "port_name", { port }}});
 }
 
 //-----------------------------------------------------------------------------
 
-sensor::sensor(port_type port_, const std::set<sensor_type> &types_)
+sensor::sensor(port_type port, const std::set<sensor_type> &types)
 {
-  init(port_, types_);
+  connect({{ "port_name", { port }},
+           { "name",        types }});
 }
 
 //-----------------------------------------------------------------------------
 
-bool sensor::init(port_type port_, const std::set<sensor_type> &types_) noexcept
+bool sensor::connect(const std::map<std::string, std::set<std::string>> &match) noexcept
 {
-  using namespace std;
+  static const std::string _strClassDir { SYS_ROOT "/class/msensor/" };
+  static const std::string _strPattern  { "sensor" };
   
-  string strClassDir(SYS_ROOT "/class/msensor/");
-  
-  struct dirent *dp;
-  DIR *dfd;
-  
-  if ((dfd = opendir(strClassDir.c_str())) != NULL)
+  try
   {
-    while ((dp = readdir(dfd)) != NULL)
+    if (device::connect(_strClassDir, _strPattern, match))
     {
-      if (strncmp(dp->d_name, "sensor", 6)==0)
-      {
-        try
-        {
-          _path = strClassDir + dp->d_name + '/';
-          
-          _port_name = get_attr_string("port_name");
-          if (port_.empty() || (_port_name == port_))
-          {
-            _type = get_attr_string("name");
-            if (types_.empty() || (types_.find(_type) != types_.cend()))
-            {
-              _device_index = 0;
-              for (unsigned i=6; dp->d_name[i]!=0; ++i)
-              {
-                _device_index *= 10;
-                _device_index += dp->d_name[i]-'0';
-              }
-              
-              read_mode_values();
-            
-              return true;
-            }
-          }
-        }
-        catch (...) { }
-        
-        _path.clear();
-        _port_name.clear();
-        _type.clear();
-      }
+      init_members(true);
+      return true;
     }
-    
-    closedir(dfd);
   }
-  else
-    cerr << "no msensor dir!" << endl;
+  catch (...) { }
+  
+  _path.clear();
+  _port_name.clear();
+  _type.clear();
   
   return false;
 }
@@ -262,7 +382,7 @@ const std::string &sensor::type_name() const
     { nxt_light,       "NXT light" },
     { nxt_sound,       "NXT sound" },
     { nxt_ultrasonic,  "NXT ultrasonic" },
-    { nxt_temperature, "NXT temperature" }
+    { nxt_i2c_sensor,  "I2C sensor" },
   };
   
   auto s = lookup_table.find(_type);
@@ -279,8 +399,8 @@ int sensor::value(unsigned index) const
   if (index >= _nvalues)
     throw std::invalid_argument("index");
     
-  char svalue[8] = "value0";
-  svalue[7] += index;
+  char svalue[7] = "value0";
+  svalue[5] += index;
   
   return get_attr_int(svalue);
 }
@@ -308,37 +428,23 @@ const mode_type &sensor::mode() const
 
 //-----------------------------------------------------------------------------
 
-void sensor::read_mode_values()
+void sensor::init_members(bool bAll)
 {
   using namespace std;
 
-  _mode = get_attr_string("mode");
+  if (bAll)
+  {
+    _port_name = get_attr_string("port_name");
+    _type = get_attr_string("name");
+  }
 
-  _modes.clear();
-
-  string s = get_attr_line("modes");
-  size_t pos, last_pos = 0;
-  string m;
-  do {
-    pos = s.find(' ', last_pos);
-    
-    if (pos != string::npos)
-    {
-      m = s.substr(last_pos, pos-last_pos);
-      last_pos = pos+1;
-    }
-    else
-      m = s.substr(last_pos);
-    
-    if (!m.empty())
-    {
-      _modes.insert(m);
-    }
-  } while (pos!=string::npos);
-  
+  _mode    = get_attr_string("mode");
+  _modes   = get_attr_set("modes");
   _nvalues = get_attr_int("num_values");
+  _dp      = get_attr_int("dp");
+  
   _dp_scale = 1.f;
-  for (unsigned dp = get_attr_int("dp"); dp; --dp)
+  for (unsigned dp = _dp; dp; --dp)
   {
     _dp_scale /= 10.f;
   }
@@ -351,8 +457,24 @@ void sensor::set_mode(const mode_type &mode_)
   if (mode_ != _mode)
   {
     set_attr_string("mode", mode_);
-    const_cast<sensor*>(this)->read_mode_values();
+    const_cast<sensor*>(this)->init_members(false);
   }
+}
+
+//-----------------------------------------------------------------------------
+
+i2c_sensor::i2c_sensor(port_type port_) :
+  sensor(port_, { nxt_i2c_sensor })
+{
+}
+
+//-----------------------------------------------------------------------------
+
+i2c_sensor::i2c_sensor(port_type port_, address_type address_)
+{
+  connect({{ "port_name", { port_ }},
+           { "name",      { nxt_i2c_sensor }},
+           { "address",   { address_ }}});
 }
 
 //-----------------------------------------------------------------------------
@@ -429,333 +551,42 @@ const mode_type motor::position_mode_relative { "relative" };
 
 //-----------------------------------------------------------------------------
 
-motor::motor(port_type p)
+motor::motor(port_type port)
 {
-  init(p, std::string());
+  connect({{ "port_name", { port } }});
 }
 
 //-----------------------------------------------------------------------------
 
-motor::motor(port_type p, const motor_type &t)
+motor::motor(port_type port, const motor_type &t)
 {
-  init(p, t);
+  connect({{ "port_name", { port } }, { "type", { t }}});
 }
 
 //-----------------------------------------------------------------------------
 
-bool motor::init(port_type port_, const motor_type &type_) noexcept
+bool motor::connect(const std::map<std::string, std::set<std::string>> &match) noexcept
 {
-  using namespace std;
+  static const std::string _strClassDir { SYS_ROOT "/class/tacho-motor/" };
+  static const std::string _strPattern  { "tacho-motor" };
   
-  string strClassDir(SYS_ROOT "/class/tacho-motor/");
-  
-  struct dirent *dp;
-  DIR *dfd;
-  
-  if ((dfd = opendir(strClassDir.c_str())) != NULL)
+  try
   {
-    while ((dp = readdir(dfd)) != NULL)
+    if (device::connect(_strClassDir, _strPattern, match))
     {
-      if (strncmp(dp->d_name, "tacho-motor", 11)==0)
-      {
-        try
-        {
-          _path = strClassDir + dp->d_name + '/';
-          
-          _port_name = get_attr_string("port_name");
-          if (port_.empty() || (_port_name == port_))
-          {
-            _type = get_attr_string("type");
-            if (type_.empty() || (_type == type_))
-            {
-              _device_index = 0;
-              for (unsigned i=11; dp->d_name[i]!=0; ++i)
-              {
-                _device_index *= 10;
-                _device_index += dp->d_name[i]-'0';
-              }
-              
-              return true;
-            }
-          }
-        }
-        catch (...) { }
-        
-        _path.clear();
-        _port_name.clear();
-        _type.clear();
-      }
+      _port_name = get_attr_string("port_name");
+      _type = get_attr_string("type");
+
+      return true;
     }
-    closedir(dfd);
   }
+  catch (...) { }
+
+  _path.clear();
+  _port_name.clear();
+  _type.clear();
   
   return false;
-}
-
-//-----------------------------------------------------------------------------
-
-motor::motor_type motor::type() const
-{
-  return get_attr_string("type");
-}
-  
-//-----------------------------------------------------------------------------
-  
-void motor::run(bool bRun)
-{
-  set_attr_int("run", bRun);
-}
-  
-//-----------------------------------------------------------------------------
-  
-void motor::stop()
-{
-  set_attr_int("run", 0);
-}
-  
-//-----------------------------------------------------------------------------
-  
-void motor::reset()
-{
-  set_attr_int("reset", 1);
-}
-  
-//-----------------------------------------------------------------------------
-  
-bool motor::running() const
-{
-  return get_attr_int("run")!=0;
-}
-
-//-----------------------------------------------------------------------------
-
-mode_type motor::state() const
-{
-  return get_attr_string("state");
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::duty_cycle() const
-{
-  return get_attr_int("duty_cycle");
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::pulses_per_second() const
-{
-  return get_attr_int("pulses_per_second");
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::position() const
-{
-  return get_attr_int("position");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_position(int pos)
-{
-  set_attr_int("position", pos);
-}
-
-//-----------------------------------------------------------------------------
-
-mode_type motor::run_mode() const
-{
-  return get_attr_string("run_mode");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_run_mode(const mode_type &value)
-{
-  set_attr_string("run_mode", value);
-}
-
-//-----------------------------------------------------------------------------
-
-mode_type motor::stop_mode() const
-{
-  return get_attr_string("stop_mode");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_stop_mode(const mode_type &value)
-{
-  set_attr_string("stop_mode", value);
-}
-
-//-----------------------------------------------------------------------------
-
-mode_type motor::regulation_mode() const
-{
-  return get_attr_string("regulation_mode");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_regulation_mode(const mode_type &value)
-{
-  set_attr_string("regulation_mode", value);
-}
-
-//-----------------------------------------------------------------------------
-
-mode_type motor::position_mode() const
-{
-  return get_attr_string("position_mode");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_position_mode(const mode_type &value)
-{
-  set_attr_string("position_mode", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::duty_cycle_setpoint() const
-{
-  return get_attr_int("duty_cycle_sp");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_duty_cycle_setpoint(int value)
-{
-  set_attr_int("duty_cycle_sp", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::pulses_per_second_setpoint() const
-{
-  return get_attr_int("pulses_per_second_sp");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_pulses_per_second_setpoint(int value)
-{
-  set_attr_int("pulses_per_second_sp", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int  motor::time_setpoint() const
-{
-  return get_attr_int("time_sp");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_time_setpoint(int value)
-{
-  set_attr_int("time_sp", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int  motor::position_setpoint() const
-{
-  return get_attr_int("position_sp");
-}
-  
-//-----------------------------------------------------------------------------
-
-void motor::set_position_setpoint(int value)
-{
-  set_attr_int("position_sp", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int  motor::ramp_up() const
-{
-  return get_attr_int("ramp_up_sp");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_ramp_up(int value)
-{
-  set_attr_int("ramp_up_sp", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::ramp_down() const
-{
-  return get_attr_int("ramp_down_sp");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_ramp_down(int value)
-{
-  set_attr_int("ramp_down_sp", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::speed_regulation_p() const
-{
-  return get_attr_int("speed_regulation_p");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_speed_regulation_p(int value)
-{
-  set_attr_int("speed_regulation_p", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::speed_regulation_i() const
-{
-  return get_attr_int("speed_regulation_i");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_speed_regulation_i(int value)
-{
-  set_attr_int("speed_regulation_i", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::speed_regulation_d() const
-{
-  return get_attr_int("speed_regulation_d");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_speed_regulation_d(int value)
-{
-  set_attr_int("speed_regulation_d", value);
-}
-
-//-----------------------------------------------------------------------------
-
-int motor::speed_regulation_k() const
-{
-  return get_attr_int("speed_regulation_k");
-}
-
-//-----------------------------------------------------------------------------
-
-void motor::set_speed_regulation_k(int value)
-{
-  set_attr_int("speed_regulation_k", value);
 }
 
 //-----------------------------------------------------------------------------
@@ -772,37 +603,14 @@ large_motor::large_motor(port_type port_) : motor(port_, motor_large)
 
 //-----------------------------------------------------------------------------
 
-led::led(const std::string &name)
+led::led(std::string name)
 {
-  std::string p(SYS_ROOT "/class/leds/ev3:" + name);
+  static const std::string _strClassDir { SYS_ROOT "/class/leds/" };
   
-  DIR *dfd;
-  if ((dfd = opendir(p.c_str())) != NULL)
+  if (connect(_strClassDir, name, std::map<std::string, std::set<std::string>>()))
   {
-    _path = p + '/';
-    closedir(dfd);
+    _max_brightness = get_attr_int("max_brightness");
   }
-}
-
-//-----------------------------------------------------------------------------
-
-int led::level() const
-{
-  return get_attr_int("brightness");
-}
-
-//-----------------------------------------------------------------------------
-
-void led::on()
-{
-  set_attr_int("brightness", 1);
-}
-
-//-----------------------------------------------------------------------------
-
-void led::off()
-{
-  set_attr_int("brightness", 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -820,110 +628,10 @@ void led::flash(unsigned interval_ms)
 
 //-----------------------------------------------------------------------------
 
-void led::set_on_delay(unsigned ms)
-{
-  set_attr_int("delay_on", ms);
-}
-
-//-----------------------------------------------------------------------------
-
-void led::set_off_delay(unsigned ms)
-{
-  set_attr_int("delay_off", ms);
-}
-
-//-----------------------------------------------------------------------------
-
-mode_type led::trigger() const
-{
-  using namespace std;
-  
-  ifstream is((_path+"/trigger").c_str());
-  if (is.is_open())
-  {
-    string s;
-    getline(is, s);
-    
-    size_t pos, last_pos = 0;
-    string t;
-    do {
-      pos = s.find(' ', last_pos);
-      
-      if (pos != string::npos)
-      {
-        t = s.substr(last_pos, pos-last_pos);
-        last_pos = pos+1;
-      }
-      else
-        t = s.substr(last_pos);
-      
-      if (!t.empty())
-      {
-        if (*t.begin()=='[')
-        {
-          return t.substr(1, t.length()-2);
-        }
-      }
-    } while (pos!=string::npos);
-  }
-  
-  return mode_type("none");
-}
-
-//-----------------------------------------------------------------------------
-
-mode_set led::triggers() const
-{
-  using namespace std;
-  
-  mode_set result;
-  
-  ifstream is((_path+"/trigger").c_str());
-  if (is.is_open())
-  {
-    string s;
-    getline(is, s);
-    
-    size_t pos, last_pos = 0;
-    string t;
-    do {
-      pos = s.find(' ', last_pos);
-      
-      if (pos != string::npos)
-      {
-        t = s.substr(last_pos, pos-last_pos);
-        last_pos = pos+1;
-      }
-      else
-        t = s.substr(last_pos);
-      
-      if (!t.empty())
-      {
-        if (*t.begin()=='[')
-        {
-          t = t.substr(1, t.length()-2);
-        }
-        result.insert(t);
-      }
-    } while (pos!=string::npos);
-  }
-  
-  return result;
-}
-
-//-----------------------------------------------------------------------------
-
-void led::set_trigger(const mode_type &trigger_)
-{
-  set_attr_string("trigger", trigger_);
-}
-
-//-----------------------------------------------------------------------------
-
-led led::red_right   { "red:right"   };
-led led::red_left    { "red:left"    };
-led led::green_right { "green:right" };
-led led::green_left  { "green:left"  };
+led led::red_right   { "ev3:red:right"   };
+led led::red_left    { "ev3:red:left"    };
+led led::green_right { "ev3:green:right" };
+led led::green_left  { "ev3:green:left"  };
 
 //-----------------------------------------------------------------------------
 
@@ -933,6 +641,22 @@ void led::green_on () { green_right.on();  green_left.on();  }
 void led::green_off() { green_right.off(); green_left.off(); }
 void led::all_on   () { red_on();  green_on();  }
 void led::all_off  () { red_off(); green_off(); }
+
+//-----------------------------------------------------------------------------
+
+power_supply power_supply::battery { "" };
+
+//-----------------------------------------------------------------------------
+
+power_supply::power_supply(std::string name)
+{
+  static const std::string _strClassDir { SYS_ROOT "/class/power_supply/" };
+  
+  if (name.empty())
+    name = "legoev3-battery";
+  
+  connect(_strClassDir, name, std::map<std::string, std::set<std::string>>());
+}
 
 //-----------------------------------------------------------------------------
 
@@ -1041,36 +765,6 @@ void sound::set_volume(unsigned v)
   {
     os << v;
   }
-}
-
-//-----------------------------------------------------------------------------
-
-float battery::voltage()
-{
-  unsigned result = 0;
-  
-  std::ifstream is(SYS_POWER "/voltage_now");
-  if (is.is_open())
-  {
-    is >> result;
-  }
-  
-  return (result / 1000000.f);
-}
-
-//-----------------------------------------------------------------------------
-
-float battery::current()
-{
-  unsigned result = 0;
-  
-  std::ifstream is(SYS_POWER "/current_now");
-  if (is.is_open())
-  {
-    is >> result;
-  }
-  
-  return (result / 1000.f);
 }
 
 //-----------------------------------------------------------------------------

@@ -28,6 +28,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include <map>
 #include <set>
 #include <string>
 #include <functional>
@@ -42,6 +43,7 @@ typedef std::string         device_type;
 typedef std::string         port_type;
 typedef std::string         mode_type;
 typedef std::set<mode_type> mode_set;
+typedef std::string         address_type;
 
 //-----------------------------------------------------------------------------
 
@@ -61,7 +63,15 @@ const port_type OUTPUT_D { "outD" }; //!< Motor port D
 
 class device
 {
-protected:
+public:
+  bool connect(const std::string &dir,
+               const std::string &pattern,
+               const std::map<std::string,
+                              std::set<std::string>> match) noexcept;
+  inline bool connected() const { return !_path.empty(); }
+
+  int         device_index() const;
+  
   int         get_attr_int   (const std::string &name) const;
   void        set_attr_int   (const std::string &name,
                               int value);
@@ -70,9 +80,14 @@ protected:
                               const std::string &value);
 
   std::string get_attr_line  (const std::string &name) const;
+  mode_set    get_attr_set   (const std::string &name,
+                              std::string *pCur = nullptr) const;
+  
+  std::string get_attr_from_set(const std::string &name) const;
   
 protected:
   std::string _path;
+  mutable int _device_index = -1;
 };
 
 //-----------------------------------------------------------------------------
@@ -92,17 +107,20 @@ public:
   static const sensor_type nxt_light;
   static const sensor_type nxt_sound;
   static const sensor_type nxt_ultrasonic;
-  static const sensor_type nxt_temperature;
+  static const sensor_type nxt_i2c_sensor;
   
-  sensor(port_type port_ = INPUT_AUTO);
-  sensor(port_type port_, const std::set<sensor_type> &types_);
-  
-  inline bool              connected()    const { return !_port_name.empty(); }
-  inline unsigned          device_index() const { return _device_index; }
+  sensor(port_type);
+  sensor(port_type, const std::set<sensor_type>&);
+ 
+  using device::connected;
+  using device::device_index;
+
   inline const std::string &port_name()   const { return _port_name; }
   inline const sensor_type &type()        const { return _type; }
          const std::string &type_name()   const;
+               std::string  units()       const { return get_attr_string("units"); }
   inline unsigned           num_values()  const { return _nvalues; }
+  inline unsigned           dp()          const { return _dp; }
   
   int   value(unsigned index=0) const;
   float float_value(unsigned index=0) const;
@@ -113,18 +131,34 @@ public:
   void set_mode(const mode_type&);
   
 protected:
-  bool init(port_type port_, const std::set<sensor_type> &types_) noexcept;
-  void read_mode_values();
+  sensor() {}
+
+  bool connect(const std::map<std::string, std::set<std::string>>&) noexcept;
+  void init_members(bool);
   
 protected:
-  unsigned _device_index = 0;
   unsigned _nvalues = 0;
+  unsigned _dp = 0;
   float    _dp_scale = 1.f;
   
   sensor_type _type;
   port_type   _port_name;
   mode_set    _modes;
   mode_type   _mode;
+};
+
+//-----------------------------------------------------------------------------
+
+class i2c_sensor : public sensor
+{
+public:
+  i2c_sensor(port_type port = INPUT_AUTO);
+  i2c_sensor(port_type port, address_type address);
+  
+  std::string address()    const { return get_attr_string("address"); }
+  int         fw_version() const { return get_attr_int("fw_version"); }
+  int         poll_ms()    const { return get_attr_int("poll_ms"); }
+  void    set_poll_ms(int v)            { set_attr_int("poll_ms", v); }
 };
 
 //-----------------------------------------------------------------------------
@@ -192,8 +226,8 @@ class motor : protected device
 public:
   typedef device_type motor_type;
   
-  motor(port_type port_ = OUTPUT_AUTO);
-  motor(port_type port_, const motor_type&);
+  motor(port_type);
+  motor(port_type, const motor_type&);
   
   static const motor_type motor_large;
   static const motor_type motor_medium;
@@ -212,78 +246,76 @@ public:
   static const mode_type position_mode_absolute;
   static const mode_type position_mode_relative;
   
-  inline bool              connected()    const { return !_port_name.empty(); }
-  inline unsigned          device_index() const { return _device_index; }
-  inline const std::string port_name()    const { return _port_name; }
+  using device::connected;
+  using device::device_index;
 
-  motor_type type() const;
+  inline const std::string port_name() const { return _port_name; }
 
-  void run(bool bRun=true);
-  void stop();
-  void reset();
+  motor_type type() const { return get_attr_string("type"); }
 
-  bool      running() const;
-  mode_type state()   const;
+  void run(bool bRun=true) { set_attr_int("run",   bRun); }
+  void stop()              { set_attr_int("run",   0);    }
+  void reset()             { set_attr_int("reset", 1);    }
 
-  int duty_cycle()        const;
-  int pulses_per_second() const;
-  int position()          const;
+  bool      running() const { return get_attr_int("run")!=0; }
+  mode_type state()   const { return get_attr_string("state"); }
 
-  void set_position(int);
+  int duty_cycle()        const { return get_attr_int("duty_cycle"); }
+  int pulses_per_second() const { return get_attr_int("pulses_per_second"); }
+  int position()          const { return get_attr_int("position"); }
 
-  // Port Name|String|Read inconsistent with sensors, both ID and name?
-
-  // Run|Number|Read/Write ??? methods run(bool) running()
+  void set_position(int p) { set_attr_int("position", p); }
 
   // Stop Modes|String Array|Read
 
-  mode_type run_mode() const;
-  void set_run_mode(const mode_type&);
+  mode_type run_mode() const     { return get_attr_string("run_mode"); }
+  void set_run_mode(const mode_type &v) { set_attr_string("run_mode", v); }
 
-  mode_type stop_mode() const;
-  void set_stop_mode(const mode_type&);
+  mode_type stop_mode() const     { return get_attr_string("stop_mode"); }
+  void set_stop_mode(const mode_type &v) { set_attr_string("stop_mode", v); }
 
-  mode_type regulation_mode() const;
-  void set_regulation_mode(const mode_type&);
+  mode_type regulation_mode() const     { return get_attr_string("regulation_mode"); }
+  void set_regulation_mode(const mode_type &v) { set_attr_string("regulation_mode", v); }
 
-  mode_type position_mode() const;
-  void set_position_mode(const mode_type&);
+  mode_type position_mode() const     { return get_attr_string("position_mode"); }
+  void set_position_mode(const mode_type &v) { set_attr_string("position_mode", v); }
 
-  int  duty_cycle_setpoint() const;
-  void set_duty_cycle_setpoint(int);
+  int  duty_cycle_setpoint() const { return get_attr_int("duty_cycle_sp"); }
+  void set_duty_cycle_setpoint(int v)     { set_attr_int("duty_cycle_sp", v); }
 
-  int  pulses_per_second_setpoint() const;
-  void set_pulses_per_second_setpoint(int);
+  int  pulses_per_second_setpoint() const { return get_attr_int("pulses_per_second_sp"); }
+  void set_pulses_per_second_setpoint(int v)     { set_attr_int("pulses_per_second_sp", v); }
 
-  int  time_setpoint() const;
-  void set_time_setpoint(int);
+  int  time_setpoint() const { return get_attr_int("time_sp"); }
+  void set_time_setpoint(int v)     { set_attr_int("time_sp", v); }
 
-  int  position_setpoint() const;
-  void set_position_setpoint(int);
+  int  position_setpoint() const { return get_attr_int("position_sp"); }
+  void set_position_setpoint(int v)     { set_attr_int("position_sp", v); }
 
-  int  ramp_up() const;
-  void set_ramp_up(int);
+  int  ramp_up() const { return get_attr_int("ramp_up_sp"); }
+  void set_ramp_up(int v)     { set_attr_int("ramp_up_sp", v); }
 
-  int  ramp_down() const;
-  void set_ramp_down(int);
+  int  ramp_down() const { return get_attr_int("ramp_down_sp"); }
+  void set_ramp_down(int v)     { set_attr_int("ramp_down_sp", v); }
 
-  int speed_regulation_p() const;
-  void set_speed_regulation_p(int);
+  int speed_regulation_p() const { return get_attr_int("speed_regulation_p"); }
+  void set_speed_regulation_p(int v)    { set_attr_int("speed_regulation_p", v); }
 
-  int speed_regulation_i() const;
-  void set_speed_regulation_i(int);
+  int speed_regulation_i() const { return get_attr_int("speed_regulation_i"); }
+  void set_speed_regulation_i(int v)    { set_attr_int("speed_regulation_i", v); }
 
-  int speed_regulation_d() const;
-  void set_speed_regulation_d(int);
+  int speed_regulation_d() const { return get_attr_int("speed_regulation_d"); }
+  void set_speed_regulation_d(int v)    { set_attr_int("speed_regulation_d", v); }
 
-  int speed_regulation_k() const;
-  void set_speed_regulation_k(int);
+  int speed_regulation_k() const { return get_attr_int("speed_regulation_k"); }
+  void set_speed_regulation_k(int v) { set_attr_int("speed_regulation_k", v); }
   
 protected:
-  bool init(port_type port_, const motor_type&) noexcept;
+  motor() {}
+
+  bool connect(const std::map<std::string, std::set<std::string>>&) noexcept;
   
 protected:
-  unsigned    _device_index = 0;
   std::string _port_name;
   motor_type  _type;
 };
@@ -309,18 +341,25 @@ public:
 class led : protected device
 {
 public:
-  led(const std::string &name);
- 
-  int  level() const;
-  void on();
-  void off();
-  void flash(unsigned interval_ms);
-  void set_on_delay (unsigned ms);
-  void set_off_delay(unsigned ms);
+  led(std::string name);
+
+  using device::connected;
   
-  mode_type trigger() const;
-  mode_set  triggers() const;
-  void set_trigger(const mode_type&);
+  int brightness() const { return get_attr_int("brightness"); }
+  void set_brightness(int v)    { set_attr_int("brightness", v); }
+
+  inline int max_brightness() const { return _max_brightness; }
+  
+  void on()  { set_attr_int("brightness", _max_brightness); }
+  void off() { set_attr_int("brightness", 0); }
+  
+  void flash(unsigned interval_ms);
+  void set_on_delay (unsigned ms) { set_attr_int("delay_on",  ms); }
+  void set_off_delay(unsigned ms) { set_attr_int("delay_off", ms); }
+  
+  mode_type trigger()  const  { return get_attr_from_set("trigger"); }
+  mode_set  triggers() const  { return get_attr_set     ("trigger"); }
+  void set_trigger(const mode_type &v) { set_attr_string("trigger", v); }
 
   static led red_right;
   static led red_left;
@@ -333,6 +372,32 @@ public:
   static void green_off();
   static void all_on   ();
   static void all_off  ();
+  
+protected:
+  int _max_brightness = 0;
+};
+
+//-----------------------------------------------------------------------------
+
+class power_supply : protected device
+{
+public:
+  power_supply(std::string name);
+  
+  using device::connected;
+  
+  int   current_now()        const { return get_attr_int("current_now"); }
+  float current_amps()       const { return get_attr_int("current_now") / 1000.f; }
+  int   current_max_design() const { return get_attr_int("current_max_design"); }
+
+  int   voltage_now()        const { return get_attr_int("voltage_now"); }
+  float voltage_volts()      const { return get_attr_int("voltage_now") / 1000000.f; }
+  int   voltage_max_design() const { return get_attr_int("voltage_max_design"); }
+  
+  std::string technology() const { return get_attr_string("technology"); }
+  std::string type()       const { return get_attr_string("type"); }
+  
+  static power_supply battery;
 };
 
 //-----------------------------------------------------------------------------
@@ -377,15 +442,6 @@ public:
   
   static unsigned volume();
   static void set_volume(unsigned);
-};
-
-//-----------------------------------------------------------------------------
-
-class battery
-{
-public:
-  static float voltage();
-  static float current();
 };
 
 //-----------------------------------------------------------------------------
