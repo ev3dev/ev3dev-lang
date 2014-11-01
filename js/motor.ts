@@ -69,7 +69,7 @@ class Motor extends Device {
                 );
 
                 if (satisfiesCondition) {
-                    this._deviceIndex = Number(file.substring('tacho-motor'.length));
+                    this._deviceIndex = Number(file.substring('motor'.length));
                     break;
                 }
             }
