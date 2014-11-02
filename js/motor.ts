@@ -75,6 +75,7 @@ class Motor extends Device {
             }
 
             if (this.deviceIndex == -1) {
+                console.log('no device found');
                 this.connected = false;
                 return;
             }
