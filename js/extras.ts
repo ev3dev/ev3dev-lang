@@ -20,7 +20,9 @@ class PowerSupply extends Device {
     constructor(deviceName: string) {
         super();
 
-        this.deviceName = deviceName;
+        if(deviceName != undefined)
+            this.deviceName = deviceName;
+
         var rootPath: string;
 
         try {
