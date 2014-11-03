@@ -33,6 +33,8 @@ class PowerSupply extends Device {
                 this.connected = false;
                 return;
             }
+
+            rootPath = path.join(this.powerDeviceDir, availableDevices[availableDevices.indexOf(this.deviceName)]);
         }
 
         catch (e) {

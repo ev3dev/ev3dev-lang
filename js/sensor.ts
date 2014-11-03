@@ -103,8 +103,8 @@ class Sensor extends Device {
         return this.getNumber(this.sensorProperties.numValues);
     }
 
-    get typeName(): number {
-        return this.getNumber(this.sensorProperties.name);
+    get typeName(): string {
+        return this.getString(this.sensorProperties.name);
     }
 
     get mode(): string {

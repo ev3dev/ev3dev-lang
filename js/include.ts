@@ -1,7 +1,7 @@
 ///<reference path="node.d.ts" />
 
 /*
- * This is a language binding for the ev3dev devce APIs. More info at: https://github.com/ev3dev/ev3dev-lang
+ * This is a language binding for the ev3dev device APIs. More info at: https://github.com/ev3dev/ev3dev-lang
  * This library complies with spec v0.9.1
  */
 
