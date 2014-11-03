@@ -1,3 +1,8 @@
+/*
+ * This is a language binding for the ev3dev device APIs. More info at: https://github.com/ev3dev/ev3dev-lang
+ * This library complies with spec v0.9.1
+ */
+
 using GLib;
 
 namespace ev3dev
@@ -19,6 +24,7 @@ namespace ev3dev
 
 		public Device()
 		{
+		
 		}
 
 		public void connect(string device_root_path)
@@ -92,31 +98,26 @@ namespace ev3dev
 		}
 	}
 
-	public enum Ports
-	{
-		INPUT_AUTO = 0,
-		OUTPUT_AUTO = 0,
+	public const string INPUT_AUTO = "";
+	public const string OUTPUT_AUTO = "";
 	
-		INPUT_1 = 1,
-		INPUT_2 = 2,
-		INPUT_3 = 3,
-		INPUT_4 = 4,
+	public const string INPUT_1 = "in1";
+	public const string INPUT_2 = "in2";
+	public const string INPUT_3 = "in3";
+	public const string INPUT_4 = "in4";
 
-		OUTPUT_A = 1,
-		OUTPUT_B = 2,
-		OUTPUT_C = 3,
-		OUTPUT_D = 4
-	}
+	public const string OUTPUT_A = "outA";
+	public const string OUTPUT_B = "outB";
+	public const string OUTPUT_C = "outC";
+	public const string OUTPUT_D = "outD";
 
 	public class Motor : Device
 	{
-		private int port;
+		private string port;
 		private const string motor_device_dir = "/sys/class/tacho-motor";
 		private int device_index { get; private set; default = -1; }
 
-		private const string[] motor_ports = {"*", "A", "B", "C", "D"};
-
-		public Motor (int port, string? type)
+		public Motor (string port = "", string? type = null)
 		{
 			this.port = port;
 			string root_path = "";
@@ -150,8 +151,8 @@ namespace ev3dev
 					}
 
 					bool satisfies_condition = (
-						(port == Ports.OUTPUT_AUTO)
-						|| (port_name == ("out" + this.motor_ports[port]))
+						(port == OUTPUT_AUTO)
+						|| (port_name == (port))
 					) && (
 						(type == null || type == "")
 						|| motor_type == type
@@ -159,7 +160,7 @@ namespace ev3dev
 
 					if(satisfies_condition)
 					{
-						this.device_index = int.parse(device_file_name.substring("tacho-motor".length));
+						this.device_index = int.parse(device_file_name.substring("motor".length));
 						break;
 					}
 				}
@@ -444,13 +445,11 @@ namespace ev3dev
 	
 	public class Sensor : Device
 	{
-		private int port;
+		private string port;
 		private const string sensor_device_dir = "/sys/class/msensor";
 		private int device_index { get; private set; default = -1; }
 
-		private const string[] sensor_ports = {"*", "1", "2", "3", "4"};
-
-		public Sensor (int port, int[]? types)
+		public Sensor (string port = "", string[]? types = null, string? i2c_address = null)
 		{
 			this.port = port;
 			string root_path = "";
@@ -459,7 +458,7 @@ namespace ev3dev
 			{
 				var directory = File.new_for_path(this.sensor_device_dir);
 				var enumerator = directory.enumerate_children(FileAttribute.STANDARD_NAME, 0);
-
+				
 				FileInfo device_file;
 				while((device_file = enumerator.next_file()) != null)
 				{
@@ -471,24 +470,32 @@ namespace ev3dev
 					root_path = Path.build_path("/", this.sensor_device_dir, device_file_name);
 					
 					string port_name;
-					int type_id;
+					string type_name;
+					string i2c_device_address;
 					
 					{ //We don't need a bunch of IO streams and such floating around
 						var port_name_file = File.new_for_path(Path.build_path("/", root_path, "port_name"));
 						var port_input_stream = new DataInputStream(port_name_file.read());
 						port_name = port_input_stream.read_line();
 						
-						var type_file = File.new_for_path(Path.build_path("/", root_path, "type_id"));
+						var type_file = File.new_for_path(Path.build_path("/", root_path, "name"));
 						var type_input_stream = new DataInputStream(type_file.read());
-						type_id = int.parse(type_input_stream.read_line());
+						type_name = type_input_stream.read_line();
+						
+						var i2c_file = File.new_for_path(Path.build_path("/", root_path, "address"));
+						var i2c_input_stream = new DataInputStream(i2c_file.read());
+						i2c_device_address = i2c_input_stream.read_line();
 					}
-
+					
 					bool satisfies_condition = (
-						(port == Ports.INPUT_AUTO)
-						|| (port_name == ("in" + this.sensor_ports[port]))
+						(port == INPUT_AUTO)
+						|| (port_name == port)
 					) && (
 						(types == null || types.length < 1)
-						|| type_id in types
+						|| type_name in types
+					) && (
+						i2c_address == null
+						|| i2c_address == i2c_device_address
 					);
 
 					if(satisfies_condition)
@@ -512,7 +519,7 @@ namespace ev3dev
 
 			this.connect(root_path);
 		}
-
+		
 		public int get_value(int value_index)
 		{
 			return this.read_int("value" + value_index.to_string());
@@ -541,11 +548,11 @@ namespace ev3dev
 			}
 		}
 
-		public int type_id
+		public string type_name
 		{
-			get
+			owned get
 			{
-				return this.read_int("type_id");
+				return this.read_string("name");
 			}
 		}
 		
@@ -567,6 +574,136 @@ namespace ev3dev
 			owned get
 			{
 				return this.read_string("modes").split(" ");
+			}
+		}
+	}
+	
+	public class I2CSensor : Sensor
+	{
+		public I2CSensor (string port, string[]? types, string? i2c_address)
+		{
+			base(port, types, i2c_address);
+		}
+		
+		public int poll_ms
+		{
+			get
+			{
+				return this.read_int("poll_ms");
+			}
+
+			set
+			{
+				this.write_int("poll_ms", value);
+			}
+		}
+		
+		public string fw_version
+		{
+			owned get
+			{
+				return this.read_string("fw_version");
+			}
+		}
+	}
+	
+	public class PowerSupply : Device
+	{
+		private string power_device_dir = "/sys/class/power_supply/";
+		public string device_name = "legoev3-battery";
+		
+		public PowerSupply (string? device_name)
+		{
+			if(device_name != null)
+				this.device_name = device_name;
+			
+			try
+			{
+				var directory = File.new_for_path(this.power_device_dir);
+				var enumerator = directory.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+
+				FileInfo device_file;
+				while((device_file = enumerator.next_file()) != null)
+				{
+					if(device_file.get_file_type() == FileType.DIRECTORY)
+						continue;
+
+					string device_file_name = device_file.get_name();
+					if(device_file_name == this.device_name)
+					{
+						this.connect(Path.build_path("/", this.power_device_dir, device_file_name));
+						return;
+					}
+				}
+			}
+			catch
+			{ }
+			
+			this.connected = false;
+		}
+		
+		public int current_now
+		{
+			get
+			{
+				return this.read_int("current_now");
+			}
+		}
+		
+		public int voltage_now
+		{
+			get
+			{
+				return this.read_int("voltage_now");
+			}
+		}
+		
+		public int voltage_max_design
+		{
+			get
+			{
+				return this.read_int("voltage_max_design");
+			}
+		}
+		
+		public int voltage_min_design
+		{
+			get
+			{
+				return this.read_int("voltage_min_design");
+			}
+		}
+		
+		public string technology
+		{
+			owned get
+			{
+				return this.read_string("technology");
+			}
+		}
+		
+		//Variable name "type" not allowed
+		public string device_type
+		{
+			owned get
+			{
+				return this.read_string("type");
+			}
+		}
+		
+		public double voltage_volts
+		{
+			get
+			{
+				return this.voltage_now / 1000000;
+			}
+		}
+		
+		public double current_amps
+		{
+			get
+			{
+				return current_now / 1000000;
 			}
 		}
 	}
