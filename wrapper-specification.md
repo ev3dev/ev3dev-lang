@@ -174,21 +174,25 @@ Connected|Boolean|Read
 
 <hr/>
 
-`Ports` Enum
+Constants / Enums
 ---
+
+Due to the inherent differences between the various languages that we support here, the enums listed below can also be declared as global constants.
+
+###`Ports`
 
 Name|Value|Description
 ---|---|---
-INPUT_AUTO|instance-specific (see below for details)|Automatic input selection
-OUTPUT_AUTO|instance-specific (see below for details)|Automatic output selection
-INPUT_1|"in1"|Sensor port 1
-INPUT_2|"in2"|Sensor port 2
-INPUT_3|"in3"|Sensor port 3
-INPUT_4|"in4"|Sensor port 4
-OUTPUT_A|"outA"|Motor port A
-OUTPUT_B|"outB"|Motor port B
-OUTPUT_C|"outC"|Motor port C
-OUTPUT_D|"outD"|Motor port D
+`INPUT_AUTO`|instance-specific (see below for details)|Automatic input selection
+`OUTPUT_AUTO`|instance-specific (see below for details)|Automatic output selection
+`INPUT_1`|"in1"|Sensor port 1
+`INPUT_2`|"in2"|Sensor port 2
+`INPUT_3`|"in3"|Sensor port 3
+`INPUT_4`|"in4"|Sensor port 4
+`OUTPUT_A`|"outA"|Motor port A
+`OUTPUT_B`|"outB"|Motor port B
+`OUTPUT_C`|"outC"|Motor port C
+`OUTPUT_D`|"outD"|Motor port D
 
 The values for the `*_AUTO` constants can be chosen by the implementation. They can have any value that signifies an auto-search.
 
