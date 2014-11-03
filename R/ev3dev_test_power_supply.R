@@ -20,16 +20,16 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-speak("Beginning power supply test")
+Speak("Beginning power supply test")
 Sys.sleep(1)
 
 psu=power.supply()
 
-speak("current now is ", CurrentNow(psu))
-speak("voltage now is ", VoltageNow(psu))
-speak("voltage max is ", VoltageMax(psu))
-speak("voltage min is ", VoltageMin(psu))
-speak("technology is ", Technology(psu))
-speak("type is ", Type(psu))
-speak("current in ampers is ", CurrentAmps(psu))
-speak("voltage in volts is ", VoltageVolts(psu))
+Speak("current now is ", CurrentNow(psu))
+Speak("voltage now is ", VoltageNow(psu))
+Speak("voltage max is ", VoltageMax(psu))
+Speak("voltage min is ", VoltageMin(psu))
+Speak("technology is ", Technology(psu))
+Speak("type is ", Type(psu))
+Speak("current in ampers is ", CurrentAmps(psu))
+Speak("voltage in volts is ", VoltageVolts(psu))

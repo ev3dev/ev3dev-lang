@@ -19,95 +19,193 @@
  
 #   Compatibility with ev3dev-jessie-2014-10-07 (pre-release)
 
-#TO DO - check for connected state, more helpfull error handling on Get/SetAttr funcitons level, set connected to false in case of error
-#TO DO - TypeId for sensor or Name? Name currently
-#TO DO - possible Performance issuse for FloatValue (reading dp every time)
-#TO DO - function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
-#TO DO - use explicit integers where possible (e.g. 1L instead of 1), no FPU!
-#TO DO - stick to S3/S4/R5 classes only (one of), S4 now so copy constructible initializers would be better
+#TO DO - TypeId for sensor or Name? Name currently, no type_id in ev3dev-jessie-2014-10-07 (pre-release)
+#TO DO - is it an issue really? function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
 #TO DO - documentation
 
 # Constants 
 
 ports=list(INPUT_AUTO="" , INPUT_1="in1", INPUT_2="in2", INPUT_3="in3", INPUT_4="in4",
            OUTPUT_AUTO="", OUTPUT_A="outA", OUTPUT_B="outB", OUTPUT_C="outC", OUTPUT_D="outD")
-lockBinding("ports", globalenv())
+
 
 
 # device 
 
-.device=setClass(Class="device", representation(.path="character"))
+.device=setClass(Class="device", representation=representation(cache="environment"))
 
-device = function(path = character(), ...) {  
-  .device(.path=path,  ...)
-}
+setMethod("initialize", "device",
+          function(.Object, path="", ... , cache=new.env( parent=emptyenv() )){
+            cache$.path=path
+            callNextMethod(.Object, cache=cache, ...)
+          })
 
 setGeneric("GetAttrString", function(.Object, name) standardGeneric("GetAttrString"))
 setGeneric("GetAttrStringArray", function(.Object, name) standardGeneric("GetAttrStringArray"))
 setGeneric("SetAttrString", function(.Object, name, value) standardGeneric("SetAttrString"))
+setGeneric("SetAttrStringArray", function(.Object, name, value) standardGeneric("SetAttrStringArray"))
 setGeneric("GetAttrInt", function(.Object, name) standardGeneric("GetAttrInt"))
 setGeneric("SetAttrInt", function(.Object, name, value) standardGeneric("SetAttrInt"))
 setGeneric("Connected", function(.Object) standardGeneric("Connected"))
+setGeneric("DeviceIndex", function(.Object) standardGeneric("DeviceIndex"))
 
-setMethod("GetAttrString","device",function(.Object, name){
-  readLines(paste(.Object@.path,name,sep=""),warn=FALSE)
+ErrorMessage=function(device_path="", name="")
+{
+  msg=paste("Unable to access property \"", name, "\" of device ", device_path, sep="")
+  if(!file.exists(device_path))
+     msg=paste(msg, "\nDevice doesn't exist (disconnected?)")
+  else if(!file.exists(paste(device_path , name,sep="")))
+    msg=paste(msg, "\nDevice property doesn't exist.")
+  else
+    msg=paste(msg, "\nCheck device permissions.s") 
+  msg=paste(msg, "\nDevice has to be created again")
+  msg
+}
+
+CheckSystemPath=function(path)
+{
+  if(!file.exists(path))
+  {
+    msg=paste("EV3 system path", path,"doesn't exist or is inaccessible.")
+    msg=paste(msg, "\nAre you execeuting the function on ev3dev platform?")
+    msg=paste(msg, "\nPossible cause: function executed on local PC instead of remote EV3")
+    stop(simpleError(msg))
+  }
+}
+
+setMethod("GetAttrString","device",function(.Object, name){  
+  stopifnot(Connected(.Object))
+  tryCatch( 
+    readLines(paste(.Object@cache$.path,name,sep=""),warn=FALSE)
+  , error=function(e)
+    {
+      msg=ErrorMessage(.Object@cache$.path, name)
+      .Object@cache$.path="" #Disconnect from device
+      stop(msg, call.=FALSE)
+    } )
 })
+
 
 setMethod("GetAttrStringArray","device",function(.Object, name){
-  scan(paste(.Object@.path,name,sep=""), what=character(), quiet=TRUE)
+  stopifnot(Connected(.Object))
+  tryCatch( 
+    scan(paste(.Object@cache$.path,name,sep=""), what=character(), quiet=TRUE)
+    , error=function(e)
+    {
+      msg=ErrorMessage(.Object@cache$.path, name)
+      .Object@cache$.path="" #Disconnect from device
+      stop(msg, call.=FALSE)
+    } )  
 })
 
-
 setMethod("SetAttrString","device",function(.Object, name, value){
-  cat(value, file=paste(.Object@.path,name,sep="") )
+  stopifnot(Connected(.Object))
+  tryCatch( 
+    cat(value, file=paste(.Object@cache$.path,name,sep="") )
+    , error=function(e)
+    {
+      msg=ErrorMessage(.Object@cache$.path, name)
+      .Object@cache$.path="" #Disconnect from device
+      stop(msg, call.=FALSE)
+    } )  
+      
   value
 })
 
+setMethod("SetAttrStringArray","device",function(.Object, name, value){
+  stopifnot(Connected(.Object))
+  tryCatch( 
+    cat(paste(value, collapse=" "), file=paste(.Object@cache$.path,name,sep="") )
+    , error=function(e)
+    {
+      msg=ErrorMessage(.Object@cache$.path, name)
+      .Object@cache$.path="" #Disconnect from device
+      stop(msg, call.=FALSE)
+    } )  
+})
+
+
 setMethod("GetAttrInt","device",function(.Object, name){
-  as.integer(readLines(paste(.Object@.path,name,sep=""),warn=FALSE))
+  stopifnot(Connected(.Object))
+  tryCatch( 
+    as.integer(readLines(paste(.Object@cache$.path,name,sep=""),warn=FALSE))
+    , error=function(e)
+    {
+      msg=ErrorMessage(.Object@cache$.path, name)
+      .Object@cache$.path="" #Disconnect from device
+      stop(msg, call.=FALSE)
+    } )      
 })
 
 setMethod("SetAttrInt","device",function(.Object, name, value){
-  cat(value, file=paste(.Object@.path,name,sep=""))
+  stopifnot(Connected(.Object))
+  tryCatch( 
+    cat(as.integer(value), file=paste(.Object@cache$.path,name,sep=""))
+    , error=function(e)
+    {
+      msg=ErrorMessage(.Object@cache$.path, name)
+      .Object@cache$.path="" #Disconnect from device
+      stop(msg, call.=FALSE)
+    } )      
+  
   value
 })
 
 setMethod("Connected","device",function(.Object){
-  .Object@.path != ""
+  .Object@cache$.path != ""
 })
 
 # motor, medium motor, large motor
 
 .motor=setClass(Class="motor", contains="device")
 
-motor = function(port, type, ...)
-{
-  #path="~/test/sys/class/tacho-motor"
-  path="/sys/class/tacho-motor"
-  
-  files=list.files(path, full.names = TRUE)
-  
-  for(f in 1:length(files))
-  {
-    device_port=readLines(paste(files[f],"/port_name",sep=""), warn=FALSE)      
-    device_type=readLines(paste(files[f],"/type",sep=""), warn=FALSE)
-    
-    if(missing(port) || port=="" || port==device_port )    
-      if(missing(type)  || type=="" || type==device_type)
-        return ( .motor(device( paste(files[f],"/",sep="")), ...) )
-        
-  }  
-  .motor(device(""), ...)
-}
+setMethod("initialize", "motor",
+          function(.Object, port="", type="", ... ){
+            #path="~/test/sys/class/tacho-motor"
+            path="/sys/class/tacho-motor"            
+            device_path=""
+            
+            CheckSystemPath(path)
+            
+            files=list.files(path, full.names = TRUE)
+            
+            for(f in 1:length(files))
+            {
+              device_port=try(readLines(paste(files[f],"/port_name",sep=""), warn=FALSE), silent = TRUE)
+              device_type=try(readLines(paste(files[f],"/type",sep=""), warn=FALSE), silent=TRUE)
+              if(!(is.character(device_port) & is.character(device_type)))
+                next
+                                
+              if(missing(port) || port=="" || port==device_port )    
+                if(missing(type)  || type=="" || type==device_type)                  
+                {
+                  device_path=paste(files[f],"/",sep="")
+                  break
+                }              
+            }  
+                                          
+            callNextMethod(.Object, path=device_path, ...)
+          })
 
-medium.motor = function(port, ...)
+motor = function(port="", type="", ...)
+{
+  .motor(port, type, ...)
+}
+medium.motor = function(port="", ...)
 {
   motor(port, "minitacho", ...)
 }
-large.motor = function(port, ...)
+large.motor = function(port="", ...)
 {
   motor(port, "tacho", ...)
 }
+
+setMethod("DeviceIndex","motor",function(.Object){  
+  stopifnot(Connected(.Object))
+  device_name=basename(.Object@cache$.path)
+  substr(device_name, 12, nchar(device_name)  ) #tacho-motor, 12
+})
+
 
 #Duty Cycle|Number|Read
 
@@ -248,21 +346,21 @@ setGeneric("Run", function(.Object, value=TRUE) standardGeneric("Run"))
 
 setMethod("Run","motor",function(.Object, value=TRUE){
   if(missing(value) || value!=FALSE)      
-    SetAttrInt(.Object, "run", 1)
+    SetAttrInt(.Object, "run", 1L)
   else
-    SetAttrInt(.Object, "run", 0)
+    SetAttrInt(.Object, "run", 0L)
 })
 
 setGeneric("Stop", function(.Object) standardGeneric("Stop"))
 
 setMethod("Stop","motor",function(.Object){
-    SetAttrInt(.Object, "run", 0)
+    SetAttrInt(.Object, "run", 0L)
 })
 
 setGeneric("Running", function(.Object) standardGeneric("Running"))
 
 setMethod("Running","motor",function(.Object){
-  (GetAttrInt(.Object, "run")==1)
+  (GetAttrInt(.Object, "run")==1L)
 })
 
 #Run Mode|String|Read/Write
@@ -275,10 +373,10 @@ setMethod("RunMode","motor",function(.Object){
     GetAttrString(.Object, "run_mode")
 })
 
-setMethod("SetRunMode","motor",function(.Object, value){
-    SetAttrString(.Object, "run_mode", match.arg(value,c("forever", "position")))
+setMethod("SetRunMode","motor",function(.Object, value=c("forever", "position", "time")){
+  value=match.arg(value)  
+  SetAttrString(.Object, "run_mode", value)
 })
-
 
 #Speed Regulation P|Number|Read/Write
 
@@ -348,8 +446,9 @@ setMethod("StopMode","motor",function(.Object){
     GetAttrString(.Object, "stop_mode")
 })
 
-setMethod("SetStopMode","motor",function(.Object, value){
-    SetAttrString(.Object, "stop_mode", match.arg(value,c("coast", "break", "hold")))
+setMethod("SetStopMode","motor",function(.Object, value=c("coast", "break", "hold")){
+    value=match.arg(value)
+    SetAttrString(.Object, "stop_mode", value)
 })
 
 
@@ -385,39 +484,61 @@ setMethod("Type","motor",function(.Object){
 
 setGeneric("Reset", function(.Object) standardGeneric("Reset"))
 setMethod("Reset","motor",function(.Object){
-  SetAttrInt(.Object, "reset", 1)
+  SetAttrInt(.Object, "reset", 1L)
 })
 
 # sensor, infraredSensor
 
 .sensor=setClass(Class="sensor", contains="device")
 
-sensor = function(port, name, ...)
-{
+setMethod("initialize", "sensor",
+          function(.Object, port="", name="", ... ){            
+  
+  callNextMethod(.Object, "", ...)            
+  .Object@cache$.path=""
+  .Object@cache$.dp_scale=1
+  .Object@cache$.num_values=0
+    
   #path="~/test/sys/class/msensor"
   path="/sys/class/msensor"
+  
+  CheckSystemPath(path)
   
   files=list.files(path, full.names = TRUE)
   
   for(f in 1:length(files))
   {
-    device_port=readLines(paste(files[f],"/port_name",sep=""), warn=FALSE)      
-    device_name=readLines(paste(files[f],"/name",sep=""), warn=FALSE)
+    device_port=try(readLines(paste(files[f],"/port_name",sep=""), warn=FALSE))
+    device_name=try(readLines(paste(files[f],"/name",sep=""), warn=FALSE))
+    
+    if(!(is.character(device_port) & is.character(device_name)))
+      next
     
     if(missing(port) || port=="" || port==device_port )    
       if(missing(name)  || name=="" || device_name %in% name)
-        return (.sensor(device( paste(files[f],"/",sep="")), ...))
+      {
+        .Object@cache$.path=paste(files[f],"/",sep="")
+        .Object@cache$.dp_scale=try(10^GetAttrInt(.Object, "dp"))
+        .Object@cache$.num_values=try(NumValues(.Object))                
+        break
+      }
+  }
+  .Object  
+})
 
-  }  
-    
-  .sensor(device(""), ...)
-}
+sensor=function(port="", name="", ...) {.sensor(port, name,...)}
+infrared.sensor = function(port="", ...) {sensor(port, "ev3-uart-33",...)  }
+touch.sensor = function(port="", ...) { sensor(port, "lego-ev3-touch",...)  }
+color.sensor = function(port="", ...) { sensor(port, "ev3-uart-29",...)  }
+ultrasonic.sensor = function(port="", ...) { sensor(port, "ev3-uart-30",...)  }
+gyro.sensor = function(port="", ...) { sensor(port, "ev3-uart-32",...)  }
 
-infrared.sensor = function(port, ...) { sensor(port, "ev3-uart-33",...)  }
-touch.sensor = function(port, ...) { sensor(port, "lego-ev3-touch",...)  }
-color.sensor = function(port, ...) { sensor(port, "ev3-uart-29",...)  }
-ultrasonic.sensor = function(port, ...) { sensor(port, "ev3-uart-30",...)  }
-gyro.sensor = function(port, ...) { sensor(port, "ev3-uart-32",...)  }
+setMethod("DeviceIndex","sensor",function(.Object){  
+  stopifnot(Connected(.Object))
+  device_name=basename(.Object@cache$.path)
+  substr(device_name, 7 , nchar(device_name)  ) #sensor, 
+})
+
 
 #Port Name|String|Read
 
@@ -452,7 +573,10 @@ setMethod("Mode","sensor",function(.Object){
 
 setMethod("SetMode","sensor",function(.Object, value){
     modes=Modes(.Object)
-    SetAttrString(.Object, "mode", match.arg(value,modes))  
+    mode=SetAttrString(.Object, "mode", match.arg(value,modes))  
+    .Object@cache$.dp_scale=10^GetAttrInt(.Object, "dp")
+    .Object@cache$.num_values=NumValues(.Object)  
+    mode
 })
 
 #Modes|String Array|Read
@@ -465,24 +589,28 @@ setMethod("Modes","sensor",function(.Object){
 
 #Get Value|Number (int)|Value Index : Number|Gets the raw value at the specified index
 
-setGeneric("Value", function(.Object, index=0) standardGeneric("Value"))
+setGeneric("Value", function(.Object, index=0L) standardGeneric("Value"))
 setMethod("Value","sensor",function(.Object, index){
+  stopifnot(index<.Object@cache$.num_values)
   GetAttrInt(.Object, paste("value", index, sep=""))
 })
 
 #Get Float Value|Number (float)|Value Index : Number|Gets the value at the specified index, adjusted for the sensor's `dp` value
 
-setGeneric("FloatValue", function(.Object, index=0) standardGeneric("FloatValue"))
+setGeneric("FloatValue", function(.Object, index=0L) standardGeneric("FloatValue"))
 setMethod("FloatValue","sensor",function(.Object, index){
-  dp=GetAttrInt(.Object,"dp")
-  GetAttrInt(.Object, paste("value", index, sep="")) / 10^dp
+  stopifnot(index<.Object@cache$.num_values)
+  GetAttrInt(.Object, paste("value", index, sep="")) / .Object@cache$.dp_scale 
 })
 
 .power.supply=setClass(Class="power.supply", contains="device")
 
-power.supply = function(dev, ...)
-{
+setMethod("initialize", "power.supply",
+          function(.Object, dev="", ... ){            
   path="/sys/class/power_supply"
+  device_path=""              
+  
+  CheckSystemPath(path)
   
   files=list.files(path)
   if(missing(dev) || dev=="")
@@ -490,10 +618,16 @@ power.supply = function(dev, ...)
   
   for(f in 1:length(files))  
     if(files[f]==dev)    
-        return (.power.supply (device( paste(path, "/", files[f],"/",sep="")), ...) )
+    {
+        device_path=paste(path, "/", files[f],"/",sep="")
+        break
+    }
   
-  .power.supply(device(""), ...)
+  callNextMethod(.Object, path=device_path, ...)
 }
+)
+
+power.supply=function(dev="") {.power.supply(dev=dev)}
 
 #Current Now|Number (int)|Read
 
@@ -508,7 +642,6 @@ setGeneric("VoltageNow", function(.Object) standardGeneric("VoltageNow"))
 setMethod("VoltageNow","power.supply",function(.Object){
   return (GetAttrInt(.Object, "voltage_now"))
 })
-
 
 #Voltage Max Design|Number (int)|Read
 
@@ -555,21 +688,30 @@ setMethod("VoltageVolts","power.supply",function(.Object){
 
 .led=setClass(Class="led", contains="device")
 
-led = function(dev, ...)
-{
+setMethod("initialize", "led",
+          function(.Object, dev="", ... ){            
+
   path="/sys/class/leds"
+  device_path=""      
   
+  CheckSystemPath(path)
+              
   files=list.files(path)
   
   if( missing(dev) || dev=="")
-    return (.led(device(""), ...))
+    device_path=""
   
   for(f in 1:length(files))  
-    if(files[f]==dev)    
-      return (.led(device( paste(path, "/", files[f],"/",sep="")), ...) )
+    if(files[f]==dev)
+    {
+      device_path=paste(path, "/", files[f],"/",sep="")
+      break
+    }
   
-  .led(device(""), ...)
-}
+  callNextMethod(.Object, path=device_path, ...)
+})
+
+led=function(dev="") {.led(dev=dev)}
 
 #Max Brightness|Number (int)|Read
 
@@ -601,16 +743,16 @@ setMethod("Trigger","led",function(.Object){
 })
 
 setMethod("SetTrigger","led",function(.Object, value){
-    SetAttrString(.Object, "trigger", value)
+    SetAttrStringArray(.Object, "trigger", value)
 })
 
 
-speak=function(..., sync=TRUE)
+Speak=function(..., sync=TRUE)
 {
   text=paste(list(...), collapse="")
   command=paste("espeak -a 200 --stdout \"", text, "\" | aplay", collapse="")  
   if(!sync) command=paste(command, "&")
-  system(command)
+  system(command, intern=TRUE, ignore.stderr=TRUE)
 }
 
 print("Creating a new generic function for ‘Position’ in the global environment")
