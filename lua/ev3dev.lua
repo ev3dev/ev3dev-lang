@@ -183,7 +183,7 @@ end
 function Motor:connected()
   return (self._port ~= nil)
 end
-
+    
 function Motor:type()
   return self._type
 end
@@ -367,7 +367,9 @@ function MediumMotor:init(port)
 end
 
 ------------------------------------------------------------------------------
+--
 -- Sensor
+--
 
 Sensor = class(Device)
 
@@ -433,16 +435,20 @@ function Sensor:portName()
   return self._port
 end
 
-function Sensor:mode()
-  return self:getAttrString("mode")
-end
-
 function Sensor:modes()
   return self:getAttrString("modes")
 end
 
-function Sensor:setMode(mode)
-  self:setAttrString("mode", mode)
+function Sensor:mode()
+  return self:getAttrString("mode")
+end
+
+function Sensor:setMode(value)
+  self:setAttrString("mode", value)
+end
+
+function Sensor:numValues()
+  return self:getAttrInt("num_values")
 end
 
 function Sensor:value(id)
@@ -462,6 +468,7 @@ function Sensor:floatValue(id)
 
   local scale = math.pow(10, -self:getAttrInt("dp"))
   return self:getAttrInt("value"..id) * scale
+function Sensor:setMode(value)
 end
 
 function Sensor:dp()
