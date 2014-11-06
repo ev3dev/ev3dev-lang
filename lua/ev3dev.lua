@@ -40,15 +40,15 @@ function Device:getAttrInt(name)
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "r")
+  
+  local tf = io.open(self._path..name, "r")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
 
-	local result = tf:read("*n")
-	tf:close()
+  local result = tf:read("*n")
+  tf:close()
   
   return result
 end
@@ -58,49 +58,49 @@ function Device:setAttrInt(name, value)
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "w")
+  
+  local tf = io.open(self._path..name, "w")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
 
-	tf:write(tostring(value))
-	tf:close()
+  tf:write(tostring(value))
+  tf:close()
 end
 
 function Device:getAttrString(name)
-	
+  
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "r")
+  
+  local tf = io.open(self._path..name, "r")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
 
-	local s = tf:read("*l")
-	tf:close()
-			
-	return s
+  local s = tf:read("*l")
+  tf:close()
+      
+  return s
 end
 
 function Device:setAttrString(name, value)
-	
+  
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "w")
+  
+  local tf = io.open(self._path..name, "w")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
-	
-	tf:write(value)
-	tf:close()
+  
+  tf:write(value)
+  tf:close()
 end
 
 ------------------------------------------------------------------------------
@@ -136,8 +136,8 @@ Sensor.EV3Infrared    = "ev3-uart-33"
 
 function Sensor:init(port, sensor_type)
 
-	self._type = nil
-	self._port = nil
+  self._type = nil
+  self._port = nil
 
   -- check that msensor dir exists
   local r = io.popen("find "..sys_class.." -name 'msensor'")
@@ -150,39 +150,39 @@ function Sensor:init(port, sensor_type)
   
   -- lookup all sensor entries
   local sensors = io.popen("find "..sys_msensor.." -name 'sensor*'")
-	for s in sensors:lines() do
-		self._path = s.."/"
-		
-		local tf = io.open(self._path.."name", "r")
-		if (tf ~= nil) then
-			self._type = tf:read("*l")
-			
-			if ((sensor_type == nil) or (sensor_type == 0) or (self._type == sensor_type)) then
-				local pf = io.open(self._path.."port_name", "r")
-				self._port = pf:read("*l")
-				pf:close()
+  for s in sensors:lines() do
+    self._path = s.."/"
+    
+    local tf = io.open(self._path.."name", "r")
+    if (tf ~= nil) then
+      self._type = tf:read("*l")
+      
+      if ((sensor_type == nil) or (sensor_type == 0) or (self._type == sensor_type)) then
+        local pf = io.open(self._path.."port_name", "r")
+        self._port = pf:read("*l")
+        pf:close()
 
-				if ((port == nil) or (self._port == port)) then
-				  break
-				else
-					self._port = nil
-				end
-			end	
-		end
-	end
-	sensors:close();
+        if ((port == nil) or (self._port == port)) then
+          break
+        else
+          self._port = nil
+        end
+      end 
+    end
+  end
+  sensors:close();
 end
 
 function Sensor:connected()
-	return (self._port ~= nil)
+  return (self._port ~= nil)
 end
 
 function Sensor:type()
-	return self._type
+  return self._type
 end
 
 function Sensor:portName()
-	return self._port
+  return self._port
 end
 
 function Sensor:mode()
@@ -199,18 +199,18 @@ end
 
 function Sensor:value(id)
 
-	if (id == nil) then
-		id = 0
-	end
+  if (id == nil) then
+    id = 0
+  end
 
   return self:getAttrInt("value"..id)
 end
 
 function Sensor:floatValue(id)
 
-	if (id == nil) then
-		id = 0
-	end
+  if (id == nil) then
+    id = 0
+  end
 
   local scale = math.pow(10, -self:getAttrInt("dp"))
   return self:getAttrInt("value"..id) * scale
@@ -226,7 +226,7 @@ end
 TouchSensor = class(Sensor)
 
 function TouchSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Touch)
+  Sensor.init(self, port, Sensor.EV3Touch)
 end
 
 function TouchSensor:pressed()
@@ -243,7 +243,7 @@ ColorSensor.ModeAmbient = "COL-AMBIENT"
 ColorSensor.ModeColor   = "COL-COLOR"
 
 function ColorSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Color)
+  Sensor.init(self, port, Sensor.EV3Color)
 end
 
 ------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ UltrasonicSensor.ModeSingleCM = "US-SI-CM"
 UltrasonicSensor.ModeSingleIN = "US-SI-IN"
 
 function UltrasonicSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Ultrasonic)
+  Sensor.init(self, port, Sensor.EV3Ultrasonic)
 end
 
 ------------------------------------------------------------------------------
@@ -271,7 +271,7 @@ GyroSensor.ModeSpeed         = "GYRO-RATE"
 GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
 
 function GyroSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Gyro)
+  Sensor.init(self, port, Sensor.EV3Gyro)
 end
 
 ------------------------------------------------------------------------------
@@ -284,7 +284,7 @@ InfraredSensor.ModeIRSeeker  = "IR-SEEK"
 InfraredSensor.ModeIRRemote  = "IR-REMOTE"
 
 function InfraredSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Infrared)
+  Sensor.init(self, port, Sensor.EV3Infrared)
 end
 
 ------------------------------------------------------------------------------
@@ -321,30 +321,30 @@ function Motor:init(port, motor_type)
   
   -- lookup all tacho-motor entries
   local motors = io.popen("find "..sys_motor.." -name 'tacho-motor*'")
-	for m in motors:lines() do
-		self._path = m.."/"
+  for m in motors:lines() do
+    self._path = m.."/"
 
-		local pf = io.open(self._path.."port_name", "r")
-		if (pf ~= nil) then
-		  self._port = pf:read("*l")
-		  pf:close()
+    local pf = io.open(self._path.."port_name", "r")
+    if (pf ~= nil) then
+      self._port = pf:read("*l")
+      pf:close()
 
-			if ((port == nil) or (self._port == port)) then		
-		    self._type = self:getAttrString("type")
+      if ((port == nil) or (self._port == port)) then   
+        self._type = self:getAttrString("type")
 
-		    if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
-		      motors:close()
-		      return
-		    end
-		  end
-		end
-	end
+        if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
+          motors:close()
+          return
+        end
+      end
+    end
+  end
 
-	motors:close()
+  motors:close()
 
-	self._type = nil
-	self._port = nil
-	self._path = nil	
+  self._type = nil
+  self._port = nil
+  self._path = nil  
 end
 
 function Motor:connected()
@@ -485,7 +485,7 @@ end
 LargeMotor = class(Motor)
 
 function LargeMotor:init(port)
-	Motor.init(self, port, "tacho")
+  Motor.init(self, port, "tacho")
 end
 
 ------------------------------------------------------------------------------
@@ -494,7 +494,7 @@ end
 MediumMotor = class(Motor)
 
 function MediumMotor:init(port)
-	Motor.init(self, port, "minitacho")
+  Motor.init(self, port, "minitacho")
 end
 
 ------------------------------------------------------------------------------
@@ -505,16 +505,16 @@ LED = class(Device)
 function LED:init(name)
   self._path = sys_class.."leds/"..name.."/"
 
-	local file = io.open(self._path.."brightness")
-	if (file ~= nil) then	
-		file:close()
+  local file = io.open(self._path.."brightness")
+  if (file ~= nil) then 
+    file:close()
   else
     self._path = nil
   end
 end
 
 function LED:connected()
-	return (self._path ~= nil)
+  return (self._path ~= nil)
 end
 
 function LED:brightness()
@@ -538,7 +538,7 @@ function LED:flash(interval)
   if ((interval ~= nil) and (interval ~= 0)) then
     self:setOnDelay(interval)
     self:setOffDelay(interval)
-	end	
+  end 
 end
 
 function LED:setOnDelay(ms)
@@ -550,29 +550,29 @@ function LED:setOffDelay(ms)
 end
   
 function LED:trigger()
-	local file = io.open(self._path.."trigger", "r")
-	if (file ~= nil) then	
-		local m = string.match(file:read(), "%[%w+[%-%w+]*%]")
-		file:close()
-		if (m.len) then
-			return string.match(m, "%w+[%-%w+]*")
-		end
-	end
-	
-	return ""
+  local file = io.open(self._path.."trigger", "r")
+  if (file ~= nil) then 
+    local m = string.match(file:read(), "%[%w+[%-%w+]*%]")
+    file:close()
+    if (m.len) then
+      return string.match(m, "%w+[%-%w+]*")
+    end
+  end
+  
+  return ""
 end
 
 function LED:triggers()
-	local file = io.open(self._path.."trigger", "r")
-	if (file ~= nil) then	
-		local m = file:read()
-		file:close()
-		if (m.len) then
-		  return m
-		end
-	end
-	
-	return ""
+  local file = io.open(self._path.."trigger", "r")
+  if (file ~= nil) then 
+    local m = file:read()
+    file:close()
+    if (m.len) then
+      return m
+    end
+  end
+  
+  return ""
 end
 
 function LED:setTrigger(trigger)
@@ -623,42 +623,42 @@ function Sound.beep()
 end
 
 function Sound.tone(frequency, durationMS)
-	local file = io.open(sys_sound.."tone", "w")
-	if (file ~= nil) then	
-		if (durationMS ~= nil) then
-			file:write(" "..frequency.." "..durationMS)
-		else
-			file:write(frequency)
-		end		
-		file:close()
-	end	
+  local file = io.open(sys_sound.."tone", "w")
+  if (file ~= nil) then 
+    if (durationMS ~= nil) then
+      file:write(" "..frequency.." "..durationMS)
+    else
+      file:write(frequency)
+    end   
+    file:close()
+  end 
 end
 
 function Sound.play(soundfile)
-	os.execute("aplay "..soundfile)
+  os.execute("aplay "..soundfile)
 end
 
 function Sound.speak(text)
-	os.execute("espeak -a 200 --stdout \""..text.."\" | aplay")
+  os.execute("espeak -a 200 --stdout \""..text.."\" | aplay")
 end
 
 function Sound.volume()
-	local file = io.open(sys_sound.."volume")
-	if (file ~= nil) then	
-		local val = file:read("*n")
-		file:close()
-		return val
-	end	
-	
-	return 50
+  local file = io.open(sys_sound.."volume")
+  if (file ~= nil) then 
+    local val = file:read("*n")
+    file:close()
+    return val
+  end 
+  
+  return 50
 end
 
 function Sound.setVolume(levelInPercent)
-	local file = io.open(sys_sound.."volume", "w")
-	if (file ~= nil) then
-		file:write(levelInPercent)
-		file:close()
-	end	
+  local file = io.open(sys_sound.."volume", "w")
+  if (file ~= nil) then
+    file:write(levelInPercent)
+    file:close()
+  end 
 end
 
 ------------------------------------------------------------------------------
@@ -670,20 +670,20 @@ PowerSupply = class(Device)
 function PowerSupply:init(device)
   if (device ~= nil) then
     self._path = sys_power..device.."/"
-	else
+  else
     self._path = sys_power.."legoev3-battery/"
-	end
+  end
 
-	local file = io.open(self._path.."voltage_now")
-	if (file ~= nil) then	
-		file:close()
+  local file = io.open(self._path.."voltage_now")
+  if (file ~= nil) then 
+    file:close()
   else
     self._path = nil
-  end			
+  end     
 end
 
 function PowerSupply:connected()
-	return (self._path ~= nil)
+  return (self._path ~= nil)
 end
 
 function PowerSupply:currentNow()
