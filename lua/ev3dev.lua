@@ -361,6 +361,10 @@ function Motor:portName()
   return self._port
 end
 
+function Motor:state()
+  return self:getAttrString("state")
+end
+
 function Motor:run(run)
   if ((run == nil) or (run ~= 0)) then
     self:setAttrInt("run", 1)
@@ -379,10 +383,6 @@ end
 
 function Motor:running()
   return (self:getAttrInt("run") ~= 0)
-end
-
-function Motor:state()
-  return self:getAttrString("state")
 end
 
 function Motor:dutyCycle()
@@ -476,13 +476,45 @@ end
 function Motor:setRampUpSP(value)
   self:setAttrInt("ramp_up_sp", value)
 end
-  
+
 function Motor:rampDownSP()
   return self:getAttrInt("ramp_down_sp")
 end
 
 function Motor:setRampDownSP(value)
   self:setAttrInt("ramp_down_sp", value)
+end
+
+function Motor:speedRegulationP()
+  return self:getAttrInt("speed_regulation_p")
+end
+
+function Motor:setSpeedRegulationP(value)
+  self:setAttrInt("speed_regulation_p", value)
+end
+
+function Motor:speedRegulationI()
+  return self:getAttrInt("speed_regulation_i")
+end
+
+function Motor:setSpeedRegulationI(value)
+  self:setAttrInt("speed_regulation_i", value)
+end
+
+function Motor:speedRegulationD()
+  return self:getAttrInt("speed_regulation_d")
+end
+
+function Motor:setSpeedRegulationD(value)
+  self:setAttrInt("speed_regulation_d", value)
+end
+
+function Motor:speedRegulationK()
+  return self:getAttrInt("speed_regulation_k")
+end
+
+function Motor:setSpeedRegulationK(value)
+  self:setAttrInt("speed_regulation_k", value)
 end
 
 ------------------------------------------------------------------------------
