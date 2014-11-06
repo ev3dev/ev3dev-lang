@@ -288,7 +288,9 @@ function InfraredSensor:init(port)
 end
 
 ------------------------------------------------------------------------------
+--
 -- Motor
+--
 
 Motor = class(Device)
 
@@ -406,7 +408,11 @@ end
 function Motor:setRunMode(value)
   self:setAttrString("run_mode", value)
 end
-  
+
+function Motor:stopModes()
+  return self:getAttrStringArray("stop_modes")
+end
+
 function Motor:stopMode()
   return self:getAttrString("stop_mode")
 end
@@ -414,7 +420,7 @@ end
 function Motor:setStopMode(value)
   self:setAttrString("stop_mode", value)
 end
-  
+
 function Motor:regulationMode()
   return self:getAttrString("regulation_mode")
 end
@@ -431,51 +437,51 @@ function Motor:setPositionMode(value)
   self:setAttrString("position_mode", value)
 end
 
-function Motor:dutyCycleSetpoint()
+function Motor:dutyCycleSP()
   return self:getAttrInt("duty_cycle_sp")
 end
 
-function Motor:setDutyCycleSetpoint(value)
+function Motor:setDutyCycleSP(value)
   self:setAttrInt("duty_cycle_sp", value)
 end
 
-function Motor:pulsesPerSecondSetpoint()
+function Motor:pulsesPerSecondSP()
   return self:getAttrInt("pulses_per_second_sp")
 end
 
-function Motor:setPulsesPerSecondSetpoint(value)
+function Motor:setPulsesPerSecondSP(value)
   self:setAttrInt("pulses_per_second_sp", value)
 end
-  
-function Motor:timeSetpoint()
+
+function Motor:timeSP()
   return self:getAttrInt("time_sp")
 end
 
-function Motor:setTimeSetpoint(value)
+function Motor:setTimeSP(value)
   self:setAttrInt("time_sp", value)
 end
 
-function Motor:positionSetpoint()
+function Motor:positionSP()
   return self:getAttrInt("position_sp")
 end
 
-function Motor:setPositionSetpoint(value)
+function Motor:setPositionSP(value)
   self:setAttrInt("position_sp", value)
 end
 
-function Motor:rampUp()
+function Motor:rampUpSP()
   return self:getAttrInt("ramp_up_sp")
 end
 
-function Motor:setRampUp(value)
+function Motor:setRampUpSP(value)
   self:setAttrInt("ramp_up_sp", value)
 end
   
-function Motor:rampDown()
+function Motor:rampDownSP()
   return self:getAttrInt("ramp_down_sp")
 end
 
-function Motor:setRampDown(value)
+function Motor:setRampDownSP(value)
   self:setAttrInt("ramp_down_sp", value)
 end
 
