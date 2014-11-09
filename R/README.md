@@ -50,16 +50,16 @@ Getting Started (recommended path):
 
 - Rserve remote setup:
  * enable remote connections to Rserve on EV3
- * on EV3 create a file /etc/Rserv.conf with line 'remote enable' 
-   *	`sudo nano /etc/Rserv.conf`
-   *	`remote enabley`
- * if you are concerned about your EV3 security follow recommendations at [rforge](rforge.net/Rserve/doc.html) ;-)
+  * on EV3 create a file /etc/Rserv.conf with line 'remote enable' 
+    *	`sudo nano /etc/Rserv.conf`
+    *	`remote enable`
+ * if you are concerned about your EV3 security follow recommendations at [rforge](www.rforge.net/Rserve/doc.html) ;-)
 
 - prepare ssh connection (public PC user ssh key known by EV3, same user name recommended)
  * if on Windows, install open-ssh, (should be already installed on other platforms):
-  * `sourceforge.net/projects/sshwindows`
+   * `sourceforge.net/projects/sshwindows`
  * on PC generate public/private key with ssh-keygen for your user
-  *	`ssh-keygen -t rsa`
+   *	`ssh-keygen -t rsa`
  * on PC copy the generated public key for your user to EV3
    *	`scp ~/.ssh/id_rsa.pub [your_user]@[ev3 ip]:~/id_rsa.pub`
  * ssh to EV3 from PC at least once, so that it is added to the trusted machines
@@ -76,13 +76,13 @@ Getting Started (recommended path):
   * the script starts Rserve on EV3 thorugh ssh
   * the script copies the files to EV3 through scp
   * the script sources the files on EV3 through RSclient to Rserve
-  * peek into the files ev3dev_test_*.R to see API examples
+  * peek into the files ev3dev_test_*.R to see API  use examples
 
 - Other things to consider:
  * you can add line to /etc/Rserv.conf to automatically source ev3dev.R when starting Rserve
-  * `sudo nano /etc/Rserv.conf`
-   *	`remote enable`
-   *	`source /[your_path_here]/ev3dev.R`
+   * `sudo nano /etc/Rserv.conf`
+     *	`remote enable`
+     *	`source /[your_path_here]/ev3dev.R`
  * to start Rserve manually on EV3 type:
    *	`R CMD Rserve`
-- if you are planning to use R/Rserve a lot consider starting Rserve deamon at boot
+ * if you are planning to use R/Rserve a lot consider starting Rserve deamon at boot
