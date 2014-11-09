@@ -75,11 +75,11 @@ This is the recommended way. You can execute R commands remotely on EV3 and get 
  * on PC generate public/private key with ssh-keygen for your user
     *	`ssh-keygen -t rsa`
  * from PC, make directory on EV3 for .ssh keys:
-    * ssh [your_ev3_user]@[your_ev3_ip] mkdir -p .ssh'
+    * `ssh [your_ev3_user]@[your_ev3_ip] mkdir -p .ssh`
  * from PC copy the generated public key for your user to EV3
     *	`cat .ssh/id_rsa.pub | ssh [your_ev3_user]@[your_ev3_ip] 'cat >> .ssh/authorized_keys'`
  * from PC set correct permissions for .ssh 
-    * ssh [your_ev3_user]@[your_ev3_ip]  "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+    * `ssh [your_ev3_user]@[your_ev3_ip]  "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"`
  * ssh to EV3 from PC at least once
     *	`ssh [your_ev3_ip]` 
 
