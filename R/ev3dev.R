@@ -166,25 +166,25 @@ setMethod("initialize", "motor",
             path="/sys/class/tacho-motor"            
             device_path=""
             
-            CheckSystemPath(path)
-            
-            files=list.files(path, full.names = TRUE)
-            
-            for(f in 1:length(files))
-            {
-              device_port=try(readLines(paste(files[f],"/port_name",sep=""), warn=FALSE), silent = TRUE)
-              device_type=try(readLines(paste(files[f],"/type",sep=""), warn=FALSE), silent=TRUE)
-              if(!(is.character(device_port) & is.character(device_type)))
-                next
-                                
-              if(missing(port) || port=="" || port==device_port )    
-                if(missing(type)  || type=="" || type==device_type)                  
-                {
-                  device_path=paste(files[f],"/",sep="")
-                  break
-                }              
-            }  
-                                          
+            if(file.exists(path))
+            {            
+              files=list.files(path, full.names = TRUE)
+              
+              for(f in 1:length(files))
+              {
+                device_port=try(readLines(paste(files[f],"/port_name",sep=""), warn=FALSE), silent = TRUE)
+                device_type=try(readLines(paste(files[f],"/type",sep=""), warn=FALSE), silent=TRUE)
+                if(!(is.character(device_port) & is.character(device_type)))
+                  next
+                                  
+                if(missing(port) || port=="" || port==device_port )    
+                  if(missing(type)  || type=="" || type==device_type)                  
+                  {
+                    device_path=paste(files[f],"/",sep="")
+                    break
+                  }              
+              }  
+            }                                          
             callNextMethod(.Object, path=device_path, ...)
           })
 
@@ -502,27 +502,28 @@ setMethod("initialize", "sensor",
     
   #path="~/test/sys/class/msensor"
   path="/sys/class/msensor"
-  
-  CheckSystemPath(path)
-  
-  files=list.files(path, full.names = TRUE)
-  
-  for(f in 1:length(files))
-  {
-    device_port=try(readLines(paste(files[f],"/port_name",sep=""), warn=FALSE))
-    device_name=try(readLines(paste(files[f],"/name",sep=""), warn=FALSE))
     
-    if(!(is.character(device_port) & is.character(device_name)))
-      next
+  if(file.exists(path))
+  {  
+    files=list.files(path, full.names = TRUE)
     
-    if(missing(port) || port=="" || port==device_port )    
-      if(missing(name)  || name=="" || device_name %in% name)
-      {
-        .Object@cache$.path=paste(files[f],"/",sep="")
-        .Object@cache$.dp_scale=try(10^GetAttrInt(.Object, "dp"))
-        .Object@cache$.num_values=try(NumValues(.Object))                
-        break
-      }
+    for(f in 1:length(files))
+    {
+      device_port=try(readLines(paste(files[f],"/port_name",sep=""), warn=FALSE))
+      device_name=try(readLines(paste(files[f],"/name",sep=""), warn=FALSE))
+      
+      if(!(is.character(device_port) & is.character(device_name)))
+        next
+      
+      if(missing(port) || port=="" || port==device_port )    
+        if(missing(name)  || name=="" || device_name %in% name)
+        {
+          .Object@cache$.path=paste(files[f],"/",sep="")
+          .Object@cache$.dp_scale=try(10^GetAttrInt(.Object, "dp"))
+          .Object@cache$.num_values=try(NumValues(.Object))                
+          break
+        }
+    }
   }
   .Object  
 })
@@ -610,20 +611,20 @@ setMethod("initialize", "power.supply",
           function(.Object, dev="", ... ){            
   path="/sys/class/power_supply"
   device_path=""              
-  
-  CheckSystemPath(path)
-  
-  files=list.files(path)
-  if(missing(dev) || dev=="")
-    dev="legoev3-battery"
-  
-  for(f in 1:length(files))  
-    if(files[f]==dev)    
-    {
-        device_path=paste(path, "/", files[f],"/",sep="")
-        break
-    }
-  
+    
+  if(file.exists(path))
+  {  
+    files=list.files(path)
+    if(missing(dev) || dev=="")
+      dev="legoev3-battery"
+    
+    for(f in 1:length(files))  
+      if(files[f]==dev)    
+      {
+          device_path=paste(path, "/", files[f],"/",sep="")
+          break
+      }
+  }  
   callNextMethod(.Object, path=device_path, ...)
 }
 )
@@ -694,21 +695,21 @@ setMethod("initialize", "led",
 
   path="/sys/class/leds"
   device_path=""      
-  
-  CheckSystemPath(path)
-              
-  files=list.files(path)
-  
-  if( missing(dev) || dev=="")
-    device_path=""
-  
-  for(f in 1:length(files))  
-    if(files[f]==dev)
-    {
-      device_path=paste(path, "/", files[f],"/",sep="")
-      break
-    }
-  
+      
+  if(file.exists(path))
+  {  
+    files=list.files(path)
+    
+    if( missing(dev) || dev=="")
+      device_path=""
+    
+    for(f in 1:length(files))  
+      if(files[f]==dev)
+      {
+        device_path=paste(path, "/", files[f],"/",sep="")
+        break
+      }
+  }  
   callNextMethod(.Object, path=device_path, ...)
 })
 
