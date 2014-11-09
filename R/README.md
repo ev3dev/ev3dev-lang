@@ -69,16 +69,6 @@ This is the recommended way. You can execute R commands remotely on EV3 and get 
       *	`remote enable`
  * if you are concerned about your EV3 security follow recommendations at [rforge](http://www.rforge.net/Rserve/doc.html) ;-)
 
-
-
-meglickib@meglickib-U115:~$ cat .ssh/id_rsa.pub | ssh meglickib@192.168.0.3 'cat >> .ssh/authorized_keys'
-^C
-meglickib@meglickib-U115:~$ cat .ssh/id_rsa.pub | ssh meglickib@10.42.0.3 'cat >> .ssh/authorized_keys'
-meglickib@10.42.0.3's password: 
-meglickib@meglickib-U115:~$ ssh meglickib@10.42.0.3  "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
-meglickib@meglickib-U115:~$ ssh 10.42.0.3
-
-
 - prepare ssh connection (public PC user ssh key known by EV3, same user name recommended)
  * if on Windows, install open-ssh, (should be already installed on other platforms):
     * `sourceforge.net/projects/sshwindows`
@@ -88,6 +78,8 @@ meglickib@meglickib-U115:~$ ssh 10.42.0.3
     * ssh [your_ev3_user]@[your_ev3_ip] mkdir -p .ssh'
  * from PC copy the generated public key for your user to EV3
     *	`cat .ssh/id_rsa.pub | ssh [your_ev3_user]@[your_ev3_ip] 'cat >> .ssh/authorized_keys'`
+ * from PC set correct permissions for .ssh 
+    * ssh [your_ev3_user]@[your_ev3_ip]  "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
  * ssh to EV3 from PC at least once
     *	`ssh [your_ev3_ip]` 
 
