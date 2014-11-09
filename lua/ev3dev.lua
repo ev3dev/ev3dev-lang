@@ -543,8 +543,9 @@ function InfraredSensor:init(port)
 end
 
 ------------------------------------------------------------------------------
---PowerSupply
-PowerSupply = class()
+--
+-- Power Supply
+--
 
 PowerSupply = class(Device)
 
@@ -560,7 +561,7 @@ function PowerSupply:init(device)
     file:close()
   else
     self._path = nil
-  end     
+  end
 end
 
 function PowerSupply:connected()
@@ -571,20 +572,12 @@ function PowerSupply:currentNow()
   return self:getAttrInt("current_now")
 end
 
-function PowerSupply:currentAmps()
-  return self:getAttrInt("current_now") / 1000
-end
-
 function PowerSupply:voltageNow()
   return self:getAttrInt("voltage_now")
 end
 
-function PowerSupply:voltageVolts()
-  return self:getAttrInt("voltage_now") / 1000000
-end
-
-function PowerSupply:currentMaxDesign()
-  return self:getAttrInt("current_max_design")
+function PowerSupply:voltageMinDesign()
+  return self:getAttrInt("voltage_min_design")
 end
 
 function PowerSupply:voltageMaxDesign()
@@ -599,8 +592,16 @@ function PowerSupply:type()
   return self:getAttrString("type")
 end
 
+function PowerSupply:currentAmps()
+  return self:getAttrInt("current_now") / 1000
+end
+
+function PowerSupply:voltageVolts()
+  return self:getAttrInt("voltage_now") / 1000000
+end
+
 Battery = PowerSupply()
- 
+
 ------------------------------------------------------------------------------
 -- LED
 
