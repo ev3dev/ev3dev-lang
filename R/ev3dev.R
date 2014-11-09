@@ -67,9 +67,10 @@ CheckSystemPath=function(path)
   if(!file.exists(path))
   {
     msg=paste("EV3 system path", path,"doesn't exist or is inaccessible.")
+    msg=paste(msg, "\nIs device of this type connected to EV3?")
     msg=paste(msg, "\nAre you execeuting the function on ev3dev platform?")
-    msg=paste(msg, "\nPossible cause: function executed on local PC instead of remote EV3")
-    stop(simpleError(msg))
+    msg=paste(msg, "\nPossible causes: device not connected to EV3 or function executed on local PC instead of remote EV3")
+    print(msg)
   }
 }
 
@@ -755,4 +756,4 @@ Speak=function(..., sync=TRUE)
   system(command, intern=TRUE, ignore.stderr=TRUE)
 }
 
-print("Creating a new generic function for ‘Position’ in the global environment")
+#print("Creating a new generic function for ‘Position’ in the global environment")
