@@ -20,9 +20,11 @@ Getting Started (recommended path):
 
 - install ev3dev on SD card 
  * follow getting started on www.ev3dev.org
-- install R on EV3 
-  * `sudo apt-get install r-base r-base-dev`
-- install Rserve on EV3
+ * if you didn't grow your root filesystem on EV3 yet, do it now:
+    * `lvextend --extents +100%FREE --resizefs /dev/ev3devVG/root /dev/mmcblk0p3`
+- install R on EV3 (additional ~ 241 MB, ~ 1 h)
+  * `sudo apt-get install r-base r-base-dev` 
+- install Rserve on EV3 (additional ~ 511 KB)
   * `sudo apt-get install r-cran-rserve`
 
 ### Local Scenario ###
@@ -34,8 +36,9 @@ Local scenario is usefull when debugging your programs (you get more information
 - download ev3dev-lang R to the brick
   * make a directory to download into and `cd` into that directory
   * download the development repository (R is currently only in develop branch and supports ev3dev-jessie-2014-10-07 (pre-release))
-  * `wget https://github.com/ev3dev/ev3dev-lang/archive/develop.zip`
-  * `unzip develop.zip`
+    * `wget https://github.com/ev3dev/ev3dev-lang/archive/develop.zip`
+  * unzip the downloaded repository
+    * `unzip develop.zip`
   * go to the R subdirectory:
   * `cd ev3dev-lang-develop/R`
     * The file with bindings is: ev3dev.R
@@ -57,7 +60,7 @@ Local scenario is usefull when debugging your programs (you get more information
 ### Remote scenario ###
 
 Here is information how to work and run the scripts remotely through RSclient/Rserve
-This is recommended way. Local scenario is usefull for debugging (e.g. you often get only  the message that remote evaluation failed)
+This is the recommended way. You can execute R commands remotely on EV3 and get the results locally on PC R session (e.g. sensor readings).
 
 - Rserve remote setup:
  * enable remote connections to Rserve on EV3
