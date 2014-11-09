@@ -52,8 +52,8 @@ Getting Started (recommended path):
  * enable remote connections to Rserve on EV3
   * on EV3 create a file /etc/Rserv.conf with line 'remote enable' 
     *	`sudo nano /etc/Rserv.conf`
-    *	`remote enable`
- * if you are concerned about your EV3 security follow recommendations at [rforge](www.rforge.net/Rserve/doc.html) ;-)
+      *	`remote enable`
+ * if you are concerned about your EV3 security follow recommendations at [rforge](http://www.rforge.net/Rserve/doc.html) ;-)
 
 - prepare ssh connection (public PC user ssh key known by EV3, same user name recommended)
  * if on Windows, install open-ssh, (should be already installed on other platforms):
@@ -70,7 +70,7 @@ Getting Started (recommended path):
  * on PC in R shell or through IDE install package RSclient
    *	`install.packages("RSclient")`
  * open ev3dev_test_all_RSclient.R and set working directory to its location
- * follow instructions in script
+ * follow instructions in the script
   * set ip variable to your EV3 ip
   * execute the script line by line
   * the script starts Rserve on EV3 thorugh ssh
