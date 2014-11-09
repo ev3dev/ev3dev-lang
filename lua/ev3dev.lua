@@ -603,7 +603,9 @@ end
 Battery = PowerSupply()
 
 ------------------------------------------------------------------------------
+--
 -- LED
+--
 
 LED = class(Device)
 
@@ -611,7 +613,7 @@ function LED:init(name)
   self._path = sys_class.."leds/"..name.."/"
 
   local file = io.open(self._path.."brightness")
-  if (file ~= nil) then 
+  if (file ~= nil) then
     file:close()
   else
     self._path = nil
@@ -626,8 +628,29 @@ function LED:brightness()
   return self:getAttrInt("brightness")
 end
 
+function LED:setBrightness(value)
+  self:setAttrInt("brightness", value)
+end
+
 function LED:maxBrightness()
   return self:getAttrInt("max_brightness")
+end
+
+function LED:trigger()
+  local file = io.open(self._path.."trigger", "r")
+  if (file ~= nil) then
+    local m = string.match(file:read(), "%[%w+[%-%w+]*%]")
+    file:close()
+    if (m.len) then
+      return string.match(m, "%w+[%-%w+]*")
+    end
+  end
+  
+  return ""
+end
+
+function LED:setTrigger(value)
+  self:setAttrString("trigger", value)
 end
 
 function LED:on()
@@ -654,19 +677,6 @@ function LED:setOffDelay(ms)
   self:setAttrInt("delay_off", ms)
 end
   
-function LED:trigger()
-  local file = io.open(self._path.."trigger", "r")
-  if (file ~= nil) then 
-    local m = string.match(file:read(), "%[%w+[%-%w+]*%]")
-    file:close()
-    if (m.len) then
-      return string.match(m, "%w+[%-%w+]*")
-    end
-  end
-  
-  return ""
-end
-
 function LED:triggers()
   local file = io.open(self._path.."trigger", "r")
   if (file ~= nil) then 
@@ -678,10 +688,6 @@ function LED:triggers()
   end
   
   return ""
-end
-
-function LED:setTrigger(trigger)
-  self:setAttrString("trigger", trigger)
 end
 
 ledRedRight   = LED("ev3:red:right")
