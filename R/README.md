@@ -27,7 +27,7 @@ Getting Started (recommended path):
 
 ### Local Scenario ###
 
-Here is the information how to run the scripts locally on EV3 (e.g. trough log through ssh and work)
+Here is the information how to run the scripts "locally" on EV3 (e.g. login through ssh and work)
 Those steps are not necessary if you only plan to work remotely through RSclient/Rserve.
 Local scenario is usefull when debugging your programs (you get more information running scripts locally)
 
