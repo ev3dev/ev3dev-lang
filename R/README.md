@@ -25,7 +25,7 @@ Getting Started (recommended path):
 - install Rserve on EV3
   * `sudo apt-get install r-cran-rserve`
 
-## Local Scenario ##
+### Local Scenario ###
 
 Here is the information how to run the scripts locally on EV3 (e.g. trough log through ssh and work)
 Those steps are not necessary if you only plan to work remotely through RSclient/Rserve.
@@ -54,7 +54,7 @@ Local scenario is usefull when debugging your programs (you get more information
     * needs EV3-infrared sensor and EV3 or NXT touch sensor.
     * `source("ev3dev_test_all.R")`
 
-## Remote scenario ##
+### Remote scenario ###
 
 Here is information how to work and run the scripts remotely through RSclient/Rserve
 This is recommended way. Local scenario is usefull for debugging (e.g. you often get only  the message that remote evaluation failed)
@@ -89,7 +89,7 @@ This is recommended way. Local scenario is usefull for debugging (e.g. you often
   * the script sources the files on EV3 through RSclient to Rserve
   * peek into the files ev3dev_test_*.R to see API  use examples
 
-## Other things to consider ##
+### Other things to consider ###
  * you can add line to /etc/Rserv.conf to automatically source ev3dev.R when starting Rserve
    * `sudo nano /etc/Rserv.conf`
       *	`remote enable`
