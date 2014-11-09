@@ -120,4 +120,4 @@ Sound.beep();
 print("Sound volume is "..Sound.volume())
   
 print("Battery voltage is "..Battery:voltageVolts().." V")
-print("Battery current is "..Battery:currentAmps().." mA")
+print("Battery current is "..Battery:currentAmps().." A")
