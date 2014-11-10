@@ -80,3 +80,70 @@ class PowerSupply extends Device {
     }
 
 }
+
+
+class LED extends Device {
+    private ledDeviceDir = '/sys/class/leds/';
+    public deviceName: string;
+
+    get ledProperties(): any {
+        return {
+            maxBrightness: 'max_brightness',
+            brightness: 'brightness',
+            trgger: 'trigger'
+        };
+    }
+
+    constructor(deviceName: string) {
+        super();
+
+        //if (deviceName != undefined)
+        this.deviceName = deviceName;
+
+        var rootPath: string;
+
+        try {
+            var availableDevices = fs.readdirSync(this.ledDeviceDir);
+
+
+            if (availableDevices.indexOf(this.deviceName) == -1) {
+                this.connected = false;
+                return;
+            }
+
+            rootPath = path.join(this.ledDeviceDir, availableDevices[availableDevices.indexOf(this.deviceName)]);
+        }
+
+        catch (e) {
+            console.log(e);
+            this.connected = false;
+            return;
+        }
+
+        this.connect(rootPath);
+    }
+
+    //PROPERTIES
+    get maxBrightness(): number {
+        return this.getNumber(this.ledProperties.maxBrightness);
+    }
+
+
+    get brightness(): number {
+        return this.getNumber(this.ledProperties.brightness);
+    }
+
+    set brightness(value: number) {
+        this.setNumber(this.ledProperties.brightness, value);
+    }
+
+
+    get trigger(): string {
+        return this.getString(this.ledProperties.trigger);
+    }
+
+    set trigger(value: string) {
+        this.setString(this.ledProperties.trigger, value);
+    }
+
+}
