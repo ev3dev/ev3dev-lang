@@ -17,7 +17,10 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  
-#   Compatibility with ev3dev-jessie-2014-10-07 (pre-release)
+#   Compatibile ev3dev kernels:
+#
+#   3.16.1-5-ev3dev
+#   3.16.1-6-ev3dev
 
 #TO DO - TypeId for sensor or Name? Name currently, no type_id in ev3dev-jessie-2014-10-07 (pre-release)
 #TO DO - is it an issue really? function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
@@ -204,7 +207,8 @@ large.motor = function(port="", ...)
 setMethod("DeviceIndex","motor",function(.Object){  
   stopifnot(Connected(.Object))
   device_name=basename(.Object@cache$.path)
-  substr(device_name, 12, nchar(device_name)  ) #tacho-motor, 12
+  match=regexpr("[[:digit:]]+$", device_name) #match the digits at the end
+  as.integer(substr(device_name, match, match+attr(match, "match.length")  ) )
 })
 
 
@@ -538,7 +542,8 @@ gyro.sensor = function(port="", ...) { sensor(port, "ev3-uart-32",...)  }
 setMethod("DeviceIndex","sensor",function(.Object){  
   stopifnot(Connected(.Object))
   device_name=basename(.Object@cache$.path)
-  substr(device_name, 7 , nchar(device_name)  ) #sensor, 
+  match=regexpr("[[:digit:]]+$", device_name) #match the digits at the end
+  as.integer(substr(device_name, match, match+attr(match, "match.length")  ) )
 })
 
 
