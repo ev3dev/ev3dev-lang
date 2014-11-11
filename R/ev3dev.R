@@ -18,7 +18,7 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  
 #   Compatibile ev3dev kernels:
-#
+#   3.16.1-4-ev3dev
 #   3.16.1-5-ev3dev
 #   3.16.1-6-ev3dev
 
@@ -544,7 +544,7 @@ setMethod("DeviceIndex","sensor",function(.Object){
   device_name=basename(.Object@cache$.path)
   match=regexpr("[[:digit:]]+$", device_name) #match the digits at the end
   as.integer(substr(device_name, match, match+attr(match, "match.length")  ) )
-})
+3})
 
 
 #Port Name|String|Read
