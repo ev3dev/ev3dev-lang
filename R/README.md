@@ -4,7 +4,13 @@ R  Language Binding for ev3dev
 This is  R script that exposes the features of the ev3dev API. 
 Your brick must be running [ev3dev](http://github.com/ev3dev/ev3dev) to use this script.
 
-Compatibility with ev3dev-jessie-2014-10-07 (pre-release)
+Compatibility:  
+- ev3dev-jessie-2014-10-07 (pre-release), kernels:
+	- 3.16.1-4-ev3dev
+	- 3.16.1-5-ev3dev
+	- 3.16.1-6-ev3dev
+
+Note:
 - **CAUTION** the WiFI dongle Netgear WNA 1100 (the only one officially supported by LEGO for EV3) is currently not working with ev3dev-jessie-2014-10-07 (pre-release)
 - other WiFI dongles are working with ev3dev-jessie-2014-10-07 (pre-release), details on www.ev3dev.org
 
