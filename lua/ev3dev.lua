@@ -25,8 +25,6 @@ require 'class'
 ------------------------------------------------------------------------------
 
 local sys_class   = "/sys/class/"
-local sys_msensor = "/sys/class/msensor/"
-local sys_motor   = "/sys/class/tacho-motor/"
 local sys_sound   = "/sys/devices/platform/snd-legoev3/"
 local sys_power   = "/sys/class/power_supply/"
 
@@ -34,6 +32,82 @@ local sys_power   = "/sys/class/power_supply/"
 -- Device
 
 Device = class()
+
+function Device:init(sys_class_dir, pattern, match)
+
+  if (sys_class_dir == nil) then
+    error("connect needs sys_class_dir")
+  end
+
+  if (pattern == nil) then
+    error("connect needs pattern")
+  end
+
+  -- check that sys_class_dir exists
+  local r = io.popen("find "..sys_class.." -name '"..sys_class_dir.."'")
+  local dir = r:read("*l")
+  r:close()
+  
+  if (dir == nil) then
+    return
+  end
+
+  -- lookup all pattern entries
+  local devices = io.popen("find "..sys_class..sys_class_dir.." -name '"..pattern.."*'")
+  for d in devices:lines() do
+    self._path = d.."/"
+
+    local success = true
+    if (match ~= nil) then      
+      for attr,matches in pairs(match) do
+        success = false
+        
+        -- read attribute
+        local pf = io.open(self._path..attr, "r")
+        if (pf ~= nil) then
+          -- read string value
+          local value = pf:read("*l")
+          if (value ~= nil) then
+            -- check against matches
+            local empty = true
+            for i,entry in pairs(matches) do
+              empty = false
+              if (value == entry) then
+                success = true
+                break
+              else 
+               matched = false
+              end
+            end
+            -- empty match list is success
+            if (empty) then
+              success = true
+            end
+          end
+        end
+        
+        if not success then
+          break
+        end
+      end
+    end
+    
+    if (success) then
+      devices:close()
+      return true
+    end
+  end
+
+  devices:close()
+
+  self._path = nil
+  
+  return false
+end
+
+function Device:connected()
+  return (self._path ~= nil)
+end    
 
 function Device:getAttrInt(name)
 
@@ -141,49 +215,25 @@ Motor.PolarityModeNegative = "negative"
 Motor.PositionModeAbsolute = "absolute"
 Motor.PositionModeRelative = "relative"
 
-function Motor:init(port, motor_type)
+function Motor:init(port, motor_types)
 
-  -- check that tacho-motor dir exists
-  local r = io.popen("find "..sys_class.." -name 'tacho-motor'")
-  local dir = r:read("*l")
-  r:close()
+  local m = { port_name = { port } }
   
-  if (dir == nil) then
-    return
+  if (motor_types ~= nil) then
+    m["type"] = motor_types
   end
   
-  -- lookup all tacho-motor entries
-  local motors = io.popen("find "..sys_motor.." -name 'tacho-motor*'")
-  for m in motors:lines() do
-    self._path = m.."/"
+  Device.init(self, "tacho-motor", "tacho-motor", m)
 
-    local pf = io.open(self._path.."port_name", "r")
-    if (pf ~= nil) then
-      self._port = pf:read("*l")
-      pf:close()
-
-      if ((port == nil) or (self._port == port)) then   
-        self._type = self:getAttrString("type")
-
-        if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
-          motors:close()
-          return
-        end
-      end
-    end
+  if (self:connected()) then
+    self._type = self:getAttrString("type")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
   end
-
-  motors:close()
-
-  self._type = nil
-  self._port = nil
-  self._path = nil  
 end
 
-function Motor:connected()
-  return (self._port ~= nil)
-end
-    
 function Motor:type()
   return self._type
 end
@@ -354,7 +404,7 @@ end
 LargeMotor = class(Motor)
 
 function LargeMotor:init(port)
-  Motor.init(self, port, "tacho")
+  Motor.init(self, port, { "tacho" } )
 end
 
 ------------------------------------------------------------------------------
@@ -363,7 +413,7 @@ end
 MediumMotor = class(Motor)
 
 function MediumMotor:init(port)
-  Motor.init(self, port, "minitacho")
+  Motor.init(self, port, { "minitacho" } )
 end
 
 ------------------------------------------------------------------------------
@@ -384,47 +434,22 @@ Sensor.EV3Ultrasonic  = "ev3-uart-30"
 Sensor.EV3Gyro        = "ev3-uart-32"
 Sensor.EV3Infrared    = "ev3-uart-33"
 
-function Sensor:init(port, sensor_type)
-
-  self._type = nil
-  self._port = nil
-
-  -- check that msensor dir exists
-  local r = io.popen("find "..sys_class.." -name 'msensor'")
-  local dir = r:read("*l")
-  r:close()
+function Sensor:init(port, sensor_types)
+  local m = { port_name = { port } }
   
-  if (dir == nil) then
-    return
+  if (sensor_types ~= nil) then
+    m["name"] = sensor_types
   end
   
-  -- lookup all sensor entries
-  local sensors = io.popen("find "..sys_msensor.." -name 'sensor*'")
-  for s in sensors:lines() do
-    self._path = s.."/"
-    
-    local tf = io.open(self._path.."name", "r")
-    if (tf ~= nil) then
-      self._type = tf:read("*l")
-      
-      if ((sensor_type == nil) or (sensor_type == 0) or (self._type == sensor_type)) then
-        local pf = io.open(self._path.."port_name", "r")
-        self._port = pf:read("*l")
-        pf:close()
+  Device.init(self, "msensor", "sensor", m)
 
-        if ((port == nil) or (self._port == port)) then
-          break
-        else
-          self._port = nil
-        end
-      end 
-    end
+  if (self:connected()) then
+    self._type = self:getAttrString("name")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
   end
-  sensors:close();
-end
-
-function Sensor:connected()
-  return (self._port ~= nil)
 end
 
 function Sensor:type()
@@ -468,7 +493,6 @@ function Sensor:floatValue(id)
 
   local scale = math.pow(10, -self:getAttrInt("dp"))
   return self:getAttrInt("value"..id) * scale
-function Sensor:setMode(value)
 end
 
 function Sensor:dp()
@@ -481,7 +505,7 @@ end
 TouchSensor = class(Sensor)
 
 function TouchSensor:init(port)
-  Sensor.init(self, port, Sensor.EV3Touch)
+  Sensor.init(self, port, { Sensor.EV3Touch })
 end
 
 function TouchSensor:pressed()
@@ -498,7 +522,7 @@ ColorSensor.ModeAmbient = "COL-AMBIENT"
 ColorSensor.ModeColor   = "COL-COLOR"
 
 function ColorSensor:init(port)
-  Sensor.init(self, port, Sensor.EV3Color)
+  Sensor.init(self, port, { Sensor.EV3Color } )
 end
 
 ------------------------------------------------------------------------------
@@ -513,7 +537,7 @@ UltrasonicSensor.ModeSingleCM = "US-SI-CM"
 UltrasonicSensor.ModeSingleIN = "US-SI-IN"
 
 function UltrasonicSensor:init(port)
-  Sensor.init(self, port, Sensor.EV3Ultrasonic)
+  Sensor.init(self, port, { Sensor.EV3Ultrasonic } )
 end
 
 ------------------------------------------------------------------------------
@@ -526,7 +550,7 @@ GyroSensor.ModeSpeed         = "GYRO-RATE"
 GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
 
 function GyroSensor:init(port)
-  Sensor.init(self, port, Sensor.EV3Gyro)
+  Sensor.init(self, port, { Sensor.EV3Gyro } )
 end
 
 ------------------------------------------------------------------------------
@@ -539,7 +563,7 @@ InfraredSensor.ModeIRSeeker  = "IR-SEEK"
 InfraredSensor.ModeIRRemote  = "IR-REMOTE"
 
 function InfraredSensor:init(port)
-  Sensor.init(self, port, Sensor.EV3Infrared)
+  Sensor.init(self, port, { Sensor.EV3Infrared } )
 end
 
 ------------------------------------------------------------------------------
@@ -562,10 +586,6 @@ function PowerSupply:init(device)
   else
     self._path = nil
   end
-end
-
-function PowerSupply:connected()
-  return (self._path ~= nil)
 end
 
 function PowerSupply:currentNow()
@@ -618,10 +638,6 @@ function LED:init(name)
   else
     self._path = nil
   end
-end
-
-function LED:connected()
-  return (self._path ~= nil)
 end
 
 function LED:brightness()
