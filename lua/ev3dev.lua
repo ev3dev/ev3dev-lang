@@ -689,7 +689,7 @@ end
 -- I2C Sensor
 --
 
-I2CSensor = class(Device)
+I2CSensor = class(Sensor)
 
 function I2CSensor:init(port, i2cAddress)
   local m = { port_name = { port } }
