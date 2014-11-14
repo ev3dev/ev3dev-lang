@@ -223,7 +223,7 @@ function Motor:init(port, motor_types)
     m["type"] = motor_types
   end
   
-  Device.init(self, "tacho-motor", "tacho-motor", m)
+  Device.init(self, "tacho-motor", "motor", m)
 
   if (self:connected()) then
     self._type = self:getAttrString("type")
