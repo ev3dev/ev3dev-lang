@@ -36,7 +36,7 @@ function printMotorInfo(o)
   end
   
   if (o:runMode() == o.runModePosition) then
-    print("  Position setpoint is "..m:positionSetpoint())
+    print("  Position setpoint is "..o:positionSetpoint())
   end
   
   --print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
