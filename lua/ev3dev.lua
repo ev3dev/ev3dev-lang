@@ -502,6 +502,49 @@ end
 function Sensor:dp()
   return self:getAttrInt("dp")
 end
+    
+------------------------------------------------------------------------------
+--
+-- I2C Sensor
+--
+
+I2CSensor = class(Device)
+
+function I2CSensor:init(port, i2cAddress)
+  local m = { port_name = { port } }
+  m["name"] = { "nxt-i2c-sensor" }
+  
+  if (i2cAddress ~= nil) then
+    m["address"] = i2cAddress
+  end
+  
+  Device.init(self, "msensor", "sensor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("name")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+
+function I2CSensor:address()
+  return self:getAttrString("address")
+end
+
+function I2CSensor:pollMS()
+  return self:getAttrInt("poll_ms")
+end
+
+function I2CSensor:setPollMS(value)
+  self:setAttrInt("poll_ms", value)
+end
+
+function I2CSensor:fwVersion()
+  return self:getAttrString("fw_version")
+end
 
 ------------------------------------------------------------------------------
 -- TouchSensor

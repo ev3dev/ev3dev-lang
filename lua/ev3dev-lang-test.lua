@@ -51,6 +51,17 @@ else
 	print("No touch sensor connected")
 end
 
+ic = I2CSensor()
+if (ic:connected()) then
+	print("Connected to I2C sensor @ "..c:portName().." with mode "..c:mode())
+	print ("Value is "..c:value())
+	if (c:dp() > 0) then
+	  print ("Float value is "..c:floatValue())
+	end
+else
+	print("No I2C sensor connected")
+end
+
 c = ColorSensor()
 if (c:connected()) then
 	print("Connected to color sensor @ "..c:portName().." with mode "..c:mode())
