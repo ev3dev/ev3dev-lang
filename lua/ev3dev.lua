@@ -456,6 +456,10 @@ function Sensor:type()
   return self._type
 end
 
+function Sensor:typeName()
+  return self:getAttrString("name")
+end
+
 function Sensor:portName()
   return self._port
 end
