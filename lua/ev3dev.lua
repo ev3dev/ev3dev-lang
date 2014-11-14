@@ -418,6 +418,187 @@ end
 
 ------------------------------------------------------------------------------
 --
+-- DC Motor
+--
+
+DCMotor = class(Device)
+
+-- Constants
+DCMotor.commandRun = "run"
+DCMotor.commandBrake = "brake"
+DCMotor.commandCoast = "coast"
+DCMotor.polarityNormal = "normal"
+DCMotor.polarityInverted = "inverted"
+
+function DCMotor:init(port)
+
+  local m = { port_name = { port } }
+  
+  Device.init(self, "dc-motor", "motor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("type")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+function DCMotor:type()
+  return self._type
+end
+
+function DCMotor:typeName()
+  return self:getAttrString("name")
+end
+
+function DCMotor:portName()
+  return self._port
+end
+
+function DCMotor:command()
+  return self:getAttrString("command")
+end
+
+function DCMotor:setCommand(value)
+  self:setAttrString("command", value)
+end
+
+function DCMotor:commands()
+  return self:getAttrStringArray("commands")
+end
+
+function DCMotor:dutyCycle()
+  return self:getAttrInt("duty_cycle")
+end
+
+function DCMotor:setDutyCycle(value)
+  self:setAttrInt("duty_cycle", value)
+end
+
+function DCMotor:rampDownMS()
+  return self:getAttrInt("ramp_down_ms")
+end
+
+function DCMotor:setRampDownMS(value)
+  self:setAttrInt("ramp_down_ms", value)
+end
+
+function DCMotor:rampUpMS()
+  return self:getAttrInt("ramp_up_ms")
+end
+
+function DCMotor:setRampUpMS(value)
+  self:setAttrInt("ramp_up_ms", value)
+end
+
+function DCMotor:polarity()
+  return self:getAttrString("polarity")
+end
+
+function DCMotor:setPolarity(value)
+  self:setAttrString("polarity", value)
+end
+
+------------------------------------------------------------------------------
+--
+-- Servo Motor
+--
+
+ServoMotor = class(Device)
+
+-- Constants
+ServoMotor.commandRun = "run"
+ServoMotor.commandFloat = "float"
+ServoMotor.polarityNormal = "normal"
+ServoMotor.polarityInverted = "inverted"
+
+function ServoMotor:init(port)
+
+  local m = { port_name = { port } }
+  
+  Device.init(self, "servo-motor", "motor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("type")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+function ServoMotor:type()
+  return self._type
+end
+
+function ServoMotor:typeName()
+  return self:getAttrString("name")
+end
+
+function ServoMotor:portName()
+  return self._port
+end
+
+function ServoMotor:command()
+  return self:getAttrString("command")
+end
+
+function ServoMotor:setCommand(value)
+  self:setAttrString("command", value)
+end
+
+function ServoMotor:position()
+  return self:getAttrInt("position")
+end
+
+function ServoMotor:setPosition(value)
+  self:setAttrInt("position", value)
+end
+
+function ServoMotor:rate()
+  return self:getAttrInt("rate")
+end
+
+function ServoMotor:setRate(value)
+  self:setAttrInt("rate", value)
+end
+
+function ServoMotor:maxPulseMS()
+  return self:getAttrInt("max_pulse_ms")
+end
+
+function ServoMotor:setMaxPulseMS(value)
+  self:setAttrInt("max_pulse_ms", value)
+end
+
+function ServoMotor:midPulseMS()
+  return self:getAttrInt("mid_pulse_ms")
+end
+
+function ServoMotor:setMidPulseMS(value)
+  self:setAttrInt("mid_pulse_ms", value)
+end
+
+function ServoMotor:minPulseMS()
+  return self:getAttrInt("min_pulse_ms")
+end
+
+function ServoMotor:setMinPulseMS(value)
+  self:setAttrInt("min_pulse_ms", value)
+end
+
+function ServoMotor:polarity()
+  return self:getAttrString("polarity")
+end
+
+function ServoMotor:setPolarity(value)
+  self:setAttrString("polarity", value)
+end
+
+------------------------------------------------------------------------------
+--
 -- Sensor
 --
 
