@@ -522,6 +522,7 @@ setMethod("initialize", "sensor",
         if(missing(name)  || name=="" || device_name %in% name)
         {
           device_path=paste(files[f],"/",sep="")
+          .Object@cache$.path=device_path
           device_dp_scale=try(10^GetAttrInt(.Object, "dp"))
           device_num_values=try(NumValues(.Object))    
           break
