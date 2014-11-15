@@ -498,11 +498,10 @@ setMethod("Reset","motor",function(.Object){
 
 setMethod("initialize", "sensor",
           function(.Object, port="", name="", ... ){            
-  
-  callNextMethod(.Object, "", ...)            
-  .Object@cache$.path=""
-  .Object@cache$.dp_scale=1
-  .Object@cache$.num_values=0
+    
+  device_path=""
+  device_dp_scale=1
+  device_num_values=0
     
   #path="~/test/sys/class/msensor"
   path="/sys/class/msensor"
@@ -522,14 +521,17 @@ setMethod("initialize", "sensor",
       if(missing(port) || port=="" || port==device_port )    
         if(missing(name)  || name=="" || device_name %in% name)
         {
-          .Object@cache$.path=paste(files[f],"/",sep="")
-          .Object@cache$.dp_scale=try(10^GetAttrInt(.Object, "dp"))
-          .Object@cache$.num_values=try(NumValues(.Object))                
+          device_path=paste(files[f],"/",sep="")
+          device_dp_scale=try(10^GetAttrInt(.Object, "dp"))
+          device_num_values=try(NumValues(.Object))    
           break
         }
     }
   }
-  .Object  
+  .Object=callNextMethod(.Object, path=device_path, ...)  
+  .Object@cache$.dp_scale=device_dp_scale
+  .Object@cache$.num_values=device_num_values
+  .Object
 })
 
 sensor=function(port="", name="", ...) {.sensor(port, name,...)}
