@@ -841,7 +841,7 @@ function PowerSupply:type()
 end
 
 function PowerSupply:currentAmps()
-  return self:getAttrInt("current_now") / 1000
+  return self:getAttrInt("current_now") / 1000000
 end
 
 function PowerSupply:voltageVolts()
