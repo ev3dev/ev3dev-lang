@@ -58,7 +58,6 @@ RSeval( c, quote(source("~/R/ev3dev.R") ))
 upload("ev3dev_test_motors.R", scp_path)
 RSeval( c, quote(source("~/R/ev3dev_test_motors.R") ))
 
-
 # Run the sensors test
 upload("ev3dev_test_sensors.R", scp_path)
 RSeval( c, quote(source("~/R/ev3dev_test_sensors.R") ))

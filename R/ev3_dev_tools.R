@@ -43,3 +43,49 @@ run=function(host, command)
   cmd=paste("ssh", host, command)
   system(cmd, intern=TRUE)  
 }
+
+prepare_ev3=function(ip, ev3_home_path, script_file, connection_retries=20)
+{
+  library(RSclient)  
+  try(run(ip, "mkdir ~/R")) #may warn if directory already exists  
+      
+  print("Starting Rserve on EV3. Be patient.")
+  startRemoteRserve(ip)
+  Sys.sleep(3)
+  
+  con=NULL
+  
+  for(i in 1:connection_retries)
+  {
+    con=try(RS.connect(ip)) # will fail if: remote Rserve connections are disabled on EV3 (default!), or server not started yet
+    if(is(con, "RserveConnection"))
+      break    
+    else
+      print(paste(i, ": waiting for Rserve to start on EV3"))
+    
+    Sys.sleep(5) 
+  }
+    
+  if(is(con, "RserveConnection"))
+    print("Connected to Rserve on EV3")      
+  else  
+    stop("Unable to connect to EV3 Rserve.\nIs it installed? Are remote connections enabled?")
+  
+  scp_path=paste(ip, ":~/R/", sep="")
+  print("Uploading ev3dev.R to EV3")
+  upload(paste(ev3_home_path, "ev3dev.R", sep=""), scp_path)  
+  print("Evaluating ev3dev.R on EV3")          
+  RS.eval( con, quote(source("~/R/ev3dev.R") ))
+  
+  #Eval the script
+  
+  print(paste("Uploading", script_file, "to EV3"))
+  upload(script_file, scp_path)
+    
+  print(paste("Evaluating", script_file, "on EV3"))      
+  script_path=paste("~/R/", basename(script_file), sep="")  
+  RS.eval(con, as.call(list(quote(source), script_path)), lazy=FALSE)
+  
+  print("Ready to work")
+  con    
+}

@@ -383,6 +383,22 @@ setMethod("SetRunMode","motor",function(.Object, value=c("forever", "position", 
   SetAttrString(.Object, "run_mode", value)
 })
 
+# Emergency Stop
+
+setGeneric("EmergencyStop", function(.Object) standardGeneric("EmergencyStop"))
+
+setMethod("EmergencyStop","motor",function(.Object){
+  SetAttrInt(.Object, "estop", 1L)
+})
+
+setGeneric("DisarmEmergencyStop", function(.Object) standardGeneric("DisarmEmergencyStop"))
+
+setMethod("DisarmEmergencyStop","motor",function(.Object){
+  x=GetAttrInt(.Object, "estop")
+  SetAttrInt(.Object, "estop", x)  
+})
+
+
 #Speed Regulation P|Number|Read/Write
 
 setGeneric("SpeedRegulationP", function(.Object) standardGeneric("SpeedRegulationP"))
