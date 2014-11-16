@@ -25,8 +25,6 @@ require 'class'
 ------------------------------------------------------------------------------
 
 local sys_class   = "/sys/class/"
-local sys_msensor = "/sys/class/msensor/"
-local sys_motor   = "/sys/class/tacho-motor/"
 local sys_sound   = "/sys/devices/platform/snd-legoev3/"
 local sys_power   = "/sys/class/power_supply/"
 
@@ -35,20 +33,96 @@ local sys_power   = "/sys/class/power_supply/"
 
 Device = class()
 
+function Device:init(sys_class_dir, pattern, match)
+
+  if (sys_class_dir == nil) then
+    error("connect needs sys_class_dir")
+  end
+
+  if (pattern == nil) then
+    error("connect needs pattern")
+  end
+
+  -- check that sys_class_dir exists
+  local r = io.popen("find "..sys_class.." -name '"..sys_class_dir.."'")
+  local dir = r:read("*l")
+  r:close()
+  
+  if (dir == nil) then
+    return
+  end
+
+  -- lookup all pattern entries
+  local devices = io.popen("find "..sys_class..sys_class_dir.." -name '"..pattern.."*'")
+  for d in devices:lines() do
+    self._path = d.."/"
+
+    local success = true
+    if (match ~= nil) then      
+      for attr,matches in pairs(match) do
+        success = false
+        
+        -- read attribute
+        local pf = io.open(self._path..attr, "r")
+        if (pf ~= nil) then
+          -- read string value
+          local value = pf:read("*l")
+          if (value ~= nil) then
+            -- check against matches
+            local empty = true
+            for i,entry in pairs(matches) do
+              empty = false
+              if (value == entry) then
+                success = true
+                break
+              else 
+               matched = false
+              end
+            end
+            -- empty match list is success
+            if (empty) then
+              success = true
+            end
+          end
+        end
+        
+        if not success then
+          break
+        end
+      end
+    end
+    
+    if (success) then
+      devices:close()
+      return true
+    end
+  end
+
+  devices:close()
+
+  self._path = nil
+  
+  return false
+end
+
+function Device:connected()
+  return (self._path ~= nil)
+end    
+
 function Device:getAttrInt(name)
 
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "r")
+  
+  local tf = io.open(self._path..name, "r")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
 
-	local result = tf:read("*n")
-	tf:close()
+  local result = tf:read("*n")
+  tf:close()
   
   return result
 end
@@ -58,49 +132,49 @@ function Device:setAttrInt(name, value)
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "w")
+  
+  local tf = io.open(self._path..name, "w")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
 
-	tf:write(tostring(value))
-	tf:close()
+  tf:write(tostring(value))
+  tf:close()
 end
 
 function Device:getAttrString(name)
-	
+  
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "r")
+  
+  local tf = io.open(self._path..name, "r")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
 
-	local s = tf:read("*l")
-	tf:close()
-			
-	return s
+  local s = tf:read("*l")
+  tf:close()
+      
+  return s
 end
 
 function Device:setAttrString(name, value)
-	
+  
   if (self._path == nil) then
     error("no device connected")
   end
-	
-	local tf = io.open(self._path..name, "w")
+  
+  local tf = io.open(self._path..name, "w")
 
   if (tf == nil) then
     error("no such attribute: "..self._path..name)
   end
-	
-	tf:write(value)
-	tf:close()
+  
+  tf:write(value)
+  tf:close()
 end
 
 ------------------------------------------------------------------------------
@@ -119,176 +193,9 @@ OUTPUT_C    = "outC"
 OUTPUT_D    = "outD"
 
 ------------------------------------------------------------------------------
--- Sensor
-
-Sensor = class(Device)
-
-Sensor.NXTTouch       = "lego-nxt-touch"
-Sensor.NXTLight       = "lego-nxt-light"
-Sensor.NXTSound       = "lego-nxt-sound"
-Sensor.NXTUltrasonic  = "lego-nxt-ultrasonic"
-
-Sensor.EV3Touch       = "lego-ev3-touch"
-Sensor.EV3Color       = "ev3-uart-29"
-Sensor.EV3Ultrasonic  = "ev3-uart-30"
-Sensor.EV3Gyro        = "ev3-uart-32"
-Sensor.EV3Infrared    = "ev3-uart-33"
-
-function Sensor:init(port, sensor_type)
-
-	self._type = nil
-	self._port = nil
-
-  -- check that msensor dir exists
-  local r = io.popen("find "..sys_class.." -name 'msensor'")
-  local dir = r:read("*l")
-  r:close()
-  
-  if (dir == nil) then
-    return
-  end
-  
-  -- lookup all sensor entries
-  local sensors = io.popen("find "..sys_msensor.." -name 'sensor*'")
-	for s in sensors:lines() do
-		self._path = s.."/"
-		
-		local tf = io.open(self._path.."name", "r")
-		if (tf ~= nil) then
-			self._type = tf:read("*l")
-			
-			if ((sensor_type == nil) or (sensor_type == 0) or (self._type == sensor_type)) then
-				local pf = io.open(self._path.."port_name", "r")
-				self._port = pf:read("*l")
-				pf:close()
-
-				if ((port == nil) or (self._port == port)) then
-				  break
-				else
-					self._port = nil
-				end
-			end	
-		end
-	end
-	sensors:close();
-end
-
-function Sensor:connected()
-	return (self._port ~= nil)
-end
-
-function Sensor:type()
-	return self._type
-end
-
-function Sensor:portName()
-	return self._port
-end
-
-function Sensor:mode()
-  return self:getAttrString("mode")
-end
-
-function Sensor:modes()
-  return self:getAttrString("modes")
-end
-
-function Sensor:setMode(mode)
-  self:setAttrString("mode", mode)
-end
-
-function Sensor:value(id)
-
-	if (id == nil) then
-		id = 0
-	end
-
-  return self:getAttrInt("value"..id)
-end
-
-function Sensor:floatValue(id)
-
-	if (id == nil) then
-		id = 0
-	end
-
-  local scale = math.pow(10, -self:getAttrInt("dp"))
-  return self:getAttrInt("value"..id) * scale
-end
-
-function Sensor:dp()
-  return self:getAttrInt("dp")
-end
-
-------------------------------------------------------------------------------
--- TouchSensor
-
-TouchSensor = class(Sensor)
-
-function TouchSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Touch)
-end
-
-function TouchSensor:pressed()
-  return self:value(0)
-end
-
-------------------------------------------------------------------------------
--- ColorSensor
-
-ColorSensor = class(Sensor)
-
-ColorSensor.ModeReflect = "COL-REFLECT"
-ColorSensor.ModeAmbient = "COL-AMBIENT"
-ColorSensor.ModeColor   = "COL-COLOR"
-
-function ColorSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Color)
-end
-
-------------------------------------------------------------------------------
--- UltrasonicSensor
-
-UltrasonicSensor = class(Sensor)
-
-UltrasonicSensor.ModeDistCM   = "US-DIST-CM"
-UltrasonicSensor.ModeDistIN   = "US-DIST-IN"
-UltrasonicSensor.ModeListen   = "US-LISTEN"
-UltrasonicSensor.ModeSingleCM = "US-SI-CM"
-UltrasonicSensor.ModeSingleIN = "US-SI-IN"
-
-function UltrasonicSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Ultrasonic)
-end
-
-------------------------------------------------------------------------------
--- GyroSensor
-
-GyroSensor = class(Sensor)
-
-GyroSensor.ModeAngle         = "GYRO-ANG"
-GyroSensor.ModeSpeed         = "GYRO-RATE"
-GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
-
-function GyroSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Gyro)
-end
-
-------------------------------------------------------------------------------
--- InfraredSensor
-
-InfraredSensor = class(Sensor)
-
-InfraredSensor.ModeProximity = "IR-PROX"
-InfraredSensor.ModeIRSeeker  = "IR-SEEK"
-InfraredSensor.ModeIRRemote  = "IR-REMOTE"
-
-function InfraredSensor:init(port)
-	Sensor.init(self, port, Sensor.EV3Infrared)
-end
-
-------------------------------------------------------------------------------
+--
 -- Motor
+--
 
 Motor = class(Device)
 
@@ -308,47 +215,23 @@ Motor.PolarityModeNegative = "negative"
 Motor.PositionModeAbsolute = "absolute"
 Motor.PositionModeRelative = "relative"
 
-function Motor:init(port, motor_type)
+function Motor:init(port, motor_types)
 
-  -- check that tacho-motor dir exists
-  local r = io.popen("find "..sys_class.." -name 'tacho-motor'")
-  local dir = r:read("*l")
-  r:close()
+  local m = { port_name = { port } }
   
-  if (dir == nil) then
-    return
+  if (motor_types ~= nil) then
+    m["type"] = motor_types
   end
   
-  -- lookup all tacho-motor entries
-  local motors = io.popen("find "..sys_motor.." -name 'tacho-motor*'")
-	for m in motors:lines() do
-		self._path = m.."/"
+  Device.init(self, "tacho-motor", "motor", m)
 
-		local pf = io.open(self._path.."port_name", "r")
-		if (pf ~= nil) then
-		  self._port = pf:read("*l")
-		  pf:close()
-
-			if ((port == nil) or (self._port == port)) then		
-		    self._type = self:getAttrString("type")
-
-		    if ((motor_type == nil) or (motor_type == "") or (self._type == motor_type)) then
-		      motors:close()
-		      return
-		    end
-		  end
-		end
-	end
-
-	motors:close()
-
-	self._type = nil
-	self._port = nil
-	self._path = nil	
-end
-
-function Motor:connected()
-  return (self._port ~= nil)
+  if (self:connected()) then
+    self._type = self:getAttrString("type")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
 end
 
 function Motor:type()
@@ -357,6 +240,10 @@ end
 
 function Motor:portName()
   return self._port
+end
+
+function Motor:state()
+  return self:getAttrString("state")
 end
 
 function Motor:run(run)
@@ -377,10 +264,6 @@ end
 
 function Motor:running()
   return (self:getAttrInt("run") ~= 0)
-end
-
-function Motor:state()
-  return self:getAttrString("state")
 end
 
 function Motor:dutyCycle()
@@ -406,7 +289,11 @@ end
 function Motor:setRunMode(value)
   self:setAttrString("run_mode", value)
 end
-  
+
+function Motor:stopModes()
+  return self:getAttrStringArray("stop_modes")
+end
+
 function Motor:stopMode()
   return self:getAttrString("stop_mode")
 end
@@ -414,7 +301,7 @@ end
 function Motor:setStopMode(value)
   self:setAttrString("stop_mode", value)
 end
-  
+
 function Motor:regulationMode()
   return self:getAttrString("regulation_mode")
 end
@@ -431,52 +318,84 @@ function Motor:setPositionMode(value)
   self:setAttrString("position_mode", value)
 end
 
-function Motor:dutyCycleSetpoint()
+function Motor:dutyCycleSP()
   return self:getAttrInt("duty_cycle_sp")
 end
 
-function Motor:setDutyCycleSetpoint(value)
+function Motor:setDutyCycleSP(value)
   self:setAttrInt("duty_cycle_sp", value)
 end
 
-function Motor:pulsesPerSecondSetpoint()
+function Motor:pulsesPerSecondSP()
   return self:getAttrInt("pulses_per_second_sp")
 end
 
-function Motor:setPulsesPerSecondSetpoint(value)
+function Motor:setPulsesPerSecondSP(value)
   self:setAttrInt("pulses_per_second_sp", value)
 end
-  
-function Motor:timeSetpoint()
+
+function Motor:timeSP()
   return self:getAttrInt("time_sp")
 end
 
-function Motor:setTimeSetpoint(value)
+function Motor:setTimeSP(value)
   self:setAttrInt("time_sp", value)
 end
 
-function Motor:positionSetpoint()
+function Motor:positionSP()
   return self:getAttrInt("position_sp")
 end
 
-function Motor:setPositionSetpoint(value)
+function Motor:setPositionSP(value)
   self:setAttrInt("position_sp", value)
 end
 
-function Motor:rampUp()
+function Motor:rampUpSP()
   return self:getAttrInt("ramp_up_sp")
 end
 
-function Motor:setRampUp(value)
+function Motor:setRampUpSP(value)
   self:setAttrInt("ramp_up_sp", value)
 end
-  
-function Motor:rampDown()
+
+function Motor:rampDownSP()
   return self:getAttrInt("ramp_down_sp")
 end
 
-function Motor:setRampDown(value)
+function Motor:setRampDownSP(value)
   self:setAttrInt("ramp_down_sp", value)
+end
+
+function Motor:speedRegulationP()
+  return self:getAttrInt("speed_regulation_p")
+end
+
+function Motor:setSpeedRegulationP(value)
+  self:setAttrInt("speed_regulation_p", value)
+end
+
+function Motor:speedRegulationI()
+  return self:getAttrInt("speed_regulation_i")
+end
+
+function Motor:setSpeedRegulationI(value)
+  self:setAttrInt("speed_regulation_i", value)
+end
+
+function Motor:speedRegulationD()
+  return self:getAttrInt("speed_regulation_d")
+end
+
+function Motor:setSpeedRegulationD(value)
+  self:setAttrInt("speed_regulation_d", value)
+end
+
+function Motor:speedRegulationK()
+  return self:getAttrInt("speed_regulation_k")
+end
+
+function Motor:setSpeedRegulationK(value)
+  self:setAttrInt("speed_regulation_k", value)
 end
 
 ------------------------------------------------------------------------------
@@ -485,7 +404,7 @@ end
 LargeMotor = class(Motor)
 
 function LargeMotor:init(port)
-	Motor.init(self, port, "tacho")
+  Motor.init(self, port, { "tacho" } )
 end
 
 ------------------------------------------------------------------------------
@@ -494,35 +413,488 @@ end
 MediumMotor = class(Motor)
 
 function MediumMotor:init(port)
-	Motor.init(self, port, "minitacho")
+  Motor.init(self, port, { "minitacho" } )
 end
 
 ------------------------------------------------------------------------------
+--
+-- DC Motor
+--
+
+DCMotor = class(Device)
+
+-- Constants
+DCMotor.commandRun = "run"
+DCMotor.commandBrake = "brake"
+DCMotor.commandCoast = "coast"
+DCMotor.polarityNormal = "normal"
+DCMotor.polarityInverted = "inverted"
+
+function DCMotor:init(port)
+
+  local m = { port_name = { port } }
+  
+  Device.init(self, "dc-motor", "motor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("type")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+function DCMotor:type()
+  return self._type
+end
+
+function DCMotor:typeName()
+  return self:getAttrString("name")
+end
+
+function DCMotor:portName()
+  return self._port
+end
+
+function DCMotor:command()
+  return self:getAttrString("command")
+end
+
+function DCMotor:setCommand(value)
+  self:setAttrString("command", value)
+end
+
+function DCMotor:commands()
+  return self:getAttrStringArray("commands")
+end
+
+function DCMotor:dutyCycle()
+  return self:getAttrInt("duty_cycle")
+end
+
+function DCMotor:setDutyCycle(value)
+  self:setAttrInt("duty_cycle", value)
+end
+
+function DCMotor:rampDownMS()
+  return self:getAttrInt("ramp_down_ms")
+end
+
+function DCMotor:setRampDownMS(value)
+  self:setAttrInt("ramp_down_ms", value)
+end
+
+function DCMotor:rampUpMS()
+  return self:getAttrInt("ramp_up_ms")
+end
+
+function DCMotor:setRampUpMS(value)
+  self:setAttrInt("ramp_up_ms", value)
+end
+
+function DCMotor:polarity()
+  return self:getAttrString("polarity")
+end
+
+function DCMotor:setPolarity(value)
+  self:setAttrString("polarity", value)
+end
+
+------------------------------------------------------------------------------
+--
+-- Servo Motor
+--
+
+ServoMotor = class(Device)
+
+-- Constants
+ServoMotor.commandRun = "run"
+ServoMotor.commandFloat = "float"
+ServoMotor.polarityNormal = "normal"
+ServoMotor.polarityInverted = "inverted"
+
+function ServoMotor:init(port)
+
+  local m = { port_name = { port } }
+  
+  Device.init(self, "servo-motor", "motor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("type")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+function ServoMotor:type()
+  return self._type
+end
+
+function ServoMotor:typeName()
+  return self:getAttrString("name")
+end
+
+function ServoMotor:portName()
+  return self._port
+end
+
+function ServoMotor:command()
+  return self:getAttrString("command")
+end
+
+function ServoMotor:setCommand(value)
+  self:setAttrString("command", value)
+end
+
+function ServoMotor:position()
+  return self:getAttrInt("position")
+end
+
+function ServoMotor:setPosition(value)
+  self:setAttrInt("position", value)
+end
+
+function ServoMotor:rate()
+  return self:getAttrInt("rate")
+end
+
+function ServoMotor:setRate(value)
+  self:setAttrInt("rate", value)
+end
+
+function ServoMotor:maxPulseMS()
+  return self:getAttrInt("max_pulse_ms")
+end
+
+function ServoMotor:setMaxPulseMS(value)
+  self:setAttrInt("max_pulse_ms", value)
+end
+
+function ServoMotor:midPulseMS()
+  return self:getAttrInt("mid_pulse_ms")
+end
+
+function ServoMotor:setMidPulseMS(value)
+  self:setAttrInt("mid_pulse_ms", value)
+end
+
+function ServoMotor:minPulseMS()
+  return self:getAttrInt("min_pulse_ms")
+end
+
+function ServoMotor:setMinPulseMS(value)
+  self:setAttrInt("min_pulse_ms", value)
+end
+
+function ServoMotor:polarity()
+  return self:getAttrString("polarity")
+end
+
+function ServoMotor:setPolarity(value)
+  self:setAttrString("polarity", value)
+end
+
+------------------------------------------------------------------------------
+--
+-- Sensor
+--
+
+Sensor = class(Device)
+
+Sensor.NXTTouch       = "lego-nxt-touch"
+Sensor.NXTLight       = "lego-nxt-light"
+Sensor.NXTSound       = "lego-nxt-sound"
+Sensor.NXTUltrasonic  = "lego-nxt-ultrasonic"
+
+Sensor.EV3Touch       = "lego-ev3-touch"
+Sensor.EV3Color       = "ev3-uart-29"
+Sensor.EV3Ultrasonic  = "ev3-uart-30"
+Sensor.EV3Gyro        = "ev3-uart-32"
+Sensor.EV3Infrared    = "ev3-uart-33"
+
+function Sensor:init(port, sensor_types)
+  local m = { port_name = { port } }
+  
+  if (sensor_types ~= nil) then
+    m["name"] = sensor_types
+  end
+  
+  Device.init(self, "msensor", "sensor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("name")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+function Sensor:type()
+  return self._type
+end
+
+function Sensor:typeName()
+  return self:getAttrString("name")
+end
+
+function Sensor:portName()
+  return self._port
+end
+
+function Sensor:modes()
+  return self:getAttrString("modes")
+end
+
+function Sensor:mode()
+  return self:getAttrString("mode")
+end
+
+function Sensor:setMode(value)
+  self:setAttrString("mode", value)
+end
+
+function Sensor:numValues()
+  return self:getAttrInt("num_values")
+end
+
+function Sensor:value(id)
+
+  if (id == nil) then
+    id = 0
+  end
+
+  return self:getAttrInt("value"..id)
+end
+
+function Sensor:floatValue(id)
+
+  if (id == nil) then
+    id = 0
+  end
+
+  local scale = math.pow(10, -self:getAttrInt("dp"))
+  return self:getAttrInt("value"..id) * scale
+end
+
+function Sensor:dp()
+  return self:getAttrInt("dp")
+end
+    
+------------------------------------------------------------------------------
+--
+-- I2C Sensor
+--
+
+I2CSensor = class(Sensor)
+
+function I2CSensor:init(port, i2cAddress)
+  local m = { port_name = { port } }
+  m["name"] = { "nxt-i2c-sensor" }
+  
+  if (i2cAddress ~= nil) then
+    m["address"] = i2cAddress
+  end
+  
+  Device.init(self, "msensor", "sensor", m)
+
+  if (self:connected()) then
+    self._type = self:getAttrString("name")
+    self._port = self:getAttrString("port_name")
+  else
+    self._type = nil
+    self._port = nil
+  end
+end
+
+
+function I2CSensor:address()
+  return self:getAttrString("address")
+end
+
+function I2CSensor:pollMS()
+  return self:getAttrInt("poll_ms")
+end
+
+function I2CSensor:setPollMS(value)
+  self:setAttrInt("poll_ms", value)
+end
+
+function I2CSensor:fwVersion()
+  return self:getAttrString("fw_version")
+end
+
+------------------------------------------------------------------------------
+-- TouchSensor
+
+TouchSensor = class(Sensor)
+
+function TouchSensor:init(port)
+  Sensor.init(self, port, { Sensor.EV3Touch })
+end
+
+function TouchSensor:pressed()
+  return self:value(0)
+end
+
+------------------------------------------------------------------------------
+-- ColorSensor
+
+ColorSensor = class(Sensor)
+
+ColorSensor.ModeReflect = "COL-REFLECT"
+ColorSensor.ModeAmbient = "COL-AMBIENT"
+ColorSensor.ModeColor   = "COL-COLOR"
+
+function ColorSensor:init(port)
+  Sensor.init(self, port, { Sensor.EV3Color } )
+end
+
+------------------------------------------------------------------------------
+-- UltrasonicSensor
+
+UltrasonicSensor = class(Sensor)
+
+UltrasonicSensor.ModeDistCM   = "US-DIST-CM"
+UltrasonicSensor.ModeDistIN   = "US-DIST-IN"
+UltrasonicSensor.ModeListen   = "US-LISTEN"
+UltrasonicSensor.ModeSingleCM = "US-SI-CM"
+UltrasonicSensor.ModeSingleIN = "US-SI-IN"
+
+function UltrasonicSensor:init(port)
+  Sensor.init(self, port, { Sensor.EV3Ultrasonic } )
+end
+
+------------------------------------------------------------------------------
+-- GyroSensor
+
+GyroSensor = class(Sensor)
+
+GyroSensor.ModeAngle         = "GYRO-ANG"
+GyroSensor.ModeSpeed         = "GYRO-RATE"
+GyroSensor.ModeAngleAndSpeed = "GYRO-G&A"
+
+function GyroSensor:init(port)
+  Sensor.init(self, port, { Sensor.EV3Gyro } )
+end
+
+------------------------------------------------------------------------------
+-- InfraredSensor
+
+InfraredSensor = class(Sensor)
+
+InfraredSensor.ModeProximity = "IR-PROX"
+InfraredSensor.ModeIRSeeker  = "IR-SEEK"
+InfraredSensor.ModeIRRemote  = "IR-REMOTE"
+
+function InfraredSensor:init(port)
+  Sensor.init(self, port, { Sensor.EV3Infrared } )
+end
+
+------------------------------------------------------------------------------
+--
+-- Power Supply
+--
+
+PowerSupply = class(Device)
+
+function PowerSupply:init(device)
+  if (device ~= nil) then
+    self._path = sys_power..device.."/"
+  else
+    self._path = sys_power.."legoev3-battery/"
+  end
+
+  local file = io.open(self._path.."voltage_now")
+  if (file ~= nil) then 
+    file:close()
+  else
+    self._path = nil
+  end
+end
+
+function PowerSupply:currentNow()
+  return self:getAttrInt("current_now")
+end
+
+function PowerSupply:voltageNow()
+  return self:getAttrInt("voltage_now")
+end
+
+function PowerSupply:voltageMinDesign()
+  return self:getAttrInt("voltage_min_design")
+end
+
+function PowerSupply:voltageMaxDesign()
+  return self:getAttrInt("voltage_max_design")
+end
+
+function PowerSupply:technology()
+  return self:getAttrString("technology")
+end
+
+function PowerSupply:type()
+  return self:getAttrString("type")
+end
+
+function PowerSupply:currentAmps()
+  return self:getAttrInt("current_now") / 1000
+end
+
+function PowerSupply:voltageVolts()
+  return self:getAttrInt("voltage_now") / 1000000
+end
+
+Battery = PowerSupply()
+
+------------------------------------------------------------------------------
+--
 -- LED
+--
 
 LED = class(Device)
 
 function LED:init(name)
   self._path = sys_class.."leds/"..name.."/"
 
-	local file = io.open(self._path.."brightness")
-	if (file ~= nil) then	
-		file:close()
+  local file = io.open(self._path.."brightness")
+  if (file ~= nil) then
+    file:close()
   else
     self._path = nil
   end
-end
-
-function LED:connected()
-	return (self._path ~= nil)
 end
 
 function LED:brightness()
   return self:getAttrInt("brightness")
 end
 
+function LED:setBrightness(value)
+  self:setAttrInt("brightness", value)
+end
+
 function LED:maxBrightness()
   return self:getAttrInt("max_brightness")
+end
+
+function LED:trigger()
+  local file = io.open(self._path.."trigger", "r")
+  if (file ~= nil) then
+    local m = string.match(file:read(), "%[%w+[%-%w+]*%]")
+    file:close()
+    if (m.len) then
+      return string.match(m, "%w+[%-%w+]*")
+    end
+  end
+  
+  return ""
+end
+
+function LED:setTrigger(value)
+  self:setAttrString("trigger", value)
 end
 
 function LED:on()
@@ -538,7 +910,7 @@ function LED:flash(interval)
   if ((interval ~= nil) and (interval ~= 0)) then
     self:setOnDelay(interval)
     self:setOffDelay(interval)
-	end	
+  end 
 end
 
 function LED:setOnDelay(ms)
@@ -549,34 +921,17 @@ function LED:setOffDelay(ms)
   self:setAttrInt("delay_off", ms)
 end
   
-function LED:trigger()
-	local file = io.open(self._path.."trigger", "r")
-	if (file ~= nil) then	
-		local m = string.match(file:read(), "%[%w+[%-%w+]*%]")
-		file:close()
-		if (m.len) then
-			return string.match(m, "%w+[%-%w+]*")
-		end
-	end
-	
-	return ""
-end
-
 function LED:triggers()
-	local file = io.open(self._path.."trigger", "r")
-	if (file ~= nil) then	
-		local m = file:read()
-		file:close()
-		if (m.len) then
-		  return m
-		end
-	end
-	
-	return ""
-end
-
-function LED:setTrigger(trigger)
-  self:setAttrString("trigger", trigger)
+  local file = io.open(self._path.."trigger", "r")
+  if (file ~= nil) then 
+    local m = file:read()
+    file:close()
+    if (m.len) then
+      return m
+    end
+  end
+  
+  return ""
 end
 
 ledRedRight   = LED("ev3:red:right")
@@ -623,103 +978,44 @@ function Sound.beep()
 end
 
 function Sound.tone(frequency, durationMS)
-	local file = io.open(sys_sound.."tone", "w")
-	if (file ~= nil) then	
-		if (durationMS ~= nil) then
-			file:write(" "..frequency.." "..durationMS)
-		else
-			file:write(frequency)
-		end		
-		file:close()
-	end	
+  local file = io.open(sys_sound.."tone", "w")
+  if (file ~= nil) then 
+    if (durationMS ~= nil) then
+      file:write(" "..frequency.." "..durationMS)
+    else
+      file:write(frequency)
+    end   
+    file:close()
+  end 
 end
 
 function Sound.play(soundfile)
-	os.execute("aplay "..soundfile)
+  os.execute("aplay "..soundfile)
 end
 
 function Sound.speak(text)
-	os.execute("espeak -a 200 --stdout \""..text.."\" | aplay")
+  os.execute("espeak -a 200 --stdout \""..text.."\" | aplay")
 end
 
 function Sound.volume()
-	local file = io.open(sys_sound.."volume")
-	if (file ~= nil) then	
-		local val = file:read("*n")
-		file:close()
-		return val
-	end	
-	
-	return 50
+  local file = io.open(sys_sound.."volume")
+  if (file ~= nil) then 
+    local val = file:read("*n")
+    file:close()
+    return val
+  end 
+  
+  return 50
 end
 
 function Sound.setVolume(levelInPercent)
-	local file = io.open(sys_sound.."volume", "w")
-	if (file ~= nil) then
-		file:write(levelInPercent)
-		file:close()
-	end	
+  local file = io.open(sys_sound.."volume", "w")
+  if (file ~= nil) then
+    file:write(levelInPercent)
+    file:close()
+  end 
 end
 
-------------------------------------------------------------------------------
---PowerSupply
-PowerSupply = class()
-
-PowerSupply = class(Device)
-
-function PowerSupply:init(device)
-  if (device ~= nil) then
-    self._path = sys_power..device.."/"
-	else
-    self._path = sys_power.."legoev3-battery/"
-	end
-
-	local file = io.open(self._path.."voltage_now")
-	if (file ~= nil) then	
-		file:close()
-  else
-    self._path = nil
-  end			
-end
-
-function PowerSupply:connected()
-	return (self._path ~= nil)
-end
-
-function PowerSupply:currentNow()
-  return self:getAttrInt("current_now")
-end
-
-function PowerSupply:currentAmps()
-  return self:getAttrInt("current_now") / 1000
-end
-
-function PowerSupply:voltageNow()
-  return self:getAttrInt("voltage_now")
-end
-
-function PowerSupply:voltageVolts()
-  return self:getAttrInt("voltage_now") / 1000000
-end
-
-function PowerSupply:currentMaxDesign()
-  return self:getAttrInt("current_max_design")
-end
-
-function PowerSupply:voltageMaxDesign()
-  return self:getAttrInt("voltage_max_design")
-end
-
-function PowerSupply:technology()
-  return self:getAttrString("technology")
-end
-
-function PowerSupply:type()
-  return self:getAttrString("type")
-end
-
-Battery = PowerSupply()
- 
 ------------------------------------------------------------------------------
 --RemoteControl
 RemoteControl = class()

@@ -36,7 +36,7 @@ function printMotorInfo(o)
   end
   
   if (o:runMode() == o.runModePosition) then
-    print("  Position setpoint is "..m:positionSetpoint())
+    print("  Position setpoint is "..o:positionSetpoint())
   end
   
   --print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
@@ -49,6 +49,17 @@ if (s:connected()) then
 	print ( s:pressed() )
 else
 	print("No touch sensor connected")
+end
+
+ic = I2CSensor()
+if (ic:connected()) then
+	print("Connected to I2C sensor @ "..c:portName().." with mode "..c:mode())
+	print ("Value is "..c:value())
+	if (c:dp() > 0) then
+	  print ("Float value is "..c:floatValue())
+	end
+else
+	print("No I2C sensor connected")
 end
 
 c = ColorSensor()
@@ -109,6 +120,27 @@ if (l:connected()) then
 	printMotorInfo(l)
 else
 	print("No large motor connected")
+end
+
+dc = DCMotor()
+if (dc:connected()) then
+	print("Connected to DC motor @ "..dc:portName())
+  print("  Current command is "..dc:command())
+  print("    duty cycle: "..dc:dutyCycle().."\n")
+  print("    rampUpMS:   "..dc:rampUpMS().."\n")
+  print("    rampDownMS: "..dc:rampDownMS().."\n")
+else
+	print("No DC motor connected")
+end
+
+sv = ServoMotor()
+if (sv:connected()) then
+	print("Connected to servo motor @ "..sv:portName())
+  print("  Current command is "..sv:command())
+  print("    position: "..sv:position().."\n")
+  print("    rate:     "..sv:rate().."\n")
+else
+	print("No servo motor connected")
 end
 
 print("Brightness of left green led is "..ledGreenLeft:brightness())
