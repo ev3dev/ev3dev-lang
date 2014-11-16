@@ -437,7 +437,7 @@ function DCMotor:init(port)
   Device.init(self, "dc-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("type")
+    self._type = self:getAttrString("name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -521,7 +521,7 @@ function ServoMotor:init(port)
   Device.init(self, "servo-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("type")
+    self._type = self:getAttrString("name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
