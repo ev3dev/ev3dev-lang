@@ -5,7 +5,7 @@ Live tests and examples for Vala ev3dev library
 using GLib;
 using ev3dev;
 
-const string BUILD_VERSION = "0.9.1-beta";
+const string BUILD_VERSION = "0.9.1";
 
 class Tests
 {	
