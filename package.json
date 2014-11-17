@@ -1,0 +1,14 @@
+{
+  "name": "ev3dev-lang-autogen",
+  "version": "1.0.0",
+  "description": "Dependencies for ev3dev-lang autogen",
+  "main": "autogen.js",
+  "dependencies": {
+    "liquid-node": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"TODO\" && exit 1"
+  },
+  "homepage": "https://github.com/ev3dev/ev3dev-lang"
+}

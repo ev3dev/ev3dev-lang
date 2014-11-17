@@ -1,0 +1,15 @@
+{
+    "meta": {
+        "version": "0.9.1-pre",
+        "specRevision":  "3"
+    },
+    "classes": {
+        "led": {
+            "properties": [
+                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true }
+            ]
+        }
+    }
+}
