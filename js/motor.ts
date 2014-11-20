@@ -2,39 +2,22 @@
 ///<reference path="include.ts" />
 ///<reference path="io.ts" />
 
-class Motor extends Device {
+class MotorBase extends Device {
     private port: string;
-    private motorDeviceDir = '/sys/class/tacho-motor/';
+    private deviceDir = '/sys/class/tacho-motor/'; //Default motor type
 
     private _deviceIndex: number = -1;
     get deviceIndex(): number {
         return this._deviceIndex;
     }
 
-    get motorProperties(): any {
+    get portName(): string {
+        return this.port;
+    }
+    
+    get motorBaseProperties(): any {
         return {
             portName: 'port_name',
-            dutyCycle: 'duty_cyle',
-            dutyCycleSp: 'duty_cycle_sp',
-            position: 'position',
-            positionMode: 'position_mode',
-            positionSp: 'position_sp',
-            pulsesPerSecond: 'pulses_per_second',
-            pulsesPerSecondSp: 'pulses_per_second_sp',
-            rampDownSp: 'ramp_down_sp',
-            rampUpSp: 'ramp_up_sp',
-            regulationMode: 'regulation_mode',
-            reset: 'reset',
-            run: 'run',
-            runMode: 'run_mode',
-            speedRegulationP: 'speed_regulation_P',
-            speedRegulationI: 'speed_regulation_I',
-            speedRegulationD: 'speed_regulation_D',
-            speedRegulationK: 'speed_regulation_K',
-            state: 'state',
-            stopMode: 'stop_mode',
-            stopModes: 'stop_modes',
-            timeSp: 'time_sp',
             type: 'type'
         };
     }
@@ -46,17 +29,17 @@ class Motor extends Device {
         var rootPath: string;
 
         try {
-            var availableDevices = fs.readdirSync(this.motorDeviceDir);
+            var availableDevices = fs.readdirSync(this.deviceDir);
             for (var i in availableDevices) {
                 var file = availableDevices[i];
 
-                rootPath = path.join(this.motorDeviceDir, file);
+                rootPath = path.join(this.deviceDir, file);
                 var portName = fs.readFileSync(
-                    path.join(rootPath, this.motorProperties.portName)
+                    path.join(rootPath, this.motorBaseProperties.portName)
                     ).toString().trim();
 
                 var motorType = fs.readFileSync(
-                    path.join(rootPath, this.motorProperties.type)
+                    path.join(rootPath, this.motorBaseProperties.type)
                     ).toString().trim();
 
                 var satisfiesCondition = (
@@ -89,16 +72,50 @@ class Motor extends Device {
 
         this.connect(rootPath/*, [this.motorProperties.portName]*/);
     }
+}
+
+//Tacho motor
+class Motor extends MotorBase {
+
+    get motorProperties(): any {
+        return {
+            portName: 'port_name',
+            dutyCycle: 'duty_cycle',
+            dutyCycleSp: 'duty_cycle_sp',
+            position: 'position',
+            positionMode: 'position_mode',
+            positionSp: 'position_sp',
+            pulsesPerSecond: 'pulses_per_second',
+            pulsesPerSecondSp: 'pulses_per_second_sp',
+            rampDownSp: 'ramp_down_sp',
+            rampUpSp: 'ramp_up_sp',
+            regulationMode: 'regulation_mode',
+            reset: 'reset',
+            run: 'run',
+            runMode: 'run_mode',
+            speedRegulationP: 'speed_regulation_P',
+            speedRegulationI: 'speed_regulation_I',
+            speedRegulationD: 'speed_regulation_D',
+            speedRegulationK: 'speed_regulation_K',
+            state: 'state',
+            stopMode: 'stop_mode',
+            stopModes: 'stop_modes',
+            timeSp: 'time_sp',
+            type: 'type'
+        };
+    }
+
+    constructor(port: string, type: string) {
+        this.deviceDir = '/sys/class/tacho-motor/';
+    
+        super(port, type);
+    }
 
     public reset() {
         this.setNumber(this.motorProperties.reset, 1);
     }
 
     //PROPERTIES
-    get portName(): string {
-        return this.getProperty(this.motorProperties.portName);
-    }
-
 
     get dutyCycle(): number {
         return this.getNumber(this.motorProperties.dutyCycle);
@@ -266,5 +283,81 @@ class Motor extends Device {
 
     get type(): string {
         return this.getString(this.motorProperties.type);
+    }
+}
+
+//DC Motor
+class DCMotor extends MotorBase {
+
+    get motorProperties(): any {
+        return {
+            command: 'command',
+            commands: 'commands',
+            name: 'name',
+            dutyCycle: 'duty_cycle',
+            rampUpMs: 'ramp_up_ms',
+            rampDownMs: 'ramp_down_ms',
+            polarity: 'polarity'
+        };
+    }
+
+    constructor(port: string) {
+        this.deviceDir = '/sys/class/dc-motor/';
+    
+        super(port);
+    }
+
+    //PROPERTIES
+    get dutyCycle(): number {
+        return this.getNumber(this.motorProperties.dutyCycle);
+    }
+
+    set dutyCycle(value: number) {
+        this.setNumber(this.motorProperties.dutyCycle, value);
+    }
+
+
+    get command(): string {
+        return this.getString(this.motorProperties.command);
+    }
+
+    set command(value: string) {
+        this.setString(this.motorProperties.command, value);
+    }
+
+
+    get commands(): string[] {
+        return this.getString(this.motorProperties.commands).split(' ');
+    }
+    
+    
+    get typeName(): string {
+        return this.getString(this.motorProperties.name);
+    }
+    
+    get rampDownMs(): number {
+        return this.getNumber(this.motorProperties.rampDownMs);
+    }
+
+    set rampDownMs(value: number) {
+        this.setNumber(this.motorProperties.rampDownMs, value);
+    }
+
+
+    get rampUpMs(): number {
+        return this.getNumber(this.motorProperties.rampUpMs);
+    }
+
+    set rampUpMs(value: number) {
+        this.setNumber(this.motorProperties.rampUpMs, value);
+    }
+
+
+    get polarity(): string {
+        return this.getString(this.motorProperties.polarity);
+    }
+
+    set polarity(value: string) {
+        this.setString(this.motorProperties.polarity, value);
     }
 }
