@@ -126,8 +126,8 @@ dc = DCMotor()
 if (dc:connected()) then
 	print("Connected to DC motor @ "..dc:portName())
   print("  Current command is "..dc:command())
-  print("    duty cycle: "..dc:dutyCycle().."\n")
-  print("    rampUpMS:   "..dc:rampUpMS().."\n")
+  print("    duty cycle: "..dc:dutyCycle())
+  print("    rampUpMS:   "..dc:rampUpMS())
   print("    rampDownMS: "..dc:rampDownMS().."\n")
 else
 	print("No DC motor connected")
@@ -146,6 +146,25 @@ end
 print("Brightness of left green led is "..ledGreenLeft:brightness())
 print("Trigger of right red led is "..ledRedRight:trigger())
   
+-- PowerFunctions led(s)
+ledPFoutA = LED("ev3::outA")
+ledPFoutB = LED("ev3::outB")
+ledPFoutC = LED("ev3::outC")
+ledPFoutD = LED("ev3::outD")
+
+if (ledPFoutA:connected()) then
+  print("Brightness of led in port outA is "..ledPFoutA:brightness())
+end
+if (ledPFoutB:connected()) then
+  print("Brightness of led in port outB is "..ledPFoutB:brightness())
+end
+if (ledPFoutC:connected()) then
+  print("Brightness of led in port outC is "..ledPFoutC:brightness())
+end
+if (ledPFoutD:connected()) then
+  print("Brightness of led in port outD is "..ledPFoutD:brightness())
+end
+
 print("Beeping...")
 Sound.beep();
 

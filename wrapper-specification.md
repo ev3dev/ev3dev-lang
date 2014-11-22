@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (DRAFT ver `0.9.1`, rev 3)
+ev3dev Language Wrapper Specification (DRAFT ver `0.9.1`, rev 4)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -64,6 +64,67 @@ Connected|Boolean|Read
 Method Name|Return Type|Arguments|Description
 ---|---|---|---
 Reset|Void|None|Sets the `reset` motor property to `1`, which causes the motor driver to reset all of the parameters.
+
+<hr/>
+
+`DC Motor` (class) : abstract "IO Device"
+-----
+###Constructor:
+
+Argument Name|Type|Description
+---|---|---
+Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `OUTPUT_*` constants.
+
+###Direct attribute mappings:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Command|String|Read/Write
+Commands|String Array|Read
+Duty Cycle|Number|Read/Write
+Type Name|String|Read|Attribute `name`
+Port Name|String|Read
+Ramp Down MS|Number|Read/Write
+Ramp Up MS|Number|Read/Write
+Polarity|String|Read/Write
+
+###Special properties:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Device Index|Number|Read
+Connected|Boolean|Read
+
+<hr/>
+
+`Servo Motor` (class) : abstract "IO Device"
+-----
+###Constructor:
+
+Argument Name|Type|Description
+---|---|---
+Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `OUTPUT_*` constants.
+
+###Direct attribute mappings:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Command|String|Read/Write
+Type Name|String|Read|Attribute `name`
+Port Name|String|Read
+Max Pulse MS|Number|Read/Write
+Mid Pulse MS|Number|Read/Write
+Min Pulse MS|Number|Read/Write
+Polarity|String|Read/Write
+Position|Number|Read/Write
+Rate|Number|Read/Write
+
+###Special properties:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Device Index|Number|Read
+Connected|Boolean|Read
 
 <hr/>
 
