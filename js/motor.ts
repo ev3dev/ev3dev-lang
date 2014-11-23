@@ -2,17 +2,17 @@
 ///<reference path="include.ts" />
 ///<reference path="io.ts" />
 
-class MotorBase extends Device {
-    private port: string;
-    private deviceDir = '/sys/class/tacho-motor/'; //Default motor type
+//~autogen autogen-header
+    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4.
+//~autogen
 
-    private _deviceIndex: number = -1;
+class MotorBase extends Device {
+    protected port: string;
+    protected deviceDir = '/sys/class/tacho-motor/'; //Default motor type
+
+    protected _deviceIndex: number = -1;
     get deviceIndex(): number {
         return this._deviceIndex;
-    }
-
-    get portName(): string {
-        return this.port;
     }
     
     get motorBaseProperties(): any {
@@ -22,7 +22,7 @@ class MotorBase extends Device {
         };
     }
 
-    constructor(port: string, type: string) {
+    constructor(port: string, type?: string) {
         super();
 
         this.port = port;
@@ -289,18 +289,6 @@ class Motor extends MotorBase {
 //DC Motor
 class DCMotor extends MotorBase {
 
-    get motorProperties(): any {
-        return {
-            command: 'command',
-            commands: 'commands',
-            name: 'name',
-            dutyCycle: 'duty_cycle',
-            rampUpMs: 'ramp_up_ms',
-            rampDownMs: 'ramp_down_ms',
-            polarity: 'polarity'
-        };
-    }
-
     constructor(port: string) {
         this.deviceDir = '/sys/class/dc-motor/';
     
@@ -308,56 +296,130 @@ class DCMotor extends MotorBase {
     }
 
     //PROPERTIES
-    get dutyCycle(): number {
-        return this.getNumber(this.motorProperties.dutyCycle);
+
+    //~autogen js_generic-get-set classes.dcMotor>currentClass
+
+    set command(value: string) {
+        this.setString("command", value);
+    }
+    
+    get commands(): string[] {
+        return this.getString("commands").split(' ');
     }
 
-    set dutyCycle(value: number) {
-        this.setNumber(this.motorProperties.dutyCycle, value);
+    get dutyCycle(): number {
+        return this.getNumber("duty_cycle");
     }
+    set dutyCycle(value: number) {
+        this.setNumber("duty_cycle", value);
+    }
+    
+    get typeName(): string {
+        return this.getString("name");
+    }
+
+    get portName(): string {
+        return this.getString("port_name");
+    }
+
+    get rampDownMs(): number {
+        return this.getNumber("ramp_down_ms");
+    }
+    set rampDownMs(value: number) {
+        this.setNumber("ramp_down_ms", value);
+    }
+    
+    get rampUpMs(): number {
+        return this.getNumber("ramp_up_ms");
+    }
+    set rampUpMs(value: number) {
+        this.setNumber("ramp_up_ms", value);
+    }
+    
+    get polarity(): string {
+        return this.getString("polarity");
+    }
+    set polarity(value: string) {
+        this.setString("polarity", value);
+    }
+    
+
+//~autogen
+}
+
+//Servo Motor
+class ServoMotor extends MotorBase {
+
+    constructor(port: string) {
+        this.deviceDir = '/sys/class/servo-motor/';
+
+        super(port);
+    }
+
+    //PROPERTIES
+
+    //~autogen js_generic-get-set classes.servoMotor>currentClass
+
+
 
 
     get command(): string {
-        return this.getString(this.motorProperties.command);
+        return this.getString("command");
     }
-
     set command(value: string) {
-        this.setString(this.motorProperties.command, value);
+        this.setString("command", value);
     }
-
-
-    get commands(): string[] {
-        return this.getString(this.motorProperties.commands).split(' ');
-    }
-    
     
     get typeName(): string {
-        return this.getString(this.motorProperties.name);
+        return this.getString("name");
+    }
+
+    get portName(): string {
+        return this.getString("port_name");
+    }
+
+    get maxPulseMs(): number {
+        return this.getNumber("max_pulse_ms");
+    }
+    set maxPulseMs(value: number) {
+        this.setNumber("max_pulse_ms", value);
     }
     
-    get rampDownMs(): number {
-        return this.getNumber(this.motorProperties.rampDownMs);
+    get midPulseMs(): number {
+        return this.getNumber("mid_pulse_ms");
     }
-
-    set rampDownMs(value: number) {
-        this.setNumber(this.motorProperties.rampDownMs, value);
+    set midPulseMs(value: number) {
+        this.setNumber("mid_pulse_ms", value);
     }
-
-
-    get rampUpMs(): number {
-        return this.getNumber(this.motorProperties.rampUpMs);
+    
+    get minPulseMs(): number {
+        return this.getNumber("min_pulse_ms");
     }
-
-    set rampUpMs(value: number) {
-        this.setNumber(this.motorProperties.rampUpMs, value);
+    set minPulseMs(value: number) {
+        this.setNumber("min_pulse_ms", value);
     }
-
-
+    
     get polarity(): string {
-        return this.getString(this.motorProperties.polarity);
+        return this.getString("polarity");
     }
-
     set polarity(value: string) {
-        this.setString(this.motorProperties.polarity, value);
+        this.setString("polarity", value);
     }
+    
+    get position(): number {
+        return this.getNumber("position");
+    }
+    set position(value: number) {
+        this.setNumber("position", value);
+    }
+    
+    get rate(): number {
+        return this.getNumber("rate");
+    }
+    set rate(value: number) {
+        this.setNumber("rate", value);
+    }
+    
+
+//~autogen
 }

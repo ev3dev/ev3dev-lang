@@ -1,0 +1,40 @@
+{
+    "meta": {
+        "version": "0.9.1-pre",
+        "specRevision": "4"
+    },
+    "classes": {
+        "led": {
+            "systemProperties": [
+                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "dcMotor": {
+            "systemProperties": [
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Ramp Down MS", "systemName": "ramp_down_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Ramp Up MS", "systemName": "ramp_up_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "servoMotor": {
+            "systemProperties": [
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Min Pulse MS", "systemName": "min_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Rate", "systemName": "rate", "type": "int", "readAccess": true, "writeAccess": true }
+            ]
+        }
+    }
+}

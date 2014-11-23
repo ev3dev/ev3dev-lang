@@ -2,11 +2,8 @@
 ///<reference path="include.ts" />
 ///<reference path="io.ts" />
 
-//~autogen
-/*
-    // Sections of the following code were auto-generated based on spec v{{ meta.version }}{% if meta.specRevision %}, rev {{meta.specRevision}}{% endif %}.
-*/
-    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 3.
+//~autogen autogen-header
+    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4.
 //~autogen
 
 class PowerSupply extends Device {
@@ -132,42 +129,22 @@ class LED extends Device {
 
     //PROPERTIES
 
-//~autogen
-/*
-{% for prop in classes.led.properties %}
-    {% if prop.readAccess == true %}
-    get {{ prop.name | camel_case }}(): {% if prop.type == 'int' or prop.type == 'float' %}number{% else %}string{% endif %} {
-        return this.get{% if prop.type == 'int' or prop.type == 'float' %}Number{% else %}String{% endif %}("{{ prop.systemName }}");
-    }
-    {% endif %} {% if prop.writeAccess == true %}
-    set {{ prop.name | camel_case }}(value: {% if prop.type == 'int' or prop.type == 'float' %}number{% else %}string{% endif %}) {
-        this.set{% if prop.type == 'int' or prop.type == 'float' %}Number{% else %}String{% endif %}("{{ prop.systemName }}", value);
-    }
-    {% endif %}
-{% endfor %}
-*/
+//~autogen js_generic-get-set classes.led>currentClass
 
-    
     get maxBrightness(): number {
         return this.getNumber("max_brightness");
     }
-     
 
-    
     get brightness(): number {
         return this.getNumber("brightness");
     }
-     
     set brightness(value: number) {
         this.setNumber("brightness", value);
     }
     
-
-    
     get trigger(): string {
         return this.getString("trigger");
     }
-     
     set trigger(value: string) {
         this.setString("trigger", value);
     }
