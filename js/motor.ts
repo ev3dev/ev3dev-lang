@@ -113,6 +113,10 @@ class Motor extends MotorBase {
 
     //PROPERTIES
 
+    get portName(): string {
+        return this.getString("port_name");
+    }
+
     get dutyCycle(): number {
         return this.getNumber(this.motorProperties.dutyCycle);
     }
