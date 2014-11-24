@@ -15,3 +15,4 @@ module.exports.I2CSensor = I2CSensor;
 module.exports.PowerSupply = PowerSupply;
 module.exports.ServoMotor = ServoMotor;
 module.exports.DCMotor = DCMotor;
+module.exports.LED = LED;
