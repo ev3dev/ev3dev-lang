@@ -3,18 +3,14 @@
 ///<reference path="io.ts" />
 
 class MotorBase extends Device {
-    private port: string;
-    private deviceDir = '/sys/class/tacho-motor/'; //Default motor type
+    protected port: string;
+    protected deviceDir = '/sys/class/tacho-motor/'; //Default motor type
 
-    private _deviceIndex: number = -1;
+    protected _deviceIndex: number = -1;
     get deviceIndex(): number {
         return this._deviceIndex;
     }
 
-    get portName(): string {
-        return this.port;
-    }
-    
     get motorBaseProperties(): any {
         return {
             portName: 'port_name',
@@ -22,7 +18,7 @@ class MotorBase extends Device {
         };
     }
 
-    constructor(port: string, type: string) {
+    constructor(port: string, type?: string) {
         super();
 
         this.port = port;
@@ -46,10 +42,10 @@ class MotorBase extends Device {
                     (port == ports.OUTPUT_AUTO)
                     || (port == undefined)
                     || (portName === port)
-                ) && (
+                    ) && (
                     (type == undefined || type == '')
                     || motorType == type
-                );
+                    );
 
                 if (satisfiesCondition) {
                     this._deviceIndex = Number(file.substring('motor'.length));
@@ -107,7 +103,7 @@ class Motor extends MotorBase {
 
     constructor(port: string, type: string) {
         this.deviceDir = '/sys/class/tacho-motor/';
-    
+
         super(port, type);
     }
 
@@ -289,75 +285,122 @@ class Motor extends MotorBase {
 //DC Motor
 class DCMotor extends MotorBase {
 
-    get motorProperties(): any {
-        return {
-            command: 'command',
-            commands: 'commands',
-            name: 'name',
-            dutyCycle: 'duty_cycle',
-            rampUpMs: 'ramp_up_ms',
-            rampDownMs: 'ramp_down_ms',
-            polarity: 'polarity'
-        };
-    }
-
     constructor(port: string) {
         this.deviceDir = '/sys/class/dc-motor/';
-    
+
         super(port);
     }
 
     //PROPERTIES
-    get dutyCycle(): number {
-        return this.getNumber(this.motorProperties.dutyCycle);
-    }
-
-    set dutyCycle(value: number) {
-        this.setNumber(this.motorProperties.dutyCycle, value);
-    }
-
-
-    get command(): string {
-        return this.getString(this.motorProperties.command);
-    }
-
     set command(value: string) {
-        this.setString(this.motorProperties.command, value);
+        this.setString("command", value);
     }
-
 
     get commands(): string[] {
-        return this.getString(this.motorProperties.commands).split(' ');
+        return this.getString("commands").split(' ');
     }
-    
-    
+
+    get dutyCycle(): number {
+        return this.getNumber("duty_cycle");
+    }
+    set dutyCycle(value: number) {
+        this.setNumber("duty_cycle", value);
+    }
+
     get typeName(): string {
-        return this.getString(this.motorProperties.name);
+        return this.getString("name");
     }
-    
+
+    get portName(): string {
+        return this.getString("port_name");
+    }
+
     get rampDownMs(): number {
-        return this.getNumber(this.motorProperties.rampDownMs);
+        return this.getNumber("ramp_down_ms");
     }
-
     set rampDownMs(value: number) {
-        this.setNumber(this.motorProperties.rampDownMs, value);
+        this.setNumber("ramp_down_ms", value);
     }
-
 
     get rampUpMs(): number {
-        return this.getNumber(this.motorProperties.rampUpMs);
+        return this.getNumber("ramp_up_ms");
     }
-
     set rampUpMs(value: number) {
-        this.setNumber(this.motorProperties.rampUpMs, value);
+        this.setNumber("ramp_up_ms", value);
     }
-
 
     get polarity(): string {
-        return this.getString(this.motorProperties.polarity);
+        return this.getString("polarity");
+    }
+    set polarity(value: string) {
+        this.setString("polarity", value);
+    }
+}
+
+//Servo Motor
+class ServoMotor extends MotorBase {
+
+    constructor(port: string) {
+        this.deviceDir = '/sys/class/servo-motor/';
+
+        super(port);
     }
 
+    //PROPERTIES
+    get command(): string {
+        return this.getString("command");
+    }
+    set command(value: string) {
+        this.setString("command", value);
+    }
+
+    get typeName(): string {
+        return this.getString("name");
+    }
+
+    get portName(): string {
+        return this.getString("port_name");
+    }
+
+    get maxPulseMs(): number {
+        return this.getNumber("max_pulse_ms");
+    }
+    set maxPulseMs(value: number) {
+        this.setNumber("max_pulse_ms", value);
+    }
+
+    get midPulseMs(): number {
+        return this.getNumber("mid_pulse_ms");
+    }
+    set midPulseMs(value: number) {
+        this.setNumber("mid_pulse_ms", value);
+    }
+
+    get minPulseMs(): number {
+        return this.getNumber("min_pulse_ms");
+    }
+    set minPulseMs(value: number) {
+        this.setNumber("min_pulse_ms", value);
+    }
+
+    get polarity(): string {
+        return this.getString("polarity");
+    }
     set polarity(value: string) {
-        this.setString(this.motorProperties.polarity, value);
+        this.setString("polarity", value);
+    }
+
+    get position(): number {
+        return this.getNumber("position");
+    }
+    set position(value: number) {
+        this.setNumber("position", value);
+    }
+
+    get rate(): number {
+        return this.getNumber("rate");
+    }
+    set rate(value: number) {
+        this.setNumber("rate", value);
     }
 }

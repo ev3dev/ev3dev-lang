@@ -13,3 +13,5 @@ module.exports.Motor = Motor;
 module.exports.Sensor = Sensor;
 module.exports.I2CSensor = I2CSensor;
 module.exports.PowerSupply = PowerSupply;
+module.exports.ServoMotor = ServoMotor;
+module.exports.DCMotor = DCMotor;
