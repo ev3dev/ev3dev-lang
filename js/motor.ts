@@ -14,7 +14,7 @@ class MotorBase extends Device {
     get deviceIndex(): number {
         return this._deviceIndex;
     }
-    
+
     get motorBaseProperties(): any {
         return {
             portName: 'port_name',
@@ -116,6 +116,10 @@ class Motor extends MotorBase {
     }
 
     //PROPERTIES
+
+    get portName(): string {
+        return this.getString("port_name");
+    }
 
     get dutyCycle(): number {
         return this.getNumber(this.motorProperties.dutyCycle);
@@ -302,7 +306,7 @@ class DCMotor extends MotorBase {
     set command(value: string) {
         this.setString("command", value);
     }
-    
+
     get commands(): string[] {
         return this.getString("commands").split(' ');
     }
@@ -313,7 +317,7 @@ class DCMotor extends MotorBase {
     set dutyCycle(value: number) {
         this.setNumber("duty_cycle", value);
     }
-    
+
     get typeName(): string {
         return this.getString("name");
     }
@@ -328,14 +332,14 @@ class DCMotor extends MotorBase {
     set rampDownMs(value: number) {
         this.setNumber("ramp_down_ms", value);
     }
-    
+
     get rampUpMs(): number {
         return this.getNumber("ramp_up_ms");
     }
     set rampUpMs(value: number) {
         this.setNumber("ramp_up_ms", value);
     }
-    
+
     get polarity(): string {
         return this.getString("polarity");
     }
@@ -345,17 +349,17 @@ class DCMotor extends MotorBase {
     
 
 //~autogen
-}
-
+    }
+    
 //Servo Motor
 class ServoMotor extends MotorBase {
 
     constructor(port: string) {
         this.deviceDir = '/sys/class/servo-motor/';
-
+    
         super(port);
     }
-
+    
     //PROPERTIES
 
     //~autogen js_generic-get-set classes.servoMotor>currentClass
@@ -369,7 +373,7 @@ class ServoMotor extends MotorBase {
     set command(value: string) {
         this.setString("command", value);
     }
-    
+
     get typeName(): string {
         return this.getString("name");
     }
@@ -384,35 +388,35 @@ class ServoMotor extends MotorBase {
     set maxPulseMs(value: number) {
         this.setNumber("max_pulse_ms", value);
     }
-    
+
     get midPulseMs(): number {
         return this.getNumber("mid_pulse_ms");
     }
     set midPulseMs(value: number) {
         this.setNumber("mid_pulse_ms", value);
     }
-    
+
     get minPulseMs(): number {
         return this.getNumber("min_pulse_ms");
     }
     set minPulseMs(value: number) {
         this.setNumber("min_pulse_ms", value);
     }
-    
+
     get polarity(): string {
         return this.getString("polarity");
     }
     set polarity(value: string) {
         this.setString("polarity", value);
     }
-    
+
     get position(): number {
         return this.getNumber("position");
     }
     set position(value: number) {
         this.setNumber("position", value);
     }
-    
+
     get rate(): number {
         return this.getNumber("rate");
     }

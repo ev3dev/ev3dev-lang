@@ -113,11 +113,11 @@ void sensor_action(sensor &s)
 
 void sensor_menu()
 {
-  sensor arrSensors[4] = {
-    sensor(INPUT_1),
-    sensor(INPUT_2),
-    sensor(INPUT_3),
-    sensor(INPUT_4)
+  sensor arrSensors[4] {
+    { INPUT_1 },
+    { INPUT_2 },
+    { INPUT_3 },
+    { INPUT_4 }
   };
   
   char c = 0;
@@ -175,7 +175,7 @@ void motor_action(motor &m)
     if (m.regulation_mode()==m.mode_on)
       cout << "pulses/sec (s)etpoint (" << m.pulses_per_second_setpoint() << ")" << endl;
     else
-      cout << "duty_cycle (s)etpoint (" << m.duty_cycle_setpoint() << ")" << endl;
+      cout << "duty cycle (s)etpoint (" << m.duty_cycle_setpoint() << ")" << endl;
 
     if (m.run_mode()==m.run_mode_position)
     {
@@ -206,7 +206,7 @@ void motor_action(motor &m)
     case 'i':
       cout << endl
            << "  state      is " << m.state() << endl
-           << "  duty_cycle is " << m.duty_cycle() << endl
+           << "  duty cycle is " << m.duty_cycle() << endl
            << "  pulses/sec is " << m.pulses_per_second() << endl
            << "  position   is " << m.position() << endl;
       break;
@@ -229,7 +229,7 @@ void motor_action(motor &m)
       }
       else
       {
-        cout << "duty_cycle: "; cin >> new_value; m.set_duty_cycle_setpoint(new_value); cout << endl;
+        cout << "duty cycle: "; cin >> new_value; m.set_duty_cycle_setpoint(new_value); cout << endl;
       }
       break;
     case 'm':
@@ -277,13 +277,124 @@ void motor_action(motor &m)
   while (c != 'b');
 }
 
+void motor_action(dc_motor &m)
+{
+  char c = 0;
+  int new_value = 0;
+  std::string new_mode;
+  
+  do
+  {
+    cout << endl
+         << "*** dc motor (" << m.port_name() << ") actions ***" << endl
+         << endl
+         << "(c)ommand      [" << m.command()      << "]" << endl
+         << "(d)uty cycle   (" << m.duty_cycle()   << ")" << endl
+         << "(r)amp down ms (" << m.ramp_down_ms() << ")" << endl
+         << "ramp (u)p ms   (" << m.ramp_up_ms()   << ")" << endl
+         << "p(o)larity     [" << m.polarity()     << "]" << endl;
+    cout << endl << "(b)ack" << endl
+         << endl
+         << "Choice: ";
+    cin >> c;
+    
+    switch (c)
+    {
+    case 'c':
+      cout << "command ("; for (auto const &c : m.commands()) cout << c << ",";
+      cout << "): ";
+      cin >> new_mode; m.set_command(new_mode); cout << endl;
+      break;
+    case 'o':
+      cout << "polarity (normal, inverted): ";
+      cin >> new_mode; m.set_polarity(new_mode); cout << endl;
+      break;
+    case 'd':
+      cout << "duty cycle: "; cin >> new_value; m.set_duty_cycle(new_value); cout << endl;
+      break;
+    case 'r':
+      cout << "ramp down ms: "; cin >> new_value; m.set_ramp_down_ms(new_value); cout << endl;
+      break;
+    case 'u':
+      cout << "ramp up ms: "; cin >> new_value; m.set_ramp_up_ms(new_value); cout << endl;
+      break;
+    }
+  }
+  while (c != 'b');
+}
+
+void motor_action(servo_motor &m)
+{
+  char c = 0;
+  int new_value = 0;
+  std::string new_mode;
+  
+  do
+  {
+    cout << endl
+         << "*** servo motor (" << m.port_name() << ") actions ***" << endl
+         << endl
+         << "(c)ommand      [" << m.command()      << "]" << endl
+         << "(p)osition     (" << m.position()     << ")" << endl
+         << "(r)ate         (" << m.rate()         << ")" << endl
+         << "mi(n) pulse ms (" << m.min_pulse_ms() << ")" << endl
+         << "mi(d) pulse ms (" << m.mid_pulse_ms() << ")" << endl
+         << "ma(x) pulse ms (" << m.max_pulse_ms() << ")" << endl
+         << "p(o)larity     [" << m.polarity()     << "]" << endl;
+    cout << endl << "(b)ack" << endl
+         << endl
+         << "Choice: ";
+    cin >> c;
+    
+    switch (c)
+    {
+    case 'c':
+      cout << "command (run, float): ";
+      cin >> new_mode; m.set_command(new_mode); cout << endl;
+      break;
+    case 'p':
+      cout << "position: "; cin >> new_value; m.set_position(new_value); cout << endl;
+      break;
+    case 'o':
+      cout << "polarity (normal, inverted): ";
+      cin >> new_mode; m.set_polarity(new_mode); cout << endl;
+      break;
+    case 'r':
+      cout << "rate: "; cin >> new_value; m.set_rate(new_value); cout << endl;
+      break;
+    case 'n':
+      cout << "min pulse ms: "; cin >> new_value; m.set_min_pulse_ms(new_value); cout << endl;
+      break;
+    case 'd':
+      cout << "mid pulse ms: "; cin >> new_value; m.set_mid_pulse_ms(new_value); cout << endl;
+      break;
+    case 'x':
+      cout << "max pulse ms: "; cin >> new_value; m.set_max_pulse_ms(new_value); cout << endl;
+      break;
+    }
+  }
+  while (c != 'b');
+}
+
 void motor_menu()
 {
   motor arrMotors[4] = {
-    motor(OUTPUT_A),
-    motor(OUTPUT_B),
-    motor(OUTPUT_C),
-    motor(OUTPUT_D)
+    { OUTPUT_A },
+    { OUTPUT_B },
+    { OUTPUT_C },
+    { OUTPUT_D }
+  };
+  dc_motor arrDCMotors[4] = {
+    { OUTPUT_A },
+    { OUTPUT_B },
+    { OUTPUT_C },
+    { OUTPUT_D }
+  };
+  servo_motor arrServoMotors[4] = {
+    { OUTPUT_A },
+    { OUTPUT_B },
+    { OUTPUT_C },
+    { OUTPUT_D }
   };
   
   char c = 0;
@@ -298,7 +409,15 @@ void motor_menu()
       motor &m = arrMotors[i];
       if (m.connected())
       {
-        cout << "(" << i+1 << ") " << m.type() << " motor on port " << m.port_name() << endl;
+        cout << "(" << 1+i << ") " << m.type() << " motor on port " << m.port_name() << endl;
+      }
+      else if (arrDCMotors[i].connected())
+      {
+        cout << "(" << 1+i << ") dc motor on port " << arrDCMotors[i].port_name() << endl;
+      }
+      else if (arrServoMotors[i].connected())
+      {
+        cout << "(" << 1+i << ") servo motor on port " << arrServoMotors[i].port_name() << endl;
       }
     }
     cout << endl;
@@ -313,7 +432,12 @@ void motor_menu()
     case '2':
     case '3':
     case '4':
-      motor_action(arrMotors[c-'1']);
+      if (arrMotors[c-'1'].connected())
+        motor_action(arrMotors[c-'1']);
+      else if (arrMotors[c-'1'].connected())
+        motor_action(arrDCMotors[c-'1']);
+      else if (arrServoMotors[c-'1'].connected())
+        motor_action(arrServoMotors[c-'1']);
       break;
     }
   }
@@ -381,6 +505,9 @@ void led_action(const char *name, led &l)
 
 void led_menu()
 {
+  led arrPortLEDs[4] {
+    { "ev3::outA" }, { "ev3::outB" }, { "ev3::outC" }, { "ev3::outD" } };
+
   char c = 0;
   do
   {
@@ -390,8 +517,17 @@ void led_menu()
          << "(1) green:left"  << endl
          << "(2) green:right" << endl
          << "(3) red:left"    << endl
-         << "(4) red:right"   << endl
-         << endl
+         << "(4) red:right"   << endl;
+    
+    for (unsigned i=0; i<4; ++i)
+    {
+      if (arrPortLEDs[i].connected())
+      {
+        cout << "(" << 5+i << ") out" << static_cast<char>('A'+i) << endl;
+      }
+    }
+    
+    cout << endl
          << "(b)ack"          << endl
          << endl
          << "Choice: ";
@@ -410,6 +546,18 @@ void led_menu()
       break;
     case '4':
       led_action("red:right", led::red_right);
+      break;
+    case '5':
+      led_action("outA", arrPortLEDs[0]);
+      break;
+    case '6':
+      led_action("outB", arrPortLEDs[1]);
+      break;
+    case '7':
+      led_action("outC", arrPortLEDs[2]);
+      break;
+    case '8':
+      led_action("outD", arrPortLEDs[3]);
       break;
     }
   }
