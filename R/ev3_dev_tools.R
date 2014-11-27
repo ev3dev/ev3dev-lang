@@ -26,6 +26,16 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+library("RSclient")
+
+UploadFile=function(con, source_file, target_file=basename(source_file)) 
+{
+  bytes=file.info(source_file)$size
+  text=readChar(source_file, bytes)
+  RS.eval(con, as.call(list(quote(writeChar), text, target_file, nchar(text) , NULL)), lazy=FALSE)
+}
+
+
 startRemoteRserve=function(host)
 {
   cmd=paste("ssh -n -f", host, "nohup R CMD Rserve --no-save > /dev/null 2>&1 &")
