@@ -26,24 +26,40 @@
 left=large.motor(ports$OUTPUT_B ) 
 right=large.motor(ports$OUTPUT_C ) 
 
-touch=touch.sensor(ports$INPUT_AUTO)
+ltouch=touch.sensor(ports$INPUT_2)
+rtouch=touch.sensor(ports$INPUT_3)
 infrared=infrared.sensor(ports$INPUT_AUTO)
+gyro=xg1300l.sensor(ports$INPUT_AUTO)
 
-if(!Connected(left) || !Connected(right))
-  stop("Large motors on OUTPUT_B and OUTPUT_C are mandatory")
+scary_speach=c("Spadaj", "Zjeżdżaj", "Zabieraj łapy", "Łapska precz", "Won", "Zmykaj", "Zabieraj się", "Zaraz utnę tę łapę")
 
 Sleep=function(time)
 {
   Sys.sleep(time)
 }
 
+SpeakPL=function(..., sync=TRUE)
+{
+  text=paste(list(...), collapse="")
+  command=paste("espeak -a 200 -v pl --stdout \"", text, "\" | aplay", collapse="")  
+  if(!sync) command=paste(command, "&")
+  system(command, intern=TRUE, ignore.stderr=TRUE)
+}
+
+Scare=function()
+{
+  SpeakPL(scary_speach[sample(length(scary_speach), 1)], sync=FALSE)
+}
+
+
 InitDriveMotor=function(m)
 {
   SetRunMode(m, "position")
   SetRegulationMode(m, "on")
   SetRampUpSP(m, 1000)
-  SetRampDownSP(m, 1000)
+  SetRampDownSP(m, 50)
   SetPulsesPerSecondSP(m, 300)
+  SetStopMode(m, "break")
   SetPositionMode(m, "relative")
   SetPosition(m, 0)  
 }
@@ -66,6 +82,8 @@ DriveStart=function(left_motor, right_motor, cm)
   Run(right_motor)       
 }
 
+
+
 TestInfrared=function(left, right, infrared, cm)
 {
   size=100L
@@ -77,25 +95,81 @@ TestInfrared=function(left, right, infrared, cm)
   while(Running(left) | Running(right))
   {    
     inf[readings]=Value(infrared)
-    readings=readings+1
+    readings=readings+1L
     
     Sys.sleep(0.02)
   }    
   inf[1L:(readings-1L)]
 }
 
+TestDutyCycle=function(left, right, cm)
+{  
+  size=100L
+  readings=1L
+  
+  left_states=character(size)
+  right_states=character(size)
+  ldc=integer(size)
+  rdc=integer(size)
+  
+  DriveStart(left, right, cm)  
+  
+  while(Running(left) | Running(right))
+  {
+    left_states[readings]=State(left)
+    right_states[readings]=State(right)
+    ldc[readings]=DutyCycle(left)
+    rdc[readings]=DutyCycle(right)
+    readings=readings+1L
+    
+    #Sys.sleep(0.01)
+  }    
+    
+  span=1L:(readings-1L)
+  
+  list(left_states = left_states[span], right_states = right_states[span], ldc=ldc[span], rdc=rdc[span] )
+}
+
+
+TestAcceleration=function(left, right, gyro, cm)
+{
+  SetMode(gyro, "ACCEL")
+  size=100L
+  readings=1L
+
+  left_states=character(size)
+  right_states=character(size)
+  accx=integer(size)
+  accy=integer(size)
+  accz=integer(size)
+        
+  DriveStart(left, right, cm)  
+  
+  while(Running(left) | Running(right))
+  {
+    left_states[readings]=State(left)
+    right_states[readings]=State(right)
+    accx[readings]=Value(gyro,0)
+    accy[readings]=Value(gyro,1)
+    accz[readings]=Value(gyro,2)
+    readings=readings+1L
+    
+    #Sys.sleep(0.01)
+  }    
+  
+  SetMode(gyro, "ANGLE")
+  
+  span=1L:(readings-1L)
+  
+  list(left_states = left_states[span], right_states = right_states[span], accx = accx[span], accy = accy[span], accz = accz[span]    )
+}
 
 Drive=function(left_motor, right_motor, cm)
 {
   if(cm==0)
     return (0)
   
-  pos=CMToDrivePosition(cm)
-  SetPositionSP(left_motor, pos)
-  SetPositionSP(right_motor,pos)
-  
-  Run(left_motor)
-  Run(right_motor)
+  DriveStart(left_motor, right_motor, cm)
   
   while( Running(left_motor) | Running(right_motor) )
     Sleep(0.01)
@@ -107,6 +181,9 @@ Rotate=function(left_motor, right_motor, degree)
 {
   if(degree==0L)
     return (0L)
+  
+  SetRunMode(left, "position")
+  SetRunMode(right, "position")
   
   pos=DegreeToDrivePosition(degree)
   SetPosition(left_motor,0L)
@@ -133,12 +210,7 @@ DriveThreshold=function(left_motor, right_motor, infrared,  cm, threshold_up, th
   if(inf > threshold_up | inf < threshold_down)
     return (inf)
     
-  pos=CMToDrivePosition(cm)
-  SetPositionSP(left_motor, pos)
-  SetPositionSP(right_motor,pos)
-  
-  Run(left_motor)
-  Run(right_motor)
+  DriveStart(left_motor, right_motor, cm)
   
   readings=integer(1L)
   i=0L
@@ -163,30 +235,20 @@ DriveThreshold=function(left_motor, right_motor, infrared,  cm, threshold_up, th
 
 DriveTouch=function(left_motor, right_motor, touch,  cm)
 {
-  if(Value(touch)==0L)
+  if(Value(touch)==0L | cm==0L)
     return (0L)
+          
+  DriveStart(left_motor, right_motor, cm)
   
-  if(cm==0L)
-    return (0L)
-        
-  pos=CMToDrivePosition(cm)
-  SetPositionSP(left_motor, pos)
-  SetPositionSP(right_motor,pos)
-  
-  Run(left_motor)
-  Run(right_motor)
-    
   while( Running(right_motor) | (Running(left_motor) ))
   { 
     if( Value(touch)==0L )
     {
-      EmergencyStop(left_motor)
-      EmergencyStop(right_motor)
+      Stop(left_motor)
+      Stop(right_motor)
       SetPosition(left_motor,0L)
       SetPosition(right_motor,0L)
       Sleep(0.5)
-      DisarmEmergencyStop(left_motor)
-      DisarmEmergencyStop(right_motor)    
       return (0L)
     }
     
@@ -194,4 +256,202 @@ DriveTouch=function(left_motor, right_motor, touch,  cm)
   }
   
   return (1L)
+}
+
+InfraredSamples=function(infrared, samples, delay_sec)
+{
+  inf=integer(samples)
+  
+  for(i in 1:length(inf))
+  {
+    inf[i]=Value(infrared)  
+    Sleep(delay_sec)
+  }
+  
+  inf
+}
+
+StopAll=function(left, right)
+{
+  Stop(left)
+  Stop(right)
+  SetPosition(left,0L)
+  SetPosition(right,0L)        
+}
+
+SpeakReason=function(reason)
+{
+  if("touch" %in% reason)
+    SpeakPL("Przepaść")
+  if("infrared_up" %in% reason)
+    SpeakPL("Przepaść")
+  if("infrared_down" %in% reason)
+    SpeakPL("Przeszkoda")
+  if("left_dc" %in% reason || "right_dc" %in% reason)
+    SpeakPL("Kolizja")
+}
+
+#returns list(touch=, infrared=)
+DriveThresholdTouchDC=function(left, right, infrared, touch, cm, thr_up, thr_down, inf_var_thr, ldc_thr, rdc_thr)
+{
+  inf=Value(infrared)
+  tou=Value(touch)
+  lstate=State(left)
+  rstate=State(right)
+  ldc=DutyCycle(left)
+  rdc=DutyCycle(right)
+  samples=integer()
+  reason=character(0)
+  
+  if(tou==0L | inf > thr_up | inf < thr_down | cm==0L)
+    return (list(stop_reason=reason, touch=tou, infrared=inf, mean_infrared=inf, left_dc=ldc, right_dc=rdc, left_state=lstate, right_state=rstate) )
+    
+  DriveStart(left, right, cm)
+  
+  while(length(reason)==0 && (Running(right) || (Running(left) ) ) )
+  { 
+    if( (tou=Value(touch)) ==0L )
+    {
+      StopAll(left, right)
+      reason=c(reason, "touch")
+    }    
+    if( (inf=Value(infrared)) > thr_up)
+    {
+      StopAll(left, right)
+      reason=c(reason, "infrared_up")
+    }
+    if( inf < thr_down)
+    {
+      StopAll(left, right)
+      reason=c(reason, "infrared_down")
+    }
+    if( (lstate=State(left)) =="ramp_const" & (ldc=DutyCycle(left))>ldc_thr )
+    {
+      StopAll(left, right)
+      reason=c(reason, "left_dc")
+    }
+    if( (rstate=State(right)) == "ramp_const" & (rdc=DutyCycle(right))>rdc_thr )
+    {
+      StopAll(left, right)
+      reason=c(reason, "right_dc")
+    }
+    
+    Sleep(0.01)
+  }
+  
+  while(abs(PulsesPerSecond(left)) > 0L | abs(PulsesPerSecond(right)) > 0L)
+    Sleep(0.02)
+     
+  while( var( (samples=InfraredSamples(infrared, 3, 0.1)) )  > inf_var_thr)    
+    Scare()
+  
+  SpeakReason(reason)
+      
+  list(stop_reason=reason, touch=tou, infrared=inf, mean_infrared=mean(samples), left_dc=ldc, right_dc=rdc, left_state=lstate, right_state=rstate) 
+}
+
+GetReadings=function(left, right, gyro, infrared, ltouch, rtouch)
+{
+  list(inf=Value(infrared), lt=Value(ltouch), rt=Value(rtouch), ldc=DutyCycle(left), rdc=DutyCycle(right), lst=State(left), rst=State(right), lpos=Position(left), rpos=Position(right),  head=Value(gyro))
+}
+CheckConditions=function(readings, control)
+{
+  r=readings
+  c=control
+  list(cliff=r$inf > c$inf.up, obstacle=r$inf < c$inf.down,
+       ltouch=r$lt==c$lt, rtouch=r$rt==c$rt,  
+      ldc=r$lst=="ramp_const" & r$ldc>c$ldc.thr,
+      rdc=r$rst=="ramp_const" & r$rdc>r$rdc.thr)
+}
+
+
+PrepareEngines=function(left, right, control)
+{
+  if(!is.null(control$pps.sp))
+  {
+    SetPulsesPerSecondSP(left, control$pps.sp)
+    SetPulsesPerSecondSP(right, control$pps.sp)
+  }  
+  
+  SetPosition(left, 0)
+  SetPosition(right, 0)
+  SetStopMode(left, "break")  
+  SetStopMode(right, "break")
+}
+
+StopEngines=function(left, right)
+{
+  EmergencyStop(left)
+  EmergencyStop(right)
+  
+  DisarmEmergencyStop(left)
+  DisarmEmergencyStop(right)  
+}
+
+CheckInfraredVariance=function(infrared, control)
+{
+  if(is.null(control$inf.var.thr))
+    return (NULL)
+    
+  while( var( InfraredSamples(infrared, 3, 0.1) )  > control$inf.var.thr)    
+    Scare()  
+}
+
+
+DriveStartControl=function(left, right, control)
+{    
+  if(is.null(control$lgo) | is.null(control$rgo))
+  {
+    SetRunMode(left, "forever")
+    SetRunMode(right, "forever")
+  }
+  else
+  {
+    SetRunMode(left, "position")
+    SetRunMode(right, "position")
+    SetPositionMode(left, "relative")
+    SetPositionMode(right, "relative")        
+    SetPositionSP(left, control$lgo)
+    SetPositionSP(right, control$rgo)    
+  }  
+  
+  Run(left)
+  Run(right)       
+}
+
+SpeakWhy=function(check)
+{      
+  if(length(check$cliff)==1 && check$cliff)
+    SpeakPL("Przepaść")  
+  if(length(check$ltouch)==1 && check$ltouch==1 | length(check$rtouch)==1 && check$rtouch==1)
+    SpeakPL("Brak kontaktu")  
+  if(length(check$obstacle)==1 && check$obstacle)
+    SpeakPL("Przeszkoda")
+  if(length(check$ldc)==1 && check$ldc || length(check$rdc)==1 && check$rdc)
+    SpeakPL("Kolizja")
+}
+
+
+DriveSafely=function(control)
+{
+  PrepareEngines(left, right, control)
+  start=GetReadings(left, right, gyro, infrared, ltouch, rtouch)
+  if(any( unlist(CheckConditions(start, control)), na.rm=TRUE))
+    return (data.frame(rbind(start, end=start)))
+  
+  DriveStartControl(left, right, control)
+  
+  while(Running(right) || (Running(left) ))
+  {
+    end=GetReadings(left, right, gyro, infrared, ltouch, rtouch)
+    if(any( unlist(CheckConditions(end, control)), na.rm=TRUE))
+      StopEngines(left, right)
+  }
+  
+  end=GetReadings(left, right, gyro, infrared, ltouch, rtouch)
+  
+  SpeakWhy(CheckConditions(end, control))
+  CheckInfraredVariance(infrared, control)
+    
+  data.frame(rbind(start, end))
 }
