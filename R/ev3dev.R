@@ -557,6 +557,7 @@ touch.sensor = function(port="", ...) { sensor(port, "lego-ev3-touch",...)  }
 color.sensor = function(port="", ...) { sensor(port, "ev3-uart-29",...)  }
 ultrasonic.sensor = function(port="", ...) { sensor(port, "ev3-uart-30",...)  }
 gyro.sensor = function(port="", ...) { sensor(port, "ev3-uart-32",...)  }
+xg1300l.sensor=function(port="", ...) { sensor(port, "mi-xg1300l",...)  }
 
 setMethod("DeviceIndex","sensor",function(.Object){  
   stopifnot(Connected(.Object))
@@ -611,6 +612,24 @@ setGeneric("Modes", function(.Object) standardGeneric("Modes"))
 
 setMethod("Modes","sensor",function(.Object){
   GetAttrStringArray(.Object, "modes")
+})
+
+#Command|String|Read/Write
+
+setGeneric("Command", function(.Object, value) standardGeneric("Command"))
+
+setMethod("Command","sensor",function(.Object, value){
+  commands=Commands(.Object)
+  command=SetAttrString(.Object, "command", match.arg(value,commands))  
+  command
+})
+
+#Commands|String Array|Read
+
+setGeneric("Commands", function(.Object) standardGeneric("Commands"))
+
+setMethod("Commands","sensor",function(.Object){
+  GetAttrStringArray(.Object, "commands")
 })
 
 #Get Value|Number (int)|Value Index : Number|Gets the raw value at the specified index
