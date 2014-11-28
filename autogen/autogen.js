@@ -1,10 +1,21 @@
 // Node.JS script to evaluate custom liquid templates in files
 
-//TODO: Detect correct comment style based on file extension
-//Array of autogen start/end pairs based on file extension
+//Explanation of C-style regex here: http://regex101.com/r/nQ9bE3
+var cStyleAutogenStart = /\/\/~autogen *([\w-]+) *((\s*[\w\.]+>[\w\.]+)*)/;
+var cStyleAutogenEnd = "//~autogen";
+
+//TODO: allow a regex for the end tag (so that we can be more lenient on spacing)
+//Array of objects containing the language-specific comment styles. "start" can be a regex (described below).
+//    The first capture group should get the file name from the autogen tag.
+//    The second should be a space-separated list of variable mappings, as written in the comment
 var autogenFenceComments = {
-    '.ts': { start: "//~autogen", end: "//~autogen" },
-    '.vala': { start: "//~autogen", end: "//~autogen" },
+    '.ts': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
+    '.vala': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
+    '.cpp': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
+    //XML-style regex here: http://regex101.com/r/cN6gE4
+    '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\.]+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
+    //Lua regex: http://regex101.com/r/mI4gL1
+    '.lua': { start: /-- *~autogen *([\w-]+) *((\s*[\w\.]+>[\w\.]+)*)/, end: "-- ~autogen" }
 }
 
 //Extension and helper methods
@@ -12,6 +23,19 @@ String.prototype.regexIndexOf = function(regex, startpos) {
     var indexOf = this.substring(startpos || 0).search(regex);
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
+
+//Removes all elements with a specific value from an array (defaults to blank string)
+Array.prototype.clean = function (deleteValue) {
+    if (deleteValue == undefined)
+        deleteValue = '';
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == deleteValue) {
+            this.splice(i, 1);
+            i--;
+        }
+    }
+    return this;
+};
 
 
 //Copies properties of one or more objects in to the first object (same as jQuery's extend methos)
@@ -86,7 +110,7 @@ var specData = JSON.parse(fs.readFileSync("spec.json"));
 var filesToProcess = fs.readFileSync("autogen-list.txt").toString().replace(/\r/g, '').split(/\n/g);
 
 //Call the process function on each file, and log the result
-for (var i in filesToProcess) {
+for (var i = 0; i < filesToProcess.length; i++) {
     var commentInfo = autogenFenceComments[path.extname(filesToProcess[i])];
     
     processFile(filesToProcess[i].trim(), specData, commentInfo, function (filename, err) {
@@ -116,34 +140,62 @@ function processFile(filename, specData, commentInfo, callback) {
 //Recursively updates the autogen blocks
 function processNextAutogenBlock(allData, commentInfo, pos, callback) {
     //Update the position of the next block. If there isn't one, call the callback and break the recursion.
-    if ((pos = allData.indexOf(commentInfo.start, pos)) == -1)
+
+    if (commentInfo.start instanceof RegExp)
+        pos = allData.regexIndexOf(commentInfo.start, pos);
+    else
+        pos = allData.indexOf(commentInfo.start, pos);
+
+    if (pos == -1)
     {
         callback(allData);
         return;
     }
+    
+    var liquidInfo, filename;
 
-    //Skip over the start tag
-    pos += commentInfo.start.length;
+    //Extract the information from the autogen definition
+    if (commentInfo.start instanceof RegExp) { //Use a regex if it was supplied (much cleaner and less prone to errors)
+        var matchInfo = commentInfo.start.exec(allData.substring(pos));
+        
+        //Skip over the start tag
+        pos += matchInfo[0].length;
 
-    //Calculate the bounds of the target content
-    //TODO: Use a single regex w/ capture groups for the autogen definition
-    var startAutogenDef = allData.regexIndexOf(/[^\s]/, pos);
-    var endAutogenDef = allData.regexIndexOf(/\r|\n/, startAutogenDef);
-    var startBlock = allData.regexIndexOf(/[^\r\n]/, endAutogenDef)
+        //Get the data from the capture groups
+        filename = matchInfo[1];
+        liquidInfo = matchInfo[2].trim().split(' ').clean();
+    }
+
+    else { //Generic search to handle C-style comments (better to use regular expressions, this is just a backup)
+        //Skip over the start tag
+        pos += commentInfo.start.length;
+
+        //Calculate the bounds of the target content using separate regex
+        var startAutogenDef = allData.regexIndexOf(/[^\s]/, pos);
+        var endAutogenDef = allData.regexIndexOf(/\r|\n/, startAutogenDef);
+
+        //Extract the required info from the block
+        liquidInfo = allData.substring(startAutogenDef, endAutogenDef).trim().split(' ').clean();
+        filename = liquidInfo.shift();
+    }
+
+    //Make file name in to a full path
+    filename = path.join("templates", filename + ".liquid");
+    
+    //Find the end of the line (and the start of content)
+    //    Handle both styles of line endings
+    var endOfAutogenLine = allData.regexIndexOf(/[\r|\n]/, pos);
+    var startBlock = allData.regexIndexOf(/[^\r\n]/, endOfAutogenLine);
     var endBlock = allData.indexOf(commentInfo.end, startBlock);
 
-    //Extract the required info from the block
-    var liquidInfo = allData.substring(startAutogenDef, endAutogenDef).trim().split(' ');
-    var filename = path.join("templates", liquidInfo.shift() + ".liquid");
-    
-    //Prepare the required data
+    //Prepare and load the required data
     var loadedLiquid = fs.readFileSync(filename);
     //Deep-copy the spec data so that we can add context
     var liquidContext = extend({}, specData);
 
     //Iterate over the remaining chunks in the autogen definition and
-    //  copy the requested data from the spec to the liquid context
-    for (var i in liquidInfo) {
+    //    copy the requested data from the spec to the liquid context
+    for (var i = 0; i < liquidInfo.length; i++) {
         var defParts = liquidInfo[i].split(">");
         setProp(liquidContext, defParts[1], getProp(liquidContext, defParts[0]));
     }
