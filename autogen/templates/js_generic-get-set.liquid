@@ -1,5 +1,5 @@
 {% for prop in currentClass.systemProperties %}{%
-        if prop.type == 'int' or prop.type == 'float' %}{%
+        if prop.type contains 'int' or prop.type contains 'float' %}{%
             assign type     = 'number' %}{%
             assign typeCaps = 'Number' %}{%
         else %}{%

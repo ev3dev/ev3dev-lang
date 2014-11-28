@@ -111,13 +111,13 @@ namespace ev3dev
 	public const string OUTPUT_C = "outC";
 	public const string OUTPUT_D = "outD";
 
-	public class Motor : Device
+    public class MotorBase : Device
 	{
-		private string port;
-		private const string motor_device_dir = "/sys/class/tacho-motor";
-		private int device_index { get; private set; default = -1; }
+		protected string port;
+		protected string motor_device_dir = "/sys/class/tacho-motor";
+		protected int device_index { get; private set; default = -1; }
 
-		public Motor (string port = "", string? type = null)
+		public MotorBase (string port = "", string? type = null)
 		{
 			this.port = port;
 			string root_path = "";
@@ -179,6 +179,15 @@ namespace ev3dev
 
 			this.connect(root_path);
 		}
+    }
+    
+	public class Motor : MotorBase
+    {
+    
+        public Motor (string port = "", string? type = null)
+        {
+            base(port, type);
+        }
 
 		public void reset()
 		{
@@ -186,233 +195,281 @@ namespace ev3dev
 		}
 
 		//PROPERTIES
-		public string port_name
-		{
-			owned get
-			{
-				return this.read_string("port_name");
-			}
-		}
+		//~autogen vala_generic-get-set classes.motor>currentClass
+        public int duty_cycle
+        { 
+            get
+            {
+                return this.read_int("duty_cycle");
+            }
+        
+        }
+  
+        public int duty_cycle_sp
+        { 
+            get
+            {
+                return this.read_int("duty_cycle_sp");
+            }
+        
+            set
+            {
+                this.write_int("duty_cycle_sp", value);
+            }
+        
+        }
+  
+        public string port_name
+        { 
+            owned get
+            {
+                return this.read_string("port_name");
+            }
+        
+        }
+  
+        public int position
+        { 
+            get
+            {
+                return this.read_int("position");
+            }
+        
+            set
+            {
+                this.write_int("position", value);
+            }
+        
+        }
+  
+        public string position_mode
+        { 
+            owned get
+            {
+                return this.read_string("position_mode");
+            }
+        
+            set
+            {
+                this.write_string("position_mode", value);
+            }
+        
+        }
+  
+        public int position_sp
+        { 
+            get
+            {
+                return this.read_int("position_sp");
+            }
+        
+            set
+            {
+                this.write_int("position_sp", value);
+            }
+        
+        }
+  
+        public int pulses_per_second
+        { 
+            get
+            {
+                return this.read_int("pulses_per_second");
+            }
+        
+        }
+  
+        public int pulses_per_second_sp
+        { 
+            get
+            {
+                return this.read_int("pulses_per_second_sp");
+            }
+        
+            set
+            {
+                this.write_int("pulses_per_second_sp", value);
+            }
+        
+        }
+  
+        public int ramp_down_sp
+        { 
+            get
+            {
+                return this.read_int("ramp_down_sp");
+            }
+        
+            set
+            {
+                this.write_int("ramp_down_sp", value);
+            }
+        
+        }
+  
+        public int ramp_up_sp
+        { 
+            get
+            {
+                return this.read_int("ramp_up_sp");
+            }
+        
+            set
+            {
+                this.write_int("ramp_up_sp", value);
+            }
+        
+        }
+  
+        public string regulation_mode
+        { 
+            owned get
+            {
+                return this.read_string("regulation_mode");
+            }
+        
+            set
+            {
+                this.write_string("regulation_mode", value);
+            }
+        
+        }
+  
+        public int run
+        { 
+            get
+            {
+                return this.read_int("run");
+            }
+        
+            set
+            {
+                this.write_int("run", value);
+            }
+        
+        }
+  
+        public string run_mode
+        { 
+            owned get
+            {
+                return this.read_string("run_mode");
+            }
+        
+            set
+            {
+                this.write_string("run_mode", value);
+            }
+        
+        }
+  
+        public int speed_regulation_p
+        { 
+            get
+            {
+                return this.read_int("speed_regulation_P");
+            }
+        
+            set
+            {
+                this.write_int("speed_regulation_P", value);
+            }
+        
+        }
+  
+        public int speed_regulation_i
+        { 
+            get
+            {
+                return this.read_int("speed_regulation_I");
+            }
+        
+            set
+            {
+                this.write_int("speed_regulation_I", value);
+            }
+        
+        }
+  
+        public int speed_regulation_d
+        { 
+            get
+            {
+                return this.read_int("speed_regulation_D");
+            }
+        
+            set
+            {
+                this.write_int("speed_regulation_D", value);
+            }
+        
+        }
+  
+        public int speed_regulation_k
+        { 
+            get
+            {
+                return this.read_int("speed_regulation_K");
+            }
+        
+            set
+            {
+                this.write_int("speed_regulation_K", value);
+            }
+        
+        }
+  
+        public string state
+        { 
+            owned get
+            {
+                return this.read_string("state");
+            }
+        
+        }
+  
+        public string stop_mode
+        { 
+            owned get
+            {
+                return this.read_string("stop_mode");
+            }
+        
+            set
+            {
+                this.write_string("stop_mode", value);
+            }
+        
+        }
+  
 
-		public int duty_cycle
-		{
-			get
-			{
-				return this.read_int("duty_cycle");
-			}
-		}
+  
+        public int time_sp
+        { 
+            get
+            {
+                return this.read_int("time_sp");
+            }
+        
+            set
+            {
+                this.write_int("time_sp", value);
+            }
+        
+        }
+  
+        public string motor_type
+        { 
+            owned get
+            {
+                return this.read_string("type");
+            }
+        
+        }
+  
 
-		public int duty_cycle_sp
-		{
-			get
-			{
-				return this.read_int("duty_cycle_sp");
-			}
-
-			set
-			{
-				this.write_int("duty_cycle_sp", value);
-			}
-		}
-		
-		public int position
-		{
-			get
-			{
-				return this.read_int("position");
-			}
-
-			set
-			{
-				this.write_int("position", value);
-			}
-		}
-		
-		public string position_mode
-		{
-			owned get
-			{
-				return this.read_string("position_mode");
-			}
-			
-			set
-			{
-				this.write_string("position_mode", value);
-			}
-		}
-		
-		public int position_sp
-		{
-			get
-			{
-				return this.read_int("position_sp");
-			}
-
-			set
-			{
-				this.write_int("position_sp", value);
-			}
-		}
-		
-		public int pulses_per_second
-		{
-			get
-			{
-				return this.read_int("pulses_per_second");
-			}
-		}
-		
-		public int pulses_per_second_sp
-		{
-			get
-			{
-				return this.read_int("pulses_per_second_sp");
-			}
-			
-			set
-			{
-				this.write_int("pulses_per_second_sp", value);
-			}
-		}
-		
-		public int ramp_down_sp
-		{
-			get
-			{
-				return this.read_int("ramp_down_sp");
-			}
-
-			set
-			{
-				this.write_int("ramp_down_sp", value);
-			}
-		}
-		
-		public int ramp_up_sp
-		{
-			get
-			{
-				return this.read_int("ramp_up_sp");
-			}
-
-			set
-			{
-				this.write_int("ramp_up_sp", value);
-			}
-		}
-		
-		public string regulation_mode
-		{
-			owned get
-			{
-				return this.read_string("regulation_mode");
-			}
-			
-			set
-			{
-				this.write_string("regulation_mode", value);
-			}
-		}
-		
-		public int run
-		{
-			get
-			{
-				return this.read_int("run");
-			}
-
-			set
-			{
-				this.write_int("run", value);
-			}
-		}
-
-		public string run_mode
-		{
-			owned get
-			{
-				return this.read_string("run_mode");
-			}
-			
-			set
-			{
-				this.write_string("run_mode", value);
-			}
-		}
-		
-		public int speed_regulation_P
-		{
-			get
-			{
-				return this.read_int("speed_regulation_P");
-			}
-
-			set
-			{
-				this.write_int("speed_regulation_P", value);
-			}
-		}
-		
-		public int speed_regulation_I
-		{
-			get
-			{
-				return this.read_int("speed_regulation_I");
-			}
-
-			set
-			{
-				this.write_int("speed_regulation_I", value);
-			}
-		}
-		
-		public int speed_regulation_D
-		{
-			get
-			{
-				return this.read_int("speed_regulation_D");
-			}
-
-			set
-			{
-				this.write_int("speed_regulation_D", value);
-			}
-		}
-		
-		public int speed_regulation_K
-		{
-			get
-			{
-				return this.read_int("speed_regulation_K");
-			}
-
-			set
-			{
-				this.write_int("speed_regulation_K", value);
-			}
-		}
-		
-		public string state
-		{
-			owned get
-			{
-				return this.read_string("state");
-			}
-		}
-		
-		public string stop_mode
-		{
-			owned get
-			{
-				return this.read_string("stop_mode");
-			}
-			
-			set
-			{
-				this.write_string("stop_mode", value);
-			}
-		}
-		
+//~autogen
+        
 		public string[] stop_modes
 		{
 			owned get
@@ -420,29 +477,243 @@ namespace ev3dev
 				return this.read_string("stop_modes").split(" ");
 			}
 		}
-		
-		public int time_sp
-		{
-			get
-			{
-				return this.read_int("time_sp");
-			}
-
-			set
-			{
-				this.write_int("time_sp", value);
-			}
-		}
-		
-		public string motor_type //"type" is a reserved property name in Vala
-		{
-			owned get
-			{
-				return this.read_string("type");
-			}
-		}
 	}
 	
+    public class DCMotor : MotorBase
+    {
+    
+        public DCMotor (string port = "")
+        {
+            this.motor_device_dir = "/sys/class/dc-motor";
+            base(port);
+        }
+        
+        //PROPERTIES
+        
+		//~autogen vala_generic-get-set classes.dcMotor>currentClass
+        public string command
+        { 
+            set
+            {
+                this.write_string("command", value);
+            }
+        
+        }
+  
+
+  
+        public int duty_cycle
+        { 
+            get
+            {
+                return this.read_int("duty_cycle");
+            }
+        
+            set
+            {
+                this.write_int("duty_cycle", value);
+            }
+        
+        }
+  
+        public string type_name
+        { 
+            owned get
+            {
+                return this.read_string("name");
+            }
+        
+        }
+  
+        public string port_name
+        { 
+            owned get
+            {
+                return this.read_string("port_name");
+            }
+        
+        }
+  
+        public int ramp_down_ms
+        { 
+            get
+            {
+                return this.read_int("ramp_down_ms");
+            }
+        
+            set
+            {
+                this.write_int("ramp_down_ms", value);
+            }
+        
+        }
+  
+        public int ramp_up_ms
+        { 
+            get
+            {
+                return this.read_int("ramp_up_ms");
+            }
+        
+            set
+            {
+                this.write_int("ramp_up_ms", value);
+            }
+        
+        }
+  
+        public string polarity
+        { 
+            owned get
+            {
+                return this.read_string("polarity");
+            }
+        
+            set
+            {
+                this.write_string("polarity", value);
+            }
+        
+        }
+  
+
+//~autogen
+        
+    }
+    
+    public class ServoMotor : MotorBase
+    {
+    
+        public ServoMotor (string port = "")
+        {
+            this.motor_device_dir = "/sys/class/servo-motor";
+            base(port);
+        }
+        
+        //PROPERTIES
+        
+		//~autogen vala_generic-get-set classes.servoMotor>currentClass
+        public string command
+        { 
+            owned get
+            {
+                return this.read_string("command");
+            }
+        
+            set
+            {
+                this.write_string("command", value);
+            }
+        
+        }
+  
+        public string type_name
+        { 
+            owned get
+            {
+                return this.read_string("name");
+            }
+        
+        }
+  
+        public string port_name
+        { 
+            owned get
+            {
+                return this.read_string("port_name");
+            }
+        
+        }
+  
+        public int max_pulse_ms
+        { 
+            get
+            {
+                return this.read_int("max_pulse_ms");
+            }
+        
+            set
+            {
+                this.write_int("max_pulse_ms", value);
+            }
+        
+        }
+  
+        public int mid_pulse_ms
+        { 
+            get
+            {
+                return this.read_int("mid_pulse_ms");
+            }
+        
+            set
+            {
+                this.write_int("mid_pulse_ms", value);
+            }
+        
+        }
+  
+        public int min_pulse_ms
+        { 
+            get
+            {
+                return this.read_int("min_pulse_ms");
+            }
+        
+            set
+            {
+                this.write_int("min_pulse_ms", value);
+            }
+        
+        }
+  
+        public string polarity
+        { 
+            owned get
+            {
+                return this.read_string("polarity");
+            }
+        
+            set
+            {
+                this.write_string("polarity", value);
+            }
+        
+        }
+  
+        public int position
+        { 
+            get
+            {
+                return this.read_int("position");
+            }
+        
+            set
+            {
+                this.write_int("position", value);
+            }
+        
+        }
+  
+        public int rate
+        { 
+            get
+            {
+                return this.read_int("rate");
+            }
+        
+            set
+            {
+                this.write_int("rate", value);
+            }
+        
+        }
+  
+
+//~autogen
+        
+    }
+    
 	public class Sensor : Device
 	{
 		private string port;
@@ -525,10 +796,10 @@ namespace ev3dev
 			return this.read_int("value" + value_index.to_string());
 		}
 		
-		public float get_float_value(int value_index)
+		public double get_float_value(int value_index)
 		{
-			double decimal_factor = Math.pow((double)10, (double)this.read_int("dp"));
-			return (float) ((double)this.read_int("value" + value_index.to_string()) / decimal_factor);
+			double decimal_factor = Math.pow(10d, (double)this.read_int("dp"));
+			return (double)this.read_int("value" + value_index.to_string()) / decimal_factor;
 		}
 
 		//PROPERTIES
@@ -612,7 +883,7 @@ namespace ev3dev
 		private string power_device_dir = "/sys/class/power_supply/";
 		public string device_name = "legoev3-battery";
 		
-		public PowerSupply (string? device_name)
+		public PowerSupply (string? device_name = "legoev3-battery")
 		{
 			if(device_name != null)
 				this.device_name = device_name;
@@ -695,7 +966,7 @@ namespace ev3dev
 		{
 			get
 			{
-				return this.voltage_now / 1000000;
+				return (double)this.voltage_now / 1000000d;
 			}
 		}
 		
@@ -703,7 +974,7 @@ namespace ev3dev
 		{
 			get
 			{
-				return current_now / 1000000;
+				return (double)this.current_now / 1000000d;
 			}
 		}
 	}
