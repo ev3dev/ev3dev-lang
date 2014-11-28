@@ -3,7 +3,9 @@
   "version": "0.9.1",
   "description": "An interface to control an EV3 running ev3dev from JavaScript.",
   "keywords": [
-    "ev3dev"
+    "ev3dev",
+    "ev3",
+    "lego"
   ],
   "homepage": "http://github.com/ev3dev/ev3dev-lang",
   "bugs": {
