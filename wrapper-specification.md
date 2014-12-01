@@ -275,6 +275,6 @@ Starting after version `0.9.0`, we will be documenting the versions of ev3dev th
 
 Compatibility table:
 
-Language Binding Version|ev3dev Kernel Version(s)
----|---
-`v0.9.1`| `3.16.1-3-ev3dev`+
+Language Binding Version|Initial ev3dev Kernel Support|Last Supported Kernel Version
+---|---|---
+`v0.9.1`| `3.16.1-3-ev3dev`+|`3.16.1-7-ev3dev`
