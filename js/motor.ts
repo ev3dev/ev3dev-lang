@@ -2,6 +2,10 @@
 ///<reference path="include.ts" />
 ///<reference path="io.ts" />
 
+//~autogen autogen-header
+    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4.
+//~autogen
+
 class MotorBase extends Device {
     protected port: string;
     protected deviceDir = '/sys/class/tacho-motor/'; //Default motor type
@@ -296,6 +300,9 @@ class DCMotor extends MotorBase {
     }
 
     //PROPERTIES
+
+    //~autogen js_generic-get-set classes.dcMotor>currentClass
+
     set command(value: string) {
         this.setString("command", value);
     }
@@ -339,7 +346,9 @@ class DCMotor extends MotorBase {
     set polarity(value: string) {
         this.setString("polarity", value);
     }
-}
+    
+//~autogen
+    }
     
 //Servo Motor
 class ServoMotor extends MotorBase {
@@ -351,6 +360,11 @@ class ServoMotor extends MotorBase {
     }
     
     //PROPERTIES
+
+    //~autogen js_generic-get-set classes.servoMotor>currentClass
+
+
+
     get command(): string {
         return this.getString("command");
     }
@@ -407,4 +421,7 @@ class ServoMotor extends MotorBase {
     set rate(value: number) {
         this.setNumber("rate", value);
     }
+    
+
+//~autogen
 }

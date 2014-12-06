@@ -1,0 +1,77 @@
+{
+    "meta": {
+        "version": "0.9.1-pre",
+        "specRevision": "4"
+    },
+    "classes": {
+        "motor": {
+            "friendlyName": "Motor",
+            "description": "The motor class provides a uniform interface for using motors with positional and directional feedback such as the EV3 and NXT motors. This feedback allows for precise control of the motors. This is the most common type of motor, so we just call it \"motor\".",
+            "docsLink":  "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
+            "systemProperties": [
+                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Position Mode", "systemName": "position_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Pulses Per Second", "systemName": "pulses_per_second", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Pulses Per Second SP", "systemName": "pulses_per_second_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Regulation Mode", "systemName": "regulation_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Run", "systemName": "run", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Run Mode", "systemName": "run_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation P", "systemName": "speed_regulation_P", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation I", "systemName": "speed_regulation_I", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation D", "systemName": "speed_regulation_D", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation K", "systemName": "speed_regulation_K", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "State", "systemName": "state", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Stop Mode", "systemName": "stop_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Stop Modes", "systemName": "stop_modes", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
+            ]
+        },
+        "led": {
+            "friendlyName": "LED",
+            "description": "Any device controlled by the generic LED driver.",
+            "systemProperties": [
+                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "dcMotor": {
+            "friendlyName": "DC Motor",
+            "description": "The DC motor class provides a uniform interface for using regular DC motors with no fancy controls or feedback. This includes LEGO MINDSTORMS RCX motors and LEGO Power Functions motors.",
+            "docsLink": "http://www.ev3dev.org/docs/drivers/dc-motor-class/",
+            "systemProperties": [
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Ramp Down MS", "systemName": "ramp_down_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Ramp Up MS", "systemName": "ramp_up_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "servoMotor": {
+            "friendlyName": "Servo Motor",
+            "description": "The servo motor class provides a uniform interface for using hobby type servo motors.",
+            "docsLink": "http://www.ev3dev.org/docs/drivers/servo-motor-class/",
+            "systemProperties": [
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Min Pulse MS", "systemName": "min_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Rate", "systemName": "rate", "type": "int", "readAccess": true, "writeAccess": true }
+            ]
+        }
+    }
+}

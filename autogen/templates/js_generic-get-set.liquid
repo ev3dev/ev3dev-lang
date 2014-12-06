@@ -1,0 +1,29 @@
+{% for prop in currentClass.systemProperties %}{%
+        if prop.type contains 'int' or prop.type contains 'float' %}{%
+            assign type     = 'number' %}{%
+            assign typeCaps = 'Number' %}{%
+        else %}{%
+            assign type     = 'string' %}{%
+            assign typeCaps = 'String' %}{%
+        endif %}{%
+        if prop.type contains 'array' %}{%
+            assign array = '[]' %}{%
+        else %}{%
+            assign array = blank %}{%
+        endif %}{%
+        
+        if prop.readAccess == true
+%}    get {{ prop.name | camel_case }}(): {{ type }}{{ array }} {
+        return this.get{{ typeCaps }}("{{ prop.systemName }}"){%
+            if array
+                %}.split(' '){%
+            endif %};
+    }
+{%
+    endif %}{%
+        if prop.writeAccess == true
+%}    set {{ prop.name | camel_case }}(value: {{type}}) {
+        this.set{{ typeCaps }}("{{ prop.systemName }}", value);
+    }
+    {% endif %}
+{% endfor %}

@@ -2,6 +2,10 @@
 ///<reference path="include.ts" />
 ///<reference path="io.ts" />
 
+//~autogen autogen-header
+    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4.
+//~autogen
+
 class PowerSupply extends Device {
     private powerDeviceDir = '/sys/class/power_supply/';
     public deviceName: string = 'legoev3-battery';
@@ -124,26 +128,28 @@ class LED extends Device {
     }
 
     //PROPERTIES
-    get maxBrightness(): number {
-        return this.getNumber(this.ledProperties.maxBrightness);
-    }
 
+//~autogen js_generic-get-set classes.led>currentClass
+
+    get maxBrightness(): number {
+        return this.getNumber("max_brightness");
+    }
 
     get brightness(): number {
-        return this.getNumber(this.ledProperties.brightness);
+        return this.getNumber("brightness");
     }
-
     set brightness(value: number) {
-        this.setNumber(this.ledProperties.brightness, value);
+        this.setNumber("brightness", value);
     }
-
-
+    
     get trigger(): string {
-        return this.getString(this.ledProperties.trigger);
+        return this.getString("trigger");
     }
-
     set trigger(value: string) {
-        this.setString(this.ledProperties.trigger, value);
+        this.setString("trigger", value);
     }
+    
+
+//~autogen
 
 }

@@ -9,3 +9,4 @@ js/bin/*
 /js/node_modules
 /js/bin
 /vala/bin
+/autogen/node_modules

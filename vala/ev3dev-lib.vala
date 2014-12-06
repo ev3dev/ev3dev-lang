@@ -195,6 +195,7 @@ namespace ev3dev
 		}
 
 		//PROPERTIES
+		//~autogen vala_generic-get-set classes.motor>currentClass
         public int duty_cycle
         { 
             get
@@ -465,6 +466,8 @@ namespace ev3dev
             }
         
         }
+  
+//~autogen
         
 		public string[] stop_modes
 		{
@@ -486,6 +489,7 @@ namespace ev3dev
         
         //PROPERTIES
         
+		//~autogen vala_generic-get-set classes.dcMotor>currentClass
         public string command
         { 
             set
@@ -569,7 +573,11 @@ namespace ev3dev
                 this.write_string("polarity", value);
             }
         
-        }        
+        }
+  
+
+//~autogen
+        
     }
     
     public class ServoMotor : MotorBase
@@ -582,6 +590,8 @@ namespace ev3dev
         }
         
         //PROPERTIES
+        
+		//~autogen vala_generic-get-set classes.servoMotor>currentClass
         public string command
         { 
             owned get
@@ -696,7 +706,11 @@ namespace ev3dev
                 this.write_int("rate", value);
             }
         
-        }        
+        }
+  
+
+//~autogen
+        
     }
     
 	public class Sensor : Device
