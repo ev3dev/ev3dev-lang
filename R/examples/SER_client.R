@@ -12,6 +12,9 @@ con=RS.connect(ip)
 UploadFile(con, "SER.R")
 RS.eval(con, source("SER.R"))
 
+#DownloadFile(con, "/var/log/Rserve.log") 
+#print( readLines("Rserve.log") )
+
 # Now we are ready for work
 
 ## Remote Control

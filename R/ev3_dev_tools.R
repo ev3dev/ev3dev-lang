@@ -35,6 +35,13 @@ UploadFile=function(con, source_file, target_file=basename(source_file))
   RS.eval(con, as.call(list(quote(writeChar), text, target_file, nchar(text) , NULL)), lazy=FALSE)
 }
 
+DownloadFile=function(con, source_file, target_file=basename(source_file)) 
+{
+  bytes=RS.eval(con, as.call(list(quote(file.info), source_file) ), lazy=FALSE)$size
+  text=RS.eval(con, as.call(list(quote(readChar), source_file, bytes ) ), lazy=FALSE)
+  writeChar(text, target_file, nchar(text) , NULL)  
+}
+
 
 startRemoteRserve=function(host)
 {
