@@ -152,6 +152,26 @@ DriveDutyCycle=function(cm, ldc.thr, rdc.thr)
   DriveSafely2(control)
 }
 
+TestInfrared=function(cm)
+{
+  size=100L
+  readings=1L
+  inf=integer(size)
+  
+  SetModeToPosition(left)
+  SetModeToPosition(right)
+  
+  DriveStart(left, right, cm)  
+  
+  while(Running(left) || Running(right))
+  {    
+    inf[readings]=Value(infrared)
+    readings=readings+1L        
+  }    
+  inf[1L:(readings-1L)]
+}
+
+
 MotorFactor=function(m)
 {
   factor(State(m), c("idle", "ramp_const", "ramp_down", "ramp_up", "position_ramp_down"))
