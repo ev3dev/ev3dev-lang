@@ -23,8 +23,8 @@
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-left=large.motor(ports$OUTPUT_B ) 
-right=large.motor(ports$OUTPUT_C ) 
+left=large.motor(ports$OUTPUT_C ) 
+right=large.motor(ports$OUTPUT_B ) 
 
 ltouch=touch.sensor(ports$INPUT_2)
 rtouch=touch.sensor(ports$INPUT_3)
@@ -51,17 +51,21 @@ Scare=function()
   SpeakPL(scary_speach[sample(length(scary_speach), 1)], sync=FALSE)
 }
 
+SetModeToPosition=function(m)
+{
+  SetRunMode(m, "position")  
+  SetPositionMode(m, "relative")
+  SetPosition(m, 0)  
+}
 
 InitDriveMotor=function(m)
 {
-  SetRunMode(m, "position")
   SetRegulationMode(m, "on")
   SetRampUpSP(m, 1000)
   SetRampDownSP(m, 50)
   SetPulsesPerSecondSP(m, 300)
   SetStopMode(m, "break")
-  SetPositionMode(m, "relative")
-  SetPosition(m, 0)  
+  SetModeToPosition(m)
 }
 
 InitDriveMotor(left)
@@ -82,22 +86,21 @@ DriveStart=function(left_motor, right_motor, cm)
   Run(right_motor)       
 }
 
-
-
 TestInfrared=function(left, right, infrared, cm)
 {
   size=100L
   readings=1L
   inf=integer(size)
   
+  SetModeToPosition(left)
+  SetModeToPosition(right)
+    
   DriveStart(left, right, cm)  
   
   while(Running(left) | Running(right))
   {    
     inf[readings]=Value(infrared)
-    readings=readings+1L
-    
-    Sys.sleep(0.02)
+    readings=readings+1L        
   }    
   inf[1L:(readings-1L)]
 }
@@ -247,12 +250,9 @@ DriveTouch=function(left_motor, right_motor, touch,  cm)
       Stop(left_motor)
       Stop(right_motor)
       SetPosition(left_motor,0L)
-      SetPosition(right_motor,0L)
-      Sleep(0.5)
+      SetPosition(right_motor,0L)      
       return (0L)
-    }
-    
-    Sleep(0.02)
+    }       
   }
   
   return (1L)
@@ -350,10 +350,20 @@ DriveThresholdTouchDC=function(left, right, infrared, touch, cm, thr_up, thr_dow
   list(stop_reason=reason, touch=tou, infrared=inf, mean_infrared=mean(samples), left_dc=ldc, right_dc=rdc, left_state=lstate, right_state=rstate) 
 }
 
+MotorFactor=function(m)
+{
+  factor(State(m), c("idle", "ramp_const", "ramp_down", "ramp_up"))
+}
+
 GetReadings=function(left, right, gyro, infrared, ltouch, rtouch)
 {
   list(inf=Value(infrared), lt=Value(ltouch), rt=Value(rtouch), ldc=DutyCycle(left), rdc=DutyCycle(right), lst=State(left), rst=State(right), lpos=Position(left), rpos=Position(right),  head=Value(gyro))
 }
+GetReadings2=function(left, right, gyro, infrared, ltouch, rtouch)
+{
+  c(Value(infrared), Value(gyro), Value(ltouch), Value(rtouch), DutyCycle(left), DutyCycle(right), MotorFactor(left), MotorFactor(right), Position(left), Position(right) )
+}
+
 CheckConditions=function(readings, control)
 {
   r=readings
@@ -361,7 +371,18 @@ CheckConditions=function(readings, control)
   list(cliff=r$inf > c$inf.up, obstacle=r$inf < c$inf.down,
        ltouch=r$lt==c$lt, rtouch=r$rt==c$rt,  
       ldc=r$lst=="ramp_const" & r$ldc>c$ldc.thr,
-      rdc=r$rst=="ramp_const" & r$rdc>r$rdc.thr)
+      rdc=r$rst=="ramp_const" & r$rdc>c$rdc.thr)
+}
+
+CheckConditions2=function(readings, control)
+{  
+  r=readings
+  c=control
+    
+  list(cliff=r[1] > c$inf.up, obstacle=r[1] < c$inf.down,
+       ltouch = (r[3] == c$lt), rtouch = (r[4] == c$rt),  
+       ldc = r[7] == 2 && r[5] > c$ldc.thr,
+       rdc = r[8] == 2 && r[6] > c$rdc.thr)
 }
 
 
@@ -381,11 +402,8 @@ PrepareEngines=function(left, right, control)
 
 StopEngines=function(left, right)
 {
-  EmergencyStop(left)
-  EmergencyStop(right)
-  
-  DisarmEmergencyStop(left)
-  DisarmEmergencyStop(right)  
+  Stop(left)
+  Stop(right)
 }
 
 CheckInfraredVariance=function(infrared, control)
@@ -413,6 +431,8 @@ DriveStartControl=function(left, right, control)
     SetPositionMode(right, "relative")        
     SetPositionSP(left, control$lgo)
     SetPositionSP(right, control$rgo)    
+    SetPosition(left, 0)
+    SetPosition(right, 0)        
   }  
   
   Run(left)
@@ -421,16 +441,60 @@ DriveStartControl=function(left, right, control)
 
 SpeakWhy=function(check)
 {      
-  if(length(check$cliff)==1 && check$cliff)
+  if(!is.na(check$ltouch) && check$ltouch==1 || !is.na(check$rtouch) && check$rtouch==1)
+    SpeakPL("Brak kontaktu")    
+  if(!is.na(check$cliff) && check$cliff)
     SpeakPL("Przepaść")  
-  if(length(check$ltouch)==1 && check$ltouch==1 | length(check$rtouch)==1 && check$rtouch==1)
-    SpeakPL("Brak kontaktu")  
-  if(length(check$obstacle)==1 && check$obstacle)
+  if(!is.na(check$obstacle) && check$obstacle)
     SpeakPL("Przeszkoda")
-  if(length(check$ldc)==1 && check$ldc || length(check$rdc)==1 && check$rdc)
+  if(!is.na(check$ldc) && check$ldc==1 || !is.na(check$rdc) && check$rdc==1)
     SpeakPL("Kolizja")
 }
 
+gdata=matrix(0L, nrow=1000L, ncol=10, dimnames=list(c(), c("inf", "head", "lt", "rt", "ldc", "rdc", "lst", "rst", "lpos", "rpos")))
+
+PrepareControl=function(control)
+{
+  if(is.null(control$inf.up)) control$inf.up=NA
+  if(is.null(control$inf.down)) control$inf.down=NA
+  if(is.null(control$lt)) control$lt=NA
+  if(is.null(control$rt)) control$rt=NA
+  if(is.null(control$inf.var.thr)) control$inf.var.thr=NA
+  if(is.null(control$ldc.thr)) control$ldc.thr=100
+  if(is.null(control$rdc.thr)) control$rdc.thr=100  
+  if(is.null(control$pps.sp)) control$pps.sp=300      
+  if(is.null(control$get.readings)) control$get.readings=FALSE
+  control
+}
+
+DriveSafely2=function(control)
+{  
+  control=PrepareControl(control)
+  PrepareEngines(left, right, control)
+  gdata[1,]=GetReadings2(left, right, gyro, infrared, ltouch, rtouch)
+  if(any( unlist(CheckConditions2(gdata[1,], control)), na.rm=TRUE))
+    return (gdata[c(1,1),])
+  
+  r=2
+  DriveStartControl(left, right, control)
+  
+  while(Running(right) || (Running(left) ))
+  {
+    gdata[r,]=GetReadings2(left, right, gyro, infrared, ltouch, rtouch)
+    if(any( unlist(CheckConditions2(gdata[r,], control)), na.rm=TRUE))
+      StopEngines(left, right)
+    r=r+1
+  }
+  
+  gdata[r,]=GetReadings2(left, right, gyro, infrared, ltouch, rtouch)
+  
+  SpeakWhy(CheckConditions2(gdata[r], control))
+#  CheckInfraredVariance(infrared, control)
+  if(control$get.readings)
+    return (gdata[1:r,])
+  else
+    return (gdata[c(1,r),])
+}
 
 DriveSafely=function(control)
 {
