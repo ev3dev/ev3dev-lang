@@ -467,6 +467,7 @@ namespace ev3dev
         
         }
   
+
 //~autogen
         
 		public string[] stop_modes

@@ -1,3 +1,0 @@
-../js/extras.ts
-../js/motor.ts
-../vala/ev3dev-lib.vala

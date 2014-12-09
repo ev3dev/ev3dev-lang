@@ -347,6 +347,7 @@ class DCMotor extends MotorBase {
         this.setString("polarity", value);
     }
     
+
 //~autogen
     }
     

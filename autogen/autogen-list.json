@@ -1,0 +1,9 @@
+{
+    "js": [
+        "../js/extras.ts",
+        "../js/motor.ts"
+    ],
+    "vala": [
+        "../vala/ev3dev-lib.vala"
+    ]
+}

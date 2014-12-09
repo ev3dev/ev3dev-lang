@@ -38,7 +38,7 @@ Array.prototype.clean = function (deleteValue) {
 };
 
 
-//Copies properties of one or more objects in to the first object (same as jQuery's extend methos)
+//Copies properties of one or more objects in to the first object (same as jQuery's extend method)
 function extend() {
     for (var i = 1; i < arguments.length; i++)
         for (var key in arguments[i])
@@ -107,9 +107,23 @@ liquidEngine.registerFilters({
 
 //Load the spec data and list of files to process
 var specData = JSON.parse(fs.readFileSync("spec.json"));
-var filesToProcess = fs.readFileSync("autogen-list.txt").toString().replace(/\r/g, '').split(/\n/g);
+var fileDefinitions = JSON.parse(fs.readFileSync("autogen-list.json").toString());
+var args = process.argv.slice(2);
 
-//Call the process function on each file, and log the result
+var filesToProcess = [];
+
+//Only queue the files from the group that was specified (or default to all)
+for(var i in fileDefinitions)
+    if(args.length <= 0 || args.indexOf(i) >= 0)
+        filesToProcess.push.apply(filesToProcess, fileDefinitions[i]);
+
+if (filesToProcess.length > 0)
+    console.log(filesToProcess.length + " files found");
+else
+    console.log("Warning: No files found");
+
+
+//Call the process function on each specified file, and log the result
 for (var i = 0; i < filesToProcess.length; i++) {
     var commentInfo = autogenFenceComments[path.extname(filesToProcess[i])];
     
