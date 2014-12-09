@@ -10,3 +10,5 @@ js/bin/*
 /js/bin
 /vala/bin
 /autogen/node_modules
+/autogen/npm-debug.log
+*.orig
