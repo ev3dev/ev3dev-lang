@@ -8,6 +8,10 @@ Because this specification is meant to be implemented in multiple languages, the
 
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
+<!-- ~autogen autogen-header 'xml'>commentStyle -->
+    <!-- Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4. -->
+<!-- ~autogen -->
+
 Implementation Notes (important)
 ---
 - File access. There should be one class that is used or inherited from in all other classes that need to access object properties via file I/O. This class should check paths for validity, do basic error checking, and generally implement as much of the core I/O functionality as possible.
@@ -27,31 +31,42 @@ Type|String|The type of motor to accept. Can be left empty or undefined (in the 
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.motor>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Duty Cycle|Number|Read
-Duty Cycle SP|Number|Read/Write
-Port Name|String|Read
-Position|Number|Read/Write
-Position Mode|String|Read/Write
-Position SP|Number|Read/Write
-Pulses Per Second|Number|Read
-Pulses Per Second SP|Number|Read/Write
-Ramp Down SP|Number|Read/Write
-Ramp Up SP|Number|Read/Write
-Regulation Mode|String|Read/Write
-Run|Number|Read/Write
-Run Mode|String|Read/Write
-Speed Regulation P|Number|Read/Write
-Speed Regulation I|Number|Read/Write
-Speed Regulation D|Number|Read/Write
-Speed Regulation K|Number|Read/Write
-State|String|Read
-Stop Mode|String|Read/Write
-Stop Modes|String Array|Read
-Time SP|Number|Read/Write
-Type|String|Read
+Duty Cycle|int|Read|
+Duty Cycle SP|int|Read/Write|
+Encoder Mode|string|Read/Write|
+Encoder Modes|string array|Read|
+Emergency Stop|string|Read/Write|
+Debug Log|string|Read|
+Polarity Mode|string|Read/Write|
+Polarity Modes|string array|Read|
+Port Name|string|Read|
+Position|int|Read/Write|
+Position Mode|string|Read/Write|
+Position Modes|string array|Read|
+Position SP|int|Read/Write|
+Pulses Per Second|int|Read|
+Pulses Per Second SP|int|Read/Write|
+Ramp Down SP|int|Read/Write|
+Ramp Up SP|int|Read/Write|
+Regulation Mode|string|Read/Write|
+Regulation Modes|string array|Read|
+Run|int|Read/Write|
+Run Mode|string|Read/Write|
+Run Modes|string array|Read|
+Speed Regulation P|int|Read/Write|
+Speed Regulation I|int|Read/Write|
+Speed Regulation D|int|Read/Write|
+Speed Regulation K|int|Read/Write|
+State|string|Read|
+Stop Mode|string|Read/Write|
+Stop Modes|string array|Read|
+Time SP|int|Read/Write|
+Type|string|Read|
 
+<!-- ~autogen -->
 ###Special properties:
 
 Property Name|Type|Accessibility|Description

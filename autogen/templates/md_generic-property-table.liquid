@@ -1,0 +1,5 @@
+Property Name|Type|Accessibility|Description
+---|---|---|---
+{% for prop in currentClass.systemProperties
+%}{{prop.name}}|{{prop.type}}|{{ prop.readAccess | ternary_if: 'Read' }}{{ prop.writeAccess and prop.readAccess | ternary_if: '/' }}{{prop.writeAccess | ternary_if: 'Write' }}|
+{% endfor %}

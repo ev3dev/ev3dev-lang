@@ -3,7 +3,7 @@
 ///<reference path="io.ts" />
 
 //~autogen autogen-header
-    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4.
+    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4. 
 //~autogen
 
 class PowerSupply extends Device {

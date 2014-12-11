@@ -8,7 +8,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"TODO\" && exit 1"
+    "test": "echo \"TODO\" && exit 1",
+    "postinstall":  "cd node_modules/liquid-node && npm install && npm run compile"
   },
   "homepage": "https://github.com/ev3dev/ev3dev-lang"
 }

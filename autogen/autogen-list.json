@@ -5,5 +5,8 @@
     ],
     "vala": [
         "../vala/ev3dev-lib.vala"
+    ],
+    "docs": [ 
+        "../wrapper-specification.md"
     ]
 }

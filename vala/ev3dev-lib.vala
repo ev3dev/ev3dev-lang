@@ -219,6 +219,61 @@ namespace ev3dev
         
         }
   
+        public string encoder_mode
+        { 
+            owned get
+            {
+                return this.read_string("encoder_mode");
+            }
+        
+            set
+            {
+                this.write_string("encoder_mode", value);
+            }
+        
+        }
+  
+
+  
+        public string emergency_stop
+        { 
+            owned get
+            {
+                return this.read_string("estop");
+            }
+        
+            set
+            {
+                this.write_string("estop", value);
+            }
+        
+        }
+  
+        public string debug_log
+        { 
+            owned get
+            {
+                return this.read_string("log");
+            }
+        
+        }
+  
+        public string polarity_mode
+        { 
+            owned get
+            {
+                return this.read_string("polarity_mode");
+            }
+        
+            set
+            {
+                this.write_string("polarity_mode", value);
+            }
+        
+        }
+  
+
+  
         public string port_name
         { 
             owned get
@@ -255,6 +310,8 @@ namespace ev3dev
             }
         
         }
+  
+
   
         public int position_sp
         { 
@@ -335,6 +392,8 @@ namespace ev3dev
         
         }
   
+
+  
         public int run
         { 
             get
@@ -362,6 +421,8 @@ namespace ev3dev
             }
         
         }
+  
+
   
         public int speed_regulation_p
         { 

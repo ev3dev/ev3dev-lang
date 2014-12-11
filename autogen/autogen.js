@@ -1,21 +1,21 @@
 // Node.JS script to evaluate custom liquid templates in files
 
 //Explanation of C-style regex here: http://regex101.com/r/nQ9bE3
-var cStyleAutogenStart = /\/\/~autogen *([\w-]+) *((\s*[\w\.]+>[\w\.]+)*)/;
+var cStyleAutogenStart = /\/\/~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/;
 var cStyleAutogenEnd = "//~autogen";
 
 //TODO: allow a regex for the end tag (so that we can be more lenient on spacing)
 //Array of objects containing the language-specific comment styles. "start" can be a regex (described below).
 //    The first capture group should get the file name from the autogen tag.
-//    The second should be a space-separated list of variable mappings, as written in the comment
+//    The second should be a space-separated list of variable mappings, as written in the comment.
 var autogenFenceComments = {
     '.ts': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     '.vala': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     '.cpp': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     //XML-style regex here: http://regex101.com/r/cN6gE4
-    '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\.]+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
+    '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
     //Lua regex: http://regex101.com/r/mI4gL1
-    '.lua': { start: /-- *~autogen *([\w-]+) *((\s*[\w\.]+>[\w\.]+)*)/, end: "-- ~autogen" }
+    '.lua': { start: /-- *~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/, end: "-- ~autogen" }
 }
 
 //Extension and helper methods
@@ -102,6 +102,13 @@ liquidEngine.registerFilters({
     },
     underscore_spaces: function (input) {
         return String(input).replace(/\s/g, '_');
+    },
+    ternary_if: function (bool, valueIfTrue, valueIfFalse) {
+        return bool ? (valueIfTrue || '' ) : (valueIfFalse || '' );
+    },
+    traverse_object: function (object, property) {
+
+        return getProp(object, Array.prototype.slice.call(arguments, 1).join("."));
     }
 });
 
@@ -211,7 +218,15 @@ function processNextAutogenBlock(allData, commentInfo, pos, callback) {
     //    copy the requested data from the spec to the liquid context
     for (var i = 0; i < liquidInfo.length; i++) {
         var defParts = liquidInfo[i].split(">");
-        setProp(liquidContext, defParts[1], getProp(liquidContext, defParts[0]));
+        var propValue = getProp(liquidContext, defParts[0]);
+
+        //If the property wasn't found, treat it as a plain string
+        if (propValue == undefined) {
+            //Trim quotes (for string literals)
+            propValue = defParts[0].replace(/^["']+|["']+$/g, '');
+        }
+
+        setProp(liquidContext, defParts[1], propValue);
     }
     
     //Parse and render the liquid using the spec data

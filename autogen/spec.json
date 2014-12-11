@@ -7,21 +7,30 @@
         "motor": {
             "friendlyName": "Motor",
             "description": "The motor class provides a uniform interface for using motors with positional and directional feedback such as the EV3 and NXT motors. This feedback allows for precise control of the motors. This is the most common type of motor, so we just call it \"motor\".",
-            "docsLink":  "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
+            "docsLink": "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
             "systemProperties": [
                 { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Encoder Mode", "systemName": "encoder_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Encoder Modes", "systemName": "encoder_modes", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Emergency Stop", "systemName": "estop", "type": "string", "readAccess": true, "writeAccess": true, "description": "Used to immediately remove power from the motor (emergency stop)." },
+                { "name": "Debug Log", "systemName": "log", "type": "string", "readAccess": true, "writeAccess": false, "description": "Used for debugging." },
+                { "name": "Polarity Mode", "systemName": "polarity_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity Modes", "systemName": "polarity_modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Position Mode", "systemName": "position_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Position Modes", "systemName": "position_modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Pulses Per Second", "systemName": "pulses_per_second", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Pulses Per Second SP", "systemName": "pulses_per_second_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Regulation Mode", "systemName": "regulation_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Regulation Modes", "systemName": "regulation_modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Run", "systemName": "run", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Run Mode", "systemName": "run_mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Run Modes", "systemName": "run_modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Speed Regulation P", "systemName": "speed_regulation_P", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Speed Regulation I", "systemName": "speed_regulation_I", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Speed Regulation D", "systemName": "speed_regulation_D", "type": "int", "readAccess": true, "writeAccess": true },
@@ -31,15 +40,6 @@
                 { "name": "Stop Modes", "systemName": "stop_modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
-            ]
-        },
-        "led": {
-            "friendlyName": "LED",
-            "description": "Any device controlled by the generic LED driver.",
-            "systemProperties": [
-                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true }
             ]
         },
         "dcMotor": {
@@ -63,7 +63,7 @@
             "docsLink": "http://www.ev3dev.org/docs/drivers/servo-motor-class/",
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
@@ -71,6 +71,57 @@
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Rate", "systemName": "rate", "type": "int", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "led": {
+            "friendlyName": "LED",
+            "description": "Any device controlled by the generic LED driver.",
+            "systemProperties": [
+                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "sensor": {
+            "friendlyName": "Sensor",
+            "description": "A generic interface to control most EV3 sensors.",
+            "systemProperties": [
+                { "name": "DP", "systemName": "dp", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" }
+            ]
+        },
+        "i2cSensor": {
+            "friendlyName": "I2C Sensor",
+            "description": "A generic interface to control I2C-type EV3 sensors.",
+            "inheritance": [
+                "sensor"
+            ],
+            "systemProperties": [
+                { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Poll MS", "systemName": "poll_ms", "type": "int", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "powerSupply": {
+            "friendlyName": "Power Supply",
+            "description": "A generic interface to read data from the system's power_supply class. Uses the built-in legoev3-battery if none is specified.",
+            "inheritance": [
+                "sensor"
+            ],
+            "systemProperties": [
+                { "name": "Current Now", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Voltage Now", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Voltage Max Design", "systemName": "voltage_max_design", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Voltage Min Design", "systemName": "voltage_min_design", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Technology", "systemName": "technology", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
             ]
         }
     }
