@@ -9,7 +9,7 @@ Because this specification is meant to be implemented in multiple languages, the
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
-    <!-- Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4. -->
+<!-- Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4. -->
 <!-- ~autogen -->
 
 Implementation Notes (important)
