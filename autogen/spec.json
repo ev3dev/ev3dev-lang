@@ -94,7 +94,7 @@
                 { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" }
+                { "name": "Driver Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" }
             ]
         },
         "i2cSensor": {
