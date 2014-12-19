@@ -112,9 +112,10 @@ liquidEngine.registerFilters({
     }
 });
 
+
 //Load the spec data and list of files to process
-var specData = JSON.parse(fs.readFileSync("spec.json"));
-var fileDefinitions = JSON.parse(fs.readFileSync("autogen-list.json").toString());
+var specData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "spec.json")));
+var fileDefinitions = JSON.parse(fs.readFileSync(path.resolve(__dirname, "autogen-list.json")).toString());
 var args = process.argv.slice(2);
 
 var filesToProcess = [];
@@ -144,16 +145,19 @@ for (var i = 0; i < filesToProcess.length; i++) {
 
 //Processes the contents of the specified file, and writes the result back to the same location (uses recursion)
 function processFile(filename, specData, commentInfo, callback) {
-    fs.readFile(filename, function (err, data) {
+    fs.readFile(path.resolve(__dirname, "..", filename), function (err, data) {
         if (err) {
             callback(filename, err);
             return;
         }
 
         processNextAutogenBlock(data.toString(), commentInfo, 0, function (result) {
-            fs.writeFile(filename, result, {}, function (err) {
+            if (data.toString() != result) //Write results if the content was changed (don't need to re-write the same content)
+                fs.writeFile(filename, result, {}, function (err) {
+                    callback(filename, err);
+                });
+            else
                 callback(filename, err);
-            });
         });
     });
 }
@@ -201,7 +205,7 @@ function processNextAutogenBlock(allData, commentInfo, pos, callback) {
     }
 
     //Make file name in to a full path
-    filename = path.join("templates", filename + ".liquid");
+    filename = path.resolve(__dirname, "templates", filename + ".liquid");
     
     //Find the end of the line (and the start of content)
     //    Handle both styles of line endings
