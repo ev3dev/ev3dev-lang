@@ -77,34 +77,6 @@ class MotorBase extends Device {
 //Tacho motor
 class Motor extends MotorBase {
 
-    get motorProperties(): any {
-        return {
-            portName: 'port_name',
-            dutyCycle: 'duty_cycle',
-            dutyCycleSp: 'duty_cycle_sp',
-            position: 'position',
-            positionMode: 'position_mode',
-            positionSp: 'position_sp',
-            pulsesPerSecond: 'pulses_per_second',
-            pulsesPerSecondSp: 'pulses_per_second_sp',
-            rampDownSp: 'ramp_down_sp',
-            rampUpSp: 'ramp_up_sp',
-            regulationMode: 'regulation_mode',
-            reset: 'reset',
-            run: 'run',
-            runMode: 'run_mode',
-            speedRegulationP: 'speed_regulation_P',
-            speedRegulationI: 'speed_regulation_I',
-            speedRegulationD: 'speed_regulation_D',
-            speedRegulationK: 'speed_regulation_K',
-            state: 'state',
-            stopMode: 'stop_mode',
-            stopModes: 'stop_modes',
-            timeSp: 'time_sp',
-            type: 'type'
-        };
-    }
-
     constructor(port: string, type: string) {
         this.deviceDir = '/sys/class/tacho-motor/';
     
@@ -112,182 +84,195 @@ class Motor extends MotorBase {
     }
 
     public reset() {
-        this.setNumber(this.motorProperties.reset, 1);
+        this.setNumber("reset", 1);
     }
 
     //PROPERTIES
+    //~autogen js_generic-get-set classes.motor>currentClass
+    get dutyCycle(): number {
+        return this.getNumber("duty_cycle");
+    }
+
+    get dutyCycleSp(): number {
+        return this.getNumber("duty_cycle_sp");
+    }
+    set dutyCycleSp(value: number) {
+        this.setNumber("duty_cycle_sp", value);
+    }
+    
+    get encoderMode(): string {
+        return this.getString("encoder_mode");
+    }
+    set encoderMode(value: string) {
+        this.setString("encoder_mode", value);
+    }
+    
+    get encoderModes(): string[] {
+        return this.getString("encoder_modes").split(' ');
+    }
+
+    get emergencyStop(): string {
+        return this.getString("estop");
+    }
+    set emergencyStop(value: string) {
+        this.setString("estop", value);
+    }
+    
+    get debugLog(): string {
+        return this.getString("log");
+    }
+
+    get polarityMode(): string {
+        return this.getString("polarity_mode");
+    }
+    set polarityMode(value: string) {
+        this.setString("polarity_mode", value);
+    }
+    
+    get polarityModes(): string[] {
+        return this.getString("polarity_modes").split(' ');
+    }
 
     get portName(): string {
         return this.getString("port_name");
     }
 
-    get dutyCycle(): number {
-        return this.getNumber(this.motorProperties.dutyCycle);
-    }
-
-
-    get dutyCycleSp(): number {
-        return this.getNumber(this.motorProperties.dutyCycleSp);
-    }
-
-    set dutyCycleSp(value: number) {
-        this.setNumber(this.motorProperties.dutyCycleSp, value);
-    }
-
-
     get position(): number {
-        return this.getNumber(this.motorProperties.position);
+        return this.getNumber("position");
     }
-
     set position(value: number) {
-        this.setNumber(this.motorProperties.position, value);
+        this.setNumber("position", value);
     }
-
-
+    
     get positionMode(): string {
-        return this.getString(this.motorProperties.positionMode);
+        return this.getString("position_mode");
     }
-
     set positionMode(value: string) {
-        this.setString(this.motorProperties.positionMode, value);
+        this.setString("position_mode", value);
     }
-
+    
+    get positionModes(): string[] {
+        return this.getString("position_modes").split(' ');
+    }
 
     get positionSp(): number {
-        return this.getNumber(this.motorProperties.positionSp);
+        return this.getNumber("position_sp");
     }
-
     set positionSp(value: number) {
-        this.setNumber(this.motorProperties.positionSp, value);
+        this.setNumber("position_sp", value);
     }
-
-
+    
     get pulsesPerSecond(): number {
-        return this.getNumber(this.motorProperties.pulsesPerSecond);
+        return this.getNumber("pulses_per_second");
     }
-
 
     get pulsesPerSecondSp(): number {
-        return this.getNumber(this.motorProperties.pulsesPerSecondSp);
+        return this.getNumber("pulses_per_second_sp");
     }
-
     set pulsesPerSecondSp(value: number) {
-        this.setNumber(this.motorProperties.pulsesPerSecondSp, value);
+        this.setNumber("pulses_per_second_sp", value);
     }
-
-
+    
     get rampDownSp(): number {
-        return this.getNumber(this.motorProperties.rampDownSp);
+        return this.getNumber("ramp_down_sp");
     }
-
     set rampDownSp(value: number) {
-        this.setNumber(this.motorProperties.rampDownSp, value);
+        this.setNumber("ramp_down_sp", value);
     }
-
-
+    
     get rampUpSp(): number {
-        return this.getNumber(this.motorProperties.rampUpSp);
+        return this.getNumber("ramp_up_sp");
     }
-
     set rampUpSp(value: number) {
-        this.setNumber(this.motorProperties.rampUpSp, value);
+        this.setNumber("ramp_up_sp", value);
     }
-
-
+    
     get regulationMode(): string {
-        return this.getString(this.motorProperties.regulationMode);
+        return this.getString("regulation_mode");
     }
-
     set regulationMode(value: string) {
-        this.setString(this.motorProperties.regulationMode, value);
+        this.setString("regulation_mode", value);
     }
-
+    
+    get regulationModes(): string[] {
+        return this.getString("regulation_modes").split(' ');
+    }
 
     get run(): number {
-        return this.getNumber(this.motorProperties.run);
+        return this.getNumber("run");
     }
-
     set run(value: number) {
-        this.setNumber(this.motorProperties.run, value);
+        this.setNumber("run", value);
     }
-
-
+    
     get runMode(): string {
-        return this.getString(this.motorProperties.runMode);
+        return this.getString("run_mode");
     }
-
     set runMode(value: string) {
-        this.setString(this.motorProperties.runMode, value);
+        this.setString("run_mode", value);
     }
-
+    
+    get runModes(): string[] {
+        return this.getString("run_modes").split(' ');
+    }
 
     get speedRegulationP(): number {
-        return this.getNumber(this.motorProperties.speedRegulationP);
+        return this.getNumber("speed_regulation_P");
     }
-
     set speedRegulationP(value: number) {
-        this.setNumber(this.motorProperties.speedRegulationP, value);
+        this.setNumber("speed_regulation_P", value);
     }
-
-
+    
     get speedRegulationI(): number {
-        return this.getNumber(this.motorProperties.speedRegulationI);
+        return this.getNumber("speed_regulation_I");
     }
-
     set speedRegulationI(value: number) {
-        this.setNumber(this.motorProperties.speedRegulationI, value);
+        this.setNumber("speed_regulation_I", value);
     }
-
-
+    
     get speedRegulationD(): number {
-        return this.getNumber(this.motorProperties.speedRegulationD);
+        return this.getNumber("speed_regulation_D");
     }
-
     set speedRegulationD(value: number) {
-        this.setNumber(this.motorProperties.speedRegulationD, value);
+        this.setNumber("speed_regulation_D", value);
     }
-
-
+    
     get speedRegulationK(): number {
-        return this.getNumber(this.motorProperties.speedRegulationK);
+        return this.getNumber("speed_regulation_K");
     }
-
     set speedRegulationK(value: number) {
-        this.setNumber(this.motorProperties.speedRegulationK, value);
+        this.setNumber("speed_regulation_K", value);
     }
-
-
+    
     get state(): string {
-        return this.getString(this.motorProperties.state);
+        return this.getString("state");
     }
-
 
     get stopMode(): string {
-        return this.getString(this.motorProperties.stopMode);
+        return this.getString("stop_mode");
     }
-
     set stopMode(value: string) {
-        this.setString(this.motorProperties.stopMode, value);
+        this.setString("stop_mode", value);
     }
-
-
+    
     get stopModes(): string[] {
-        return this.getString(this.motorProperties.stopModes).split(' ');
+        return this.getString("stop_modes").split(' ');
     }
-
 
     get timeSp(): number {
-        return this.getNumber(this.motorProperties.timeSp);
+        return this.getNumber("time_sp");
     }
-
     set timeSp(value: number) {
-        this.setNumber(this.motorProperties.timeSp, value);
+        this.setNumber("time_sp", value);
     }
-
-
+    
     get type(): string {
-        return this.getString(this.motorProperties.type);
+        return this.getString("type");
     }
+
+
+//~autogen
+    
 }
 
 //DC Motor
@@ -363,9 +348,6 @@ class ServoMotor extends MotorBase {
     //PROPERTIES
 
     //~autogen js_generic-get-set classes.servoMotor>currentClass
-
-
-
     get command(): string {
         return this.getString("command");
     }

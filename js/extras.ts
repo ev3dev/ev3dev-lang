@@ -51,29 +51,33 @@ class PowerSupply extends Device {
     }
 
     //PROPERTIES
+    //~autogen js_generic-get-set classes.powerSupply>currentClass
     get currentNow(): number {
-        return this.getNumber(this.powerProperties.currentNow);
+        return this.getNumber("current_now");
     }
 
     get voltageNow(): number {
-        return this.getNumber(this.powerProperties.voltageNow);
+        return this.getNumber("voltage_now");
     }
 
     get voltageMaxDesign(): number {
-        return this.getNumber(this.powerProperties.voltageMaxDesign);
+        return this.getNumber("voltage_max_design");
     }
 
     get voltageMinDesign(): number {
-        return this.getNumber(this.powerProperties.voltageMaxDesign);
+        return this.getNumber("voltage_min_design");
     }
 
     get technology(): string {
-        return this.getProperty(this.powerProperties.technology);
+        return this.getString("technology");
     }
 
     get type(): string {
-        return this.getProperty(this.powerProperties.type);
+        return this.getString("type");
     }
+
+
+//~autogen
 
     get voltageVolts(): number {
         return this.voltageNow / 1000000;

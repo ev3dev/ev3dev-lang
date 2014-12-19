@@ -1,7 +1,8 @@
 {
     "js": [
         "../js/extras.ts",
-        "../js/motor.ts"
+        "../js/motor.ts",
+        "../js/sensor.ts"
     ],
     "vala": [
         "../vala/ev3dev-lib.vala"

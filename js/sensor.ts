@@ -13,21 +13,6 @@ class Sensor extends Device {
         return this._deviceIndex;
     }
 
-    get sensorProperties(): any {
-        return {
-            portName: 'port_name',
-            numValues: 'num_values',
-            name: 'name',
-            address: 'address',
-            mode: 'mode',
-            modes: 'modes',
-            value: 'value',
-            dp: 'dp',
-            pollMS: 'poll_ms',
-            fwVersion: 'fw_version'
-        };
-    }
-
     constructor(port: string, types: string[], i2cAddress?: string) {
         super();
 
@@ -42,15 +27,15 @@ class Sensor extends Device {
                 rootPath = path.join(this.sensorDeviceDir, file);
 
                 var portName = fs.readFileSync(
-                        path.join(rootPath, this.sensorProperties.portName)
+                        path.join(rootPath, "port_name")
                     ).toString().trim();
 
                 var typeName = fs.readFileSync(
-                        path.join(rootPath, this.sensorProperties.name)
+                        path.join(rootPath, "name")
                     ).toString().trim();
 
                 var i2cDeviceAddress = fs.readFileSync(
-                        path.join(rootPath, this.sensorProperties.address)
+                        path.join(rootPath, "address")
                     ).toString().trim();
 
                 var satisfiesCondition = (
@@ -87,37 +72,56 @@ class Sensor extends Device {
     }
 
     public getValue(valueIndex: number): number {
-        return this.getNumber(this.sensorProperties.value + valueIndex);
+        return this.getNumber("value" + valueIndex);
     }
 
     public getFloatValue(valueIndex: number): number {
-        return this.getNumber(this.sensorProperties.value + valueIndex) / Math.pow(10, this.getNumber(this.sensorProperties.dp));
+        return this.getNumber("value" + valueIndex) / Math.pow(10, this.getNumber("dp"));
     }
 
     //PROPERTIES
-    get portName(): string {
-        return this.getProperty(this.sensorProperties.portName);
-    }
-
-    get numValues(): number {
-        return this.getNumber(this.sensorProperties.numValues);
-    }
-
-    get typeName(): string {
-        return this.getString(this.sensorProperties.name);
+    //~autogen js_generic-get-set classes.sensor>currentClass
+    get dp(): number {
+        return this.getNumber("dp");
     }
 
     get mode(): string {
-        return this.getProperty(this.sensorProperties.mode);
+        return this.getString("mode");
     }
-
     set mode(value: string) {
-        this.setProperty(this.sensorProperties.mode, value);
+        this.setString("mode", value);
+    }
+    
+    get modes(): string[] {
+        return this.getString("modes").split(' ');
     }
 
-    get modes(): string[] {
-        return this.getProperty(this.sensorProperties.modes).split(' ');
+    set command(value: string) {
+        this.setString("command", value);
     }
+    
+    get commands(): string[] {
+        return this.getString("commands").split(' ');
+    }
+
+    get numValues(): number {
+        return this.getNumber("num_values");
+    }
+
+    get portName(): string {
+        return this.getString("port_name");
+    }
+
+    get units(): string {
+        return this.getString("units");
+    }
+
+    get driverName(): string {
+        return this.getString("name");
+    }
+
+
+//~autogen
 }
 
 class I2CSensor extends Sensor {
@@ -125,15 +129,22 @@ class I2CSensor extends Sensor {
         super(port, types, i2cAddress);
     }
 
-    get pollMS(): number {
-        return this.getProperty(this.sensorProperties.pollMS);
-    }
-
-    set pollMS(value: number) {
-        this.setProperty(this.sensorProperties.pollMS, value);
-    }
-
+    //~autogen js_generic-get-set classes.i2cSensor>currentClass
     get fwVersion(): string {
-        return this.getProperty(this.sensorProperties.fwVersion);
+        return this.getString("fw_version");
     }
+
+    get address(): string {
+        return this.getString("address");
+    }
+
+    get pollMs(): number {
+        return this.getNumber("poll_ms");
+    }
+    set pollMs(value: number) {
+        this.setNumber("poll_ms", value);
+    }
+    
+
+//~autogen
 }

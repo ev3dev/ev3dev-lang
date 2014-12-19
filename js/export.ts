@@ -8,11 +8,15 @@
 module.exports.ports = ports;
 
 /* CLASS EXPORTS */
+//IO
 module.exports.Device = Device;
+//Motor
 module.exports.Motor = Motor;
-module.exports.Sensor = Sensor;
-module.exports.I2CSensor = I2CSensor;
-module.exports.PowerSupply = PowerSupply;
 module.exports.ServoMotor = ServoMotor;
 module.exports.DCMotor = DCMotor;
+//Sensor
+module.exports.Sensor = Sensor;
+module.exports.I2CSensor = I2CSensor;
+//Extras
+module.exports.PowerSupply = PowerSupply;
 module.exports.LED = LED;
