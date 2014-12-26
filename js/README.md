@@ -1,7 +1,7 @@
-NodeJS Language Binding for ev3dev 
+Node.js Language Binding for ev3dev 
 =============
 
-This is a NodeJS module that exposes the features of the [ev3dev](http://github.com/ev3dev/ev3dev) API in an easy-to-use structure. It is part of the "unified" bindings project for ev3dev, which means it follows our abstract API specification. This specification is implemented in multiple languages so that one can easily carry the same code concepts from one language to another.
+This is a Node.js module that exposes the features of the [ev3dev](http://github.com/ev3dev/ev3dev) API in an easy-to-use structure. It is part of the "unified" bindings project for ev3dev, which means it follows our abstract API specification. This specification is implemented in multiple languages so that one can easily carry the same code concepts from one language to another.
 
 ##Getting the Module
 The easiest way to get the module is to install it through `npm`:
@@ -15,9 +15,9 @@ And then `require()` it for use in your code.
 You can also download the source from GitHub directly, either from the releases page or via git. If you do it this way, you will need to follow the building instructions below to make it usable from Node.
 
 ##Building From Source
-This module is written in TypeScript, which means it cannot be directly used from JavaScript or NodeJS. If you would like to make changes to the module or use a copy of the module from GitHub, you will need to follow these steps to build the module from source. The below steps should work on any modern OS, including Linux, OSX and Windows.
+This module is written in TypeScript, which means it cannot be directly used from JavaScript or Node.js. If you would like to make changes to the module or use a copy of the module from GitHub, you will need to follow these steps to build the module from source. The below steps should work on any modern OS, including Linux, OSX and Windows.
 
-First, you will need to install some tools. Both building and running the module will require NodeJS and `npm`, so make sure that you have both installed. Then install grunt, the task runner that we use to build the library:
+First, you will need to install some tools. Both building and running the module will require Node.js and `npm`, so make sure that you have both installed. Then install grunt, the task runner that we use to build the library:
 ```
 $ npm install -g grunt-cli
 ```
