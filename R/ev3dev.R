@@ -17,7 +17,10 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  
-#   Compatibility with ev3dev-jessie-2014-10-07 (pre-release)
+#   Compatibile ev3dev kernels:
+#   3.16.1-4-ev3dev
+#   3.16.1-5-ev3dev
+#   3.16.1-6-ev3dev
 
 #TO DO - TypeId for sensor or Name? Name currently, no type_id in ev3dev-jessie-2014-10-07 (pre-release)
 #TO DO - is it an issue really? function Position is creating a new generic function for ‘Position’ in the global environment (instead builtin Position)
@@ -204,7 +207,8 @@ large.motor = function(port="", ...)
 setMethod("DeviceIndex","motor",function(.Object){  
   stopifnot(Connected(.Object))
   device_name=basename(.Object@cache$.path)
-  substr(device_name, 12, nchar(device_name)  ) #tacho-motor, 12
+  match=regexpr("[[:digit:]]+$", device_name) #match the digits at the end
+  as.integer(substr(device_name, match, match+attr(match, "match.length")  ) )
 })
 
 
@@ -379,6 +383,22 @@ setMethod("SetRunMode","motor",function(.Object, value=c("forever", "position", 
   SetAttrString(.Object, "run_mode", value)
 })
 
+# Emergency Stop
+
+setGeneric("EmergencyStop", function(.Object) standardGeneric("EmergencyStop"))
+
+setMethod("EmergencyStop","motor",function(.Object){
+  SetAttrInt(.Object, "estop", 1L)
+})
+
+setGeneric("DisarmEmergencyStop", function(.Object) standardGeneric("DisarmEmergencyStop"))
+
+setMethod("DisarmEmergencyStop","motor",function(.Object){
+  x=GetAttrInt(.Object, "estop")
+  SetAttrInt(.Object, "estop", x)  
+})
+
+
 #Speed Regulation P|Number|Read/Write
 
 setGeneric("SpeedRegulationP", function(.Object) standardGeneric("SpeedRegulationP"))
@@ -494,11 +514,10 @@ setMethod("Reset","motor",function(.Object){
 
 setMethod("initialize", "sensor",
           function(.Object, port="", name="", ... ){            
-  
-  callNextMethod(.Object, "", ...)            
-  .Object@cache$.path=""
-  .Object@cache$.dp_scale=1
-  .Object@cache$.num_values=0
+    
+  device_path=""
+  device_dp_scale=1
+  device_num_values=0
     
   #path="~/test/sys/class/msensor"
   path="/sys/class/msensor"
@@ -518,14 +537,18 @@ setMethod("initialize", "sensor",
       if(missing(port) || port=="" || port==device_port )    
         if(missing(name)  || name=="" || device_name %in% name)
         {
-          .Object@cache$.path=paste(files[f],"/",sep="")
-          .Object@cache$.dp_scale=try(10^GetAttrInt(.Object, "dp"))
-          .Object@cache$.num_values=try(NumValues(.Object))                
+          device_path=paste(files[f],"/",sep="")
+          .Object@cache$.path=device_path
+          device_dp_scale=try(10^GetAttrInt(.Object, "dp"))
+          device_num_values=try(NumValues(.Object))    
           break
         }
     }
   }
-  .Object  
+  .Object=callNextMethod(.Object, path=device_path, ...)  
+  .Object@cache$.dp_scale=device_dp_scale
+  .Object@cache$.num_values=device_num_values
+  .Object
 })
 
 sensor=function(port="", name="", ...) {.sensor(port, name,...)}
@@ -534,12 +557,14 @@ touch.sensor = function(port="", ...) { sensor(port, "lego-ev3-touch",...)  }
 color.sensor = function(port="", ...) { sensor(port, "ev3-uart-29",...)  }
 ultrasonic.sensor = function(port="", ...) { sensor(port, "ev3-uart-30",...)  }
 gyro.sensor = function(port="", ...) { sensor(port, "ev3-uart-32",...)  }
+xg1300l.sensor=function(port="", ...) { sensor(port, "mi-xg1300l",...)  }
 
 setMethod("DeviceIndex","sensor",function(.Object){  
   stopifnot(Connected(.Object))
   device_name=basename(.Object@cache$.path)
-  substr(device_name, 7 , nchar(device_name)  ) #sensor, 
-})
+  match=regexpr("[[:digit:]]+$", device_name) #match the digits at the end
+  as.integer(substr(device_name, match, match+attr(match, "match.length")  ) )
+3})
 
 
 #Port Name|String|Read
@@ -587,6 +612,24 @@ setGeneric("Modes", function(.Object) standardGeneric("Modes"))
 
 setMethod("Modes","sensor",function(.Object){
   GetAttrStringArray(.Object, "modes")
+})
+
+#Command|String|Read/Write
+
+setGeneric("Command", function(.Object, value) standardGeneric("Command"))
+
+setMethod("Command","sensor",function(.Object, value){
+  commands=Commands(.Object)
+  command=SetAttrString(.Object, "command", match.arg(value,commands))  
+  command
+})
+
+#Commands|String Array|Read
+
+setGeneric("Commands", function(.Object) standardGeneric("Commands"))
+
+setMethod("Commands","sensor",function(.Object){
+  GetAttrStringArray(.Object, "commands")
 })
 
 #Get Value|Number (int)|Value Index : Number|Gets the raw value at the specified index

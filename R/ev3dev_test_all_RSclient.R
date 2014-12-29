@@ -6,9 +6,7 @@
 #   -R and Rserve installed on EV3
 #   -RSclient package installed on PC
 #   -remote connections enabled for Rserve on EV3
-#   -ssh client installed on PC and in the system path (e.g. www.openssh.org/ for Windows)
-#   -ssh keys for user of PC stored on EV3, same PC/EV3 user (doesn't ask for password)
-#   -ssh connected at least once from command line (so machine trusted)
+#   -Rserve running on EV3 
 #   -working directory set to location of files (setwd on PC)
 #
 #   Copyright (c) 2014 - Bartosz Meglicki
@@ -39,36 +37,28 @@ ip="192.168.1.10"
 library(RSclient)
 source("ev3_dev_tools.R") #startRemoteRserve, upload, run
 
-scp_path=paste(ip, ":~/R/", sep="")
-
-status=run(ip, "mkdir ~/R") #may warn if directory already exists
-
-startRemoteRserve(ip)
-Sys.sleep(15) # let's wait for the server start, be patient, it takes some time for EV3
-c=RSconnect(ip) # will fail if: remote Rserve connections are disabled on EV3 (default!), or server not started yet
-
-RSeval(c, quote(print("It is ready.")))
-upload("ev3dev.R", scp_path)
-
-RSeval( c, quote(source("~/R/ev3dev.R") ))
+c=RS.connect(ip) # will fail if: remote Rserve connections are disabled on EV3 (default!), or server not started yet
 
 # Starts tests
 
-# Run the motor test
-upload("ev3dev_test_motors.R", scp_path)
-RSeval( c, quote(source("~/R/ev3dev_test_motors.R") ))
+# Upload bindings (not necessary if done though Rserve config file on startup)
+UploadFile(c, "ev3dev.R")
+RS.eval( c, source("ev3dev.R") )
 
+# Run the motor test
+UploadFile(c, "ev3dev_test_motors.R")
+RS.eval( c, source("ev3dev_test_motors.R") )
 
 # Run the sensors test
-upload("ev3dev_test_sensors.R", scp_path)
-RSeval( c, quote(source("~/R/ev3dev_test_sensors.R") ))
+UploadFile(c, "ev3dev_test_sensors.R")
+RS.eval( c, source("ev3dev_test_sensors.R") )
 
 # Run the led test
-upload("ev3dev_test_leds.R", scp_path)
-RSeval( c, quote(source("~/R/ev3dev_test_leds.R") ))
+UploadFile(c, "ev3dev_test_leds.R")
+RS.eval( c, source("ev3dev_test_leds.R"))
 
 # Run the power supply test
-upload("ev3dev_test_power_supply.R", scp_path)
-RSeval( c, quote(source("~/R/ev3dev_test_power_supply.R") ))
+UploadFile(c, "ev3dev_test_power_supply.R")
+RS.eval( c, source("ev3dev_test_power_supply.R") )
 
-RSclose(c)
+RS.close(c)
