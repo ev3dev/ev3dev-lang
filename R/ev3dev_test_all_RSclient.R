@@ -46,19 +46,19 @@ UploadFile(c, "ev3dev.R")
 RS.eval( c, source("ev3dev.R") )
 
 # Run the motor test
-UploadFile(con, "ev3dev_test_motors.R")
+UploadFile(c, "ev3dev_test_motors.R")
 RS.eval( c, source("ev3dev_test_motors.R") )
 
 # Run the sensors test
-UploadFile(con, "ev3dev_test_sensors.R")
+UploadFile(c, "ev3dev_test_sensors.R")
 RS.eval( c, source("ev3dev_test_sensors.R") )
 
 # Run the led test
-UploadFile(con, "ev3dev_test_leds.R")
-RS.eval( con, source("ev3dev_test_leds.R"))
+UploadFile(c, "ev3dev_test_leds.R")
+RS.eval( c, source("ev3dev_test_leds.R"))
 
 # Run the power supply test
-UploadFile(con, "ev3dev_test_power_supply.R")
+UploadFile(c, "ev3dev_test_power_supply.R")
 RS.eval( c, source("ev3dev_test_power_supply.R") )
 
 RS.close(c)
