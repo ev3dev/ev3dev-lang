@@ -1,6 +1,6 @@
 {% case commentStyle %}{%
-		   when 'lua' %}    --{%
-		   when 'md' or 'xml' %}<!--{%		   
-	       else %}    //{%
+           when 'lua' %}    --{%
+           when 'md' or 'xml' %}<!--{%
+           else %}    //{%
        endcase
 %} Sections of the following code were auto-generated based on spec v{{ meta.version }}{% if meta.specRevision %}, rev {{meta.specRevision}}{% endif %}. {{ commentStyle == 'md' or commentStyle == 'xml' | ternary_if: '-->', '' }}
