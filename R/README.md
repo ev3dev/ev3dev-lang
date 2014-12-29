@@ -19,7 +19,6 @@ Prerequisities:
 
 Optional (recommended for working with R from PC)
 - Rserve installed on EV3 with remote connections enabled 
-- ssh keys from PC user trusted on EV3 (and connected once), same PC/EV3 user
 
 Getting Started (recommended path):
 ---------------------------------------------------------------
@@ -73,21 +72,9 @@ This is the recommended way. You can execute R commands remotely on EV3 and get 
   * on EV3 create a file /etc/Rserv.conf with line 'remote enable' 
     *	`sudo nano /etc/Rserv.conf`
       *	`remote enable`
+ * start Rserve on EV3:
+   *	`R CMD Rserve`
  * if you are concerned about your EV3 security follow recommendations at [rforge](http://www.rforge.net/Rserve/doc.html) ;-)
-
-- prepare ssh connection (public PC user ssh key known by EV3, same user name recommended)
- * if on Windows, install open-ssh, (should be already installed on other platforms):
-    * `sourceforge.net/projects/sshwindows`
- * on PC generate public/private key with ssh-keygen for your user
-    *	`ssh-keygen -t rsa`
- * from PC, make directory on EV3 for .ssh keys:
-    * `ssh [your_ev3_user]@[your_ev3_ip] mkdir -p .ssh`
- * from PC copy the generated public key for your user to EV3
-    *	`cat .ssh/id_rsa.pub | ssh [your_ev3_user]@[your_ev3_ip] 'cat >> .ssh/authorized_keys'`
- * from PC set correct permissions for .ssh 
-    * `ssh [your_ev3_user]@[your_ev3_ip]  "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"`
- * ssh to EV3 from PC at least once
-    *	`ssh [your_ev3_ip]` 
 
 - test R on EV3 remotely (from PC through RSclient to Rserve on EV3):
  * on PC open your favourite IDE for R (e.g. RStudio)
@@ -97,9 +84,8 @@ This is the recommended way. You can execute R commands remotely on EV3 and get 
  * follow instructions in the script
   * set ip variable to your EV3 ip
   * execute the script line by line
-  * the script starts Rserve on EV3 thorugh ssh
-  * the script copies the files to EV3 through scp
-  * the script sources the files on EV3 through RSclient to Rserve
+  * the script copies the files to EV3 through Rserve
+  * the script sources the files on EV3 through Rserve
   * peek into the files ev3dev_test_*.R to see API  use examples
 
 ### Other things to consider ###
