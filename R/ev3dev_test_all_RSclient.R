@@ -42,7 +42,7 @@ c=RS.connect(ip) # will fail if: remote Rserve connections are disabled on EV3 (
 # Starts tests
 
 # Upload bindings (not necessary if done though Rserve config file on startup)
-UploadFile(con, "ev3dev.R")
+UploadFile(c, "ev3dev.R")
 RS.eval( c, source("ev3dev.R") )
 
 # Run the motor test
