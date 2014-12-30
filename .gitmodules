@@ -1,0 +1,3 @@
+[submodule "vala"]
+	path = vala
+	url = git://github.com/dlech/ev3dev-lang-vala
