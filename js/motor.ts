@@ -3,7 +3,7 @@
 ///<reference path="io.ts" />
 
 //~autogen autogen-header
-    // Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4. 
+    // Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 1. 
 //~autogen
 
 class MotorBase extends Device {
@@ -303,8 +303,8 @@ class DCMotor extends MotorBase {
         this.setNumber("duty_cycle", value);
     }
     
-    get typeName(): string {
-        return this.getString("name");
+    get deviceName(): string {
+        return this.getString("device_name");
     }
 
     get portName(): string {
@@ -355,8 +355,8 @@ class ServoMotor extends MotorBase {
         this.setString("command", value);
     }
     
-    get typeName(): string {
-        return this.getString("name");
+    get deviceName(): string {
+        return this.getString("device_name");
     }
 
     get portName(): string {

@@ -81,8 +81,8 @@ class Sensor extends Device {
 
     //PROPERTIES
     //~autogen js_generic-get-set classes.sensor>currentClass
-    get dp(): number {
-        return this.getNumber("dp");
+    get decimals(): number {
+        return this.getNumber("decimals");
     }
 
     get mode(): string {
@@ -116,8 +116,8 @@ class Sensor extends Device {
         return this.getString("units");
     }
 
-    get driverName(): string {
-        return this.getString("name");
+    get deviceName(): string {
+        return this.getString("device_name");
     }
 
 

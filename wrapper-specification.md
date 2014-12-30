@@ -98,7 +98,7 @@ Property Name|Type|Accessibility|Description
 Command|string|Write|
 Commands|string array|Read|
 Duty Cycle|int|Read/Write|
-Driver Name|string|Read|
+Device Name|string|Read|
 Port Name|string|Read|
 Ramp Down MS|int|Read/Write|
 Ramp Up MS|int|Read/Write|
@@ -129,7 +129,7 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Command|string|Read/Write|
-Driver Name|string|Read|
+Device Name|string|Read|
 Port Name|string|Read|
 Max Pulse MS|int|Read/Write|
 Mid Pulse MS|int|Read/Write|
