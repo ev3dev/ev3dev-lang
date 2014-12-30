@@ -577,11 +577,11 @@ namespace ev3dev
         
         }
   
-        public string type_name
+        public string device_name
         { 
             owned get
             {
-                return this.read_string("name");
+                return this.read_string("device_name");
             }
         
         }
@@ -668,11 +668,11 @@ namespace ev3dev
         
         }
   
-        public string type_name
+        public string device_name
         { 
             owned get
             {
-                return this.read_string("name");
+                return this.read_string("device_name");
             }
         
         }
@@ -778,7 +778,7 @@ namespace ev3dev
 	public class Sensor : Device
 	{
 		private string port;
-		private const string sensor_device_dir = "/sys/class/msensor";
+		private const string sensor_device_dir = "/sys/class/lego-sensor";
 		private int device_index { get; private set; default = -1; }
 
 		public Sensor (string port = "", string[]? types = null, string? i2c_address = null)
@@ -864,50 +864,81 @@ namespace ev3dev
 		}
 
 		//PROPERTIES
-		public string port_name
-		{
-			owned get
-			{
-				return this.read_string("port_name");
-			}
-		}
+        //~autogen vala_generic-get-set classes.sensor>currentClass
+        public int decimals
+        { 
+            get
+            {
+                return this.read_int("decimals");
+            }
+        
+        }
+  
+        public string mode
+        { 
+            owned get
+            {
+                return this.read_string("mode");
+            }
+        
+            set
+            {
+                this.write_string("mode", value);
+            }
+        
+        }
+  
 
-		public int num_values
-		{
-			get
-			{
-				return this.read_int("num_values");
-			}
-		}
+  
+        public string command
+        { 
+            set
+            {
+                this.write_string("command", value);
+            }
+        
+        }
+  
 
-		public string type_name
-		{
-			owned get
-			{
-				return this.read_string("name");
-			}
-		}
-		
-		public string mode
-		{
-			owned get
-			{
-				return this.read_string("mode");
-			}
-			
-			set
-			{
-				this.write_string("mode", value);
-			}
-		}
-		
-		public string[] modes
-		{
-			owned get
-			{
-				return this.read_string("modes").split(" ");
-			}
-		}
+  
+        public int num_values
+        { 
+            get
+            {
+                return this.read_int("num_values");
+            }
+        
+        }
+  
+        public string port_name
+        { 
+            owned get
+            {
+                return this.read_string("port_name");
+            }
+        
+        }
+  
+        public string units
+        { 
+            owned get
+            {
+                return this.read_string("units");
+            }
+        
+        }
+  
+        public string device_name
+        { 
+            owned get
+            {
+                return this.read_string("device_name");
+            }
+        
+        }
+  
+
+//~autogen
 	}
 	
 	public class I2CSensor : Sensor
@@ -917,26 +948,41 @@ namespace ev3dev
 			base(port, types, i2c_address);
 		}
 		
-		public int poll_ms
-		{
-			get
-			{
-				return this.read_int("poll_ms");
-			}
+        //~autogen vala_generic-get-set classes.i2cSensor>currentClass
+        public string fw_version
+        { 
+            owned get
+            {
+                return this.read_string("fw_version");
+            }
+        
+        }
+  
+        public string address
+        { 
+            owned get
+            {
+                return this.read_string("address");
+            }
+        
+        }
+  
+        public int poll_ms
+        { 
+            get
+            {
+                return this.read_int("poll_ms");
+            }
+        
+            set
+            {
+                this.write_int("poll_ms", value);
+            }
+        
+        }
+  
 
-			set
-			{
-				this.write_int("poll_ms", value);
-			}
-		}
-		
-		public string fw_version
-		{
-			owned get
-			{
-				return this.read_string("fw_version");
-			}
-		}
+//~autogen
 	}
 	
 	public class PowerSupply : Device
@@ -974,55 +1020,64 @@ namespace ev3dev
 			this.connected = false;
 		}
 		
-		public int current_now
-		{
-			get
-			{
-				return this.read_int("current_now");
-			}
-		}
-		
-		public int voltage_now
-		{
-			get
-			{
-				return this.read_int("voltage_now");
-			}
-		}
-		
-		public int voltage_max_design
-		{
-			get
-			{
-				return this.read_int("voltage_max_design");
-			}
-		}
-		
-		public int voltage_min_design
-		{
-			get
-			{
-				return this.read_int("voltage_min_design");
-			}
-		}
-		
-		public string technology
-		{
-			owned get
-			{
-				return this.read_string("technology");
-			}
-		}
-		
-		//Variable name "type" not allowed
-		public string device_type
-		{
-			owned get
-			{
-				return this.read_string("type");
-			}
-		}
-		
+        //~autogen vala_generic-get-set classes.powerSupply>currentClass
+        public int current_now
+        { 
+            get
+            {
+                return this.read_int("current_now");
+            }
+        
+        }
+  
+        public int voltage_now
+        { 
+            get
+            {
+                return this.read_int("voltage_now");
+            }
+        
+        }
+  
+        public int voltage_max_design
+        { 
+            get
+            {
+                return this.read_int("voltage_max_design");
+            }
+        
+        }
+  
+        public int voltage_min_design
+        { 
+            get
+            {
+                return this.read_int("voltage_min_design");
+            }
+        
+        }
+  
+        public string technology
+        { 
+            owned get
+            {
+                return this.read_string("technology");
+            }
+        
+        }
+  
+        public string motor_type
+        { 
+            owned get
+            {
+                return this.read_string("type");
+            }
+        
+        }
+  
+
+//~autogen
+        
 		public double voltage_volts
 		{
 			get
@@ -1075,38 +1130,45 @@ namespace ev3dev
 			this.connected = false;
 		}
 		
-		public int max_brightness
-		{
-			get
-			{
-				return this.read_int("max_brightness");
-			}
-		}
-		
-		public int brightness
-		{
-			get
-			{
-				return this.read_int("brightness");
-			}
-			
-			set
-			{
-				this.write_int("brightness", value);
-			}
-		}
-		
-		public string trigger
-		{
-			owned get
-			{
-				return this.read_string("trigger");
-			}
-			
-			set
-			{
-				this.write_string("trigger", value);
-			}
-		}
+        //~autogen vala_generic-get-set classes.led>currentClass
+        public int max_brightness
+        { 
+            get
+            {
+                return this.read_int("max_brightness");
+            }
+        
+        }
+  
+        public int brightness
+        { 
+            get
+            {
+                return this.read_int("brightness");
+            }
+        
+            set
+            {
+                this.write_int("brightness", value);
+            }
+        
+        }
+  
+        public string trigger
+        { 
+            owned get
+            {
+                return this.read_string("trigger");
+            }
+        
+            set
+            {
+                this.write_string("trigger", value);
+            }
+        
+        }
+  
+
+//~autogen
 	}
 }
