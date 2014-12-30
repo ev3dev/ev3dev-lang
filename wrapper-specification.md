@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (DRAFT ver `0.9.1`, rev 4)
+ev3dev Language Wrapper Specification (DRAFT ver `0.9.2`, rev 1)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
 
@@ -9,7 +9,7 @@ Because this specification is meant to be implemented in multiple languages, the
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.1-pre, rev 4. -->
+<!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 1. -->
 <!-- ~autogen -->
 
 Implementation Notes (important)
@@ -92,16 +92,19 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.dcMotor>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|String|Read/Write
-Commands|String Array|Read
-Duty Cycle|Number|Read/Write
-Type Name|String|Read|Attribute `name`
-Port Name|String|Read
-Ramp Down MS|Number|Read/Write
-Ramp Up MS|Number|Read/Write
-Polarity|String|Read/Write
+Command|string|Write|
+Commands|string array|Read|
+Duty Cycle|int|Read/Write|
+Driver Name|string|Read|
+Port Name|string|Read|
+Ramp Down MS|int|Read/Write|
+Ramp Up MS|int|Read/Write|
+Polarity|string|Read/Write|
+
+<!-- ~autogen -->
 
 ###Special properties:
 
@@ -122,17 +125,20 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.servoMotor>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|String|Read/Write
-Type Name|String|Read|Attribute `name`
-Port Name|String|Read
-Max Pulse MS|Number|Read/Write
-Mid Pulse MS|Number|Read/Write
-Min Pulse MS|Number|Read/Write
-Polarity|String|Read/Write
-Position|Number|Read/Write
-Rate|Number|Read/Write
+Command|string|Read/Write|
+Driver Name|string|Read|
+Port Name|string|Read|
+Max Pulse MS|int|Read/Write|
+Mid Pulse MS|int|Read/Write|
+Min Pulse MS|int|Read/Write|
+Polarity|string|Read/Write|
+Position|int|Read/Write|
+Rate|int|Read/Write|
+
+<!-- ~autogen -->
 
 ###Special properties:
 
@@ -154,13 +160,20 @@ Types|String Array|The types of sensors (device IDs) to allow. Leave the array e
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.sensor>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Port Name|String|Read
-Num Values|Number|Read
-Type Name|String|Read
-Mode|String|Read/Write
-Modes|String Array|Read
+Decimals|int|Read|
+Mode|string|Read/Write|
+Modes|string array|Read|
+Command|string|Write|
+Commands|string array|Read|
+Num Values|int|Read|
+Port Name|string|Read|
+Units|string|Read|
+Device Name|string|Read|
+
+<!-- ~autogen -->
 
 ###Special properties:
 
@@ -188,10 +201,14 @@ I2C Address (optional)|String|The I2C address that will be used to narrow down t
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.i2cSensor>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Poll MS|Number|Read/Write
-FW Version|String|Read
+FW Version|string|Read|
+Address|string|Read|
+Poll MS|int|Read/Write|
+
+<!-- ~autogen -->
 
 <hr/>
 
@@ -205,14 +222,17 @@ Device (optional)|String|The name of the device to control (as listed in `/sys/c
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.powerSupply>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Current Now|Number (int)|Read
-Voltage Now|Number (int)|Read
-Voltage Max Design|Number (int)|Read
-Voltage Min Design|Number (int)|Read
-Technology|String|Read
-Type|String|Read
+Current Now|int|Read|
+Voltage Now|int|Read|
+Voltage Max Design|int|Read|
+Voltage Min Design|int|Read|
+Technology|string|Read|
+Type|string|Read|
+
+<!-- ~autogen -->
 
 ###Special properties:
 
@@ -236,11 +256,14 @@ Device|String|The name of the device to control (as listed in `/sys/class/leds/`
 
 ###Direct attribute mappings:
 
+<!-- ~autogen md_generic-property-table classes.led>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Max Brightness|Number (int)|Read
-Brightness|Number (int)|Read/Write
-Trigger|String|Read/Write
+Max Brightness|int|Read|
+Brightness|int|Read/Write|
+Trigger|string|Read/Write|
+
+<!-- ~autogen -->
 
 ###Special properties:
 
@@ -294,3 +317,4 @@ Compatibility table:
 Language Binding Version|Initial ev3dev Kernel Support|Last Supported Kernel Version
 ---|---|---
 `v0.9.1`| `3.16.1-3-ev3dev`+|`3.16.1-7-ev3dev`
+`v0.9.2`| `3.16.1-8-ev3dev`+|
