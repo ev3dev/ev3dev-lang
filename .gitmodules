@@ -1,3 +1,6 @@
 [submodule "vala"]
 	path = vala
 	url = git://github.com/dlech/ev3dev-lang-vala
+[submodule "js"]
+	path = js
+	url = https://github.com/wasabifan/ev3dev-lang-js
