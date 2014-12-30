@@ -4,7 +4,7 @@
 
 class Sensor extends Device {
     private port: string;
-    private sensorDeviceDir = '/sys/class/msensor/';
+    private sensorDeviceDir = '/sys/class/lego-sensor/';
 
     private sensorTypes : string[] = [];
 
