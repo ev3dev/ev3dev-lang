@@ -52,7 +52,7 @@
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Ramp Down MS", "systemName": "ramp_down_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Ramp Up MS", "systemName": "ramp_up_ms", "type": "int", "readAccess": true, "writeAccess": true },
@@ -66,7 +66,7 @@
             "systemName":  "servo-motor",
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
