@@ -8,19 +8,19 @@ using ev3dev;
 const string BUILD_VERSION = "0.9.1";
 
 class Tests
-{	
-	static bool version;
-	static int test_preset = 0;
-	const OptionEntry[] options = 
-	{
-		{"version", 'v', 0, OptionArg.NONE, ref version, "Display version number", null},
-		{"test", 't', 0, OptionArg.INT, ref test_preset, "Specify a test to execute ", null}, 
-		{null}
-	};
-	
-	const Test[] tests = 
-	{
-		{"continuous sensor read",
+{    
+    static bool version;
+    static int test_preset = 0;
+    const OptionEntry[] options = 
+    {
+        {"version", 'v', 0, OptionArg.NONE, ref version, "Display version number", null},
+        {"test", 't', 0, OptionArg.INT, ref test_preset, "Specify a test to execute ", null}, 
+        {null}
+    };
+    
+    const Test[] tests = 
+    {
+        {"continuous sensor read",
             "This test will continuously read a sensor value for 5 seconds.\n"
             + "Make sure you have a sensor plugged in before continuing.",
             test_sensor_continuous},
@@ -39,28 +39,28 @@ class Tests
         {" run all tests",
             "This will run all tests.",
             test_all_generic}
-	};
-	
-	static int test_sensor_continuous()
-	{
-		Sensor test_sensor = new Sensor(INPUT_AUTO);
-		if(!test_sensor.connected)
-		{
-			print("We were unable to connect to a valid sensor. Make sure that is is plugged in and try again.\n");
-			return 1;
-		}
-		
-		stdout.printf("Using sensor on port %s: %s\n", test_sensor.port_name, test_sensor.type_name);
+    };
+    
+    static int test_sensor_continuous()
+    {
+        Sensor test_sensor = new Sensor(INPUT_AUTO);
+        if(!test_sensor.connected)
+        {
+            print("We were unable to connect to a valid sensor. Make sure that is is plugged in and try again.\n");
+            return 1;
+        }
+        
+        stdout.printf("Using sensor on port %s: %s\n", test_sensor.port_name, test_sensor.type_name);
         
         for(int i = 0; i < 50; i++)
-		{
-			stdout.printf("Sensor value 0: %f\n", test_sensor.get_float_value(0));
+        {
+            stdout.printf("Sensor value 0: %f\n", test_sensor.get_float_value(0));
             
             Thread.usleep((ulong)(1000000 * 5 / 50));
-		}
-		
-		return 0;
-	}
+        }
+        
+        return 0;
+    }
     
     static int test_run_motor()
     {
@@ -142,52 +142,52 @@ class Tests
         
         return status;
     }
-	
-	static int main(string[] args)
-	{
-		try
-		{
-			var opt_context = new OptionContext ();
-			opt_context.set_help_enabled (true);
-			opt_context.add_main_entries (options, null);
-			opt_context.parse (ref args);
-		}
-		catch (OptionError e)
-		{
-			stdout.printf ("%s\n", e.message);
-			stdout.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
-			return 1;
-		}
-		
-		if(version)
-		{
-			stdout.printf ("ev3dev vala tests and examples %s\n", BUILD_VERSION);
-			return 0;
-		}
-		
-		if(test_preset == 0)
-		{
-			stdout.printf("available tests: \n");
-		
-			for (int i = 0; i < tests.length; i++)
-			{
-				Test test = tests[i];
-				stdout.printf("\t%d: %s\n", i + 1, test.test_name);
-			}
-			
-			print("select a test to execute: ");
-			test_preset = int.parse(stdin.read_line());
-		}
-		
-		if(test_preset < 1 || test_preset > tests.length)
-		{
-			print("You must specify a valid integer between 0 and " + tests.length.to_string() + ".\n");
-			return 1;
-		}
-		
-		Test selected_test = tests[test_preset - 1];
+    
+    static int main(string[] args)
+    {
+        try
+        {
+            var opt_context = new OptionContext ();
+            opt_context.set_help_enabled (true);
+            opt_context.add_main_entries (options, null);
+            opt_context.parse (ref args);
+        }
+        catch (OptionError e)
+        {
+            stdout.printf ("%s\n", e.message);
+            stdout.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+            return 1;
+        }
+        
+        if(version)
+        {
+            stdout.printf ("ev3dev vala tests and examples %s\n", BUILD_VERSION);
+            return 0;
+        }
+        
+        if(test_preset == 0)
+        {
+            stdout.printf("available tests: \n");
+        
+            for (int i = 0; i < tests.length; i++)
+            {
+                Test test = tests[i];
+                stdout.printf("\t%d: %s\n", i + 1, test.test_name);
+            }
+            
+            print("select a test to execute: ");
+            test_preset = int.parse(stdin.read_line());
+        }
+        
+        if(test_preset < 1 || test_preset > tests.length)
+        {
+            print("You must specify a valid integer between 0 and " + tests.length.to_string() + ".\n");
+            return 1;
+        }
+        
+        Test selected_test = tests[test_preset - 1];
         return execute_test(selected_test);
-	}
+    }
 
     static int execute_test(Test test, bool indent = false)
     {
@@ -202,7 +202,7 @@ class Tests
         
         print(desc_output);
         stdin.read_line();
-		return test.test_method();
+        return test.test_method();
     }
 }
 
@@ -210,7 +210,7 @@ delegate int TestDelegateType();
 
 struct Test
 {
-	public string test_name;
+    public string test_name;
     public string test_description;
-	public TestDelegateType test_method;
+    public TestDelegateType test_method;
 }
