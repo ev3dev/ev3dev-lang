@@ -27,22 +27,24 @@
 
 #include <iostream>
 #include <fstream>
+#include <list>
 #include <map>
+#include <algorithm>
 #include <system_error>
-#include <dirent.h>
+#include <mutex>
 #include <string.h>
 
-#include <cstdio>
-#include <fstream>
-#include <iostream>
-
+#include <dirent.h>
 #include <sys/mman.h>
-#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <stdlib.h>
 
 #ifndef SYS_ROOT
 #define SYS_ROOT "/sys"
+#endif
+
+#ifndef FSTREAM_CACHE_SIZE
+#define FSTREAM_CACHE_SIZE 16
 #endif
 
 #ifndef NO_LINUX_HEADERS
@@ -57,13 +59,120 @@
 //-----------------------------------------------------------------------------
 
 namespace ev3dev {
+  
+namespace {
+
+// This class implements a small LRU cache. It assumes the number of elements
+// is small, and so uses a simple linear search.
+template <typename K, typename V>
+class lru_cache
+{
+private:
+  // typedef st::pair<K, V> item;
+  // std::pair seems to be missing necessary move constructors :(
+  struct item
+  {
+    K first;
+    V second;
+
+    item(const K &k) : first(k) {}
+    item(item &&m) : first(std::move(m.first)), second(std::move(m.second)) {}
+  };
+
+public:
+  lru_cache(size_t size = 3) : _size(size)
+  {
+  }
+
+  V &operator[] (const K &k)
+  {
+    iterator i = find(k);
+    if (i != _items.end())
+    {
+      // Found the key, bring the item to the front.
+      _items.splice(_items.begin(), _items, i);
+    } else {
+      // If the cache is full, remove oldest items to make room.
+      while (_items.size() + 1 > _size)
+      {
+        _items.pop_back();
+      }
+      // Insert a new default constructed value for this new key.
+      _items.emplace_front(k);
+    }
+    // The new item is the most recently used.
+    return _items.front().second;
+  }
+
+  void clear()
+  {
+    _items.clear();
+  }
+
+private:
+  typedef typename std::list<item>::iterator iterator;
+  
+  iterator find(const K &k)
+  {
+    return std::find_if(_items.begin(), _items.end(),
+                        [&](const item &i) { return i.first == k; });
+  }
+
+  size_t _size;
+  std::list<item> _items;
+};
+
+// A global cache of files.
+lru_cache<std::string, std::ifstream> ifstream_cache(FSTREAM_CACHE_SIZE);
+lru_cache<std::string, std::ofstream> ofstream_cache(FSTREAM_CACHE_SIZE);
+std::mutex ofstream_cache_lock;
+std::mutex ifstream_cache_lock;
+
+//-----------------------------------------------------------------------------
+
+std::ofstream &ofstream_open(const std::string &path)
+{
+  std::lock_guard<std::mutex> lock(ofstream_cache_lock);
+  std::ofstream &file = ofstream_cache[path];
+  if (!file.is_open())
+  {
+    // Don't buffer writes to avoid latency. Also saves a bit of memory.
+    file.rdbuf()->pubsetbuf(NULL, 0);
+    file.open(path);
+  } 
+  else 
+  {
+    // Clear the error bits in case something happened.
+    file.clear();
+  }
+  return file;
+}
+
+std::ifstream &ifstream_open(const std::string &path)
+{
+  std::lock_guard<std::mutex> lock(ifstream_cache_lock);
+  std::ifstream &file = ifstream_cache[path];
+  if (!file.is_open())
+  {
+    file.open(path);
+  }
+  else 
+  {
+    // Clear the flags bits in case something happened (like reaching EOF).
+    file.clear();
+    file.seekg(0, std::ios::beg);
+  }
+  return file;
+}
+
+} // namespace
 
 //-----------------------------------------------------------------------------
 
 bool device::connect(const std::string &dir,
                      const std::string &pattern,
                      const std::map<std::string,
-                                    std::set<std::string>> match) noexcept
+                                    std::set<std::string>> &match) noexcept
 {
   using namespace std;
   
@@ -108,7 +217,7 @@ bool device::connect(const std::string &dir,
     
     closedir(dfd);
   }
-  
+
   return false;  
 }
 
@@ -147,7 +256,7 @@ int device::get_attr_int(const std::string &name) const
   if (_path.empty())
     throw system_error(make_error_code(errc::function_not_supported), "no device connected");
   
-  ifstream is((_path+name).c_str());
+  ifstream &is = ifstream_open(_path + name);
   if (is.is_open())
   {
     int result = 0;
@@ -167,7 +276,7 @@ void device::set_attr_int(const std::string &name, int value)
   if (_path.empty())
     throw system_error(make_error_code(errc::function_not_supported), "no device connected");
 
-  ofstream os((_path+name).c_str());
+  ofstream &os = ofstream_open(_path + name);
   if (os.is_open())
   {
     os << value;
@@ -186,7 +295,7 @@ std::string device::get_attr_string(const std::string &name) const
   if (_path.empty())
     throw system_error(make_error_code(errc::function_not_supported), "no device connected");
 
-  ifstream is((_path+name).c_str());
+  ifstream &is = ifstream_open(_path + name);
   if (is.is_open())
   {
     string result;
@@ -206,7 +315,7 @@ void device::set_attr_string(const std::string &name, const std::string &value)
   if (_path.empty())
     throw system_error(make_error_code(errc::function_not_supported), "no device connected");
 
-  ofstream os((_path+name).c_str());
+  ofstream &os = ofstream_open(_path + name);
   if (os.is_open())
   {
     os << value;
@@ -225,7 +334,7 @@ std::string device::get_attr_line(const std::string &name) const
   if (_path.empty())
     throw system_error(make_error_code(errc::function_not_supported), "no device connected");
   
-  ifstream is((_path+name).c_str());
+  ifstream &is = ifstream_open(_path + name);
   if (is.is_open())
   {
     string result;
