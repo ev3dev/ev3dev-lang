@@ -6,13 +6,7 @@
     if type == 'string' %}{%
       assign type = 'std::string' %}{%
     endif %}{%
-    if prop.readAccess == true        
-%}    {{ type }} {{ cppName }} const { return get_attr_{{ attr }}("{{ prop.systemName }}"); }
-    {% endif %}{%
-    if prop.writeAccess == true %}
-    void set_{{ cppName }}({{ type }} v) { set_attr_{{ attr }}("{{ prop.systemName }}", v); }
-    {% endif %}
-    {%
-  endunless %}
-  
+    if prop.readAccess == true %}  {{ type }} {{ cppName }}() const { return get_attr_{{ attr }}("{{ prop.systemName }}"); }
+{% endif %}{%if prop.writeAccess == true %}  void set_{{ cppName }}({{ type }} v) { set_attr_{{ attr }}("{{ prop.systemName }}", v); }
+    {% endif %}{% endunless %}
 {% endfor %}
