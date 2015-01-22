@@ -4,9 +4,6 @@
         "js/motor.ts",
         "js/sensor.ts"
     ],
-    "vala": [
-        "vala/ev3dev-lib.vala"
-    ],
     "docs": [ 
         "wrapper-specification.md"
     ]
