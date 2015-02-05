@@ -1,9 +1,7 @@
 *.o
-ev3dev-lang-demo
-ev3dev-lang-test
-remote_control-test
-drive-test
-button-test
+cpp/bin/*
+cpp/lib/*
+cpp/obj/*
 js/bin/*
 *.TMP
 /js/node_modules
