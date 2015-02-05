@@ -95,20 +95,29 @@ var path = require('path');
 
 //Register custom liquid filters
 liquidEngine.registerFilters({
-    camel_case: function (input) {
+    camel_case: function (input) { //camel-cases the input string
         return String(input).toLowerCase().replace(/[-|\s](.)/g, function (match, group1) {
             return group1.toUpperCase();
         });
     },
-    underscore_spaces: function (input) {
+    underscore_spaces: function (input) { //replaces sections of whitespace with underscores
         return String(input).replace(/\s/g, '_');
     },
-    ternary_if: function (bool, valueIfTrue, valueIfFalse) {
-        return bool ? (valueIfTrue || '' ) : (valueIfFalse || '' );
+    ternary_if: function (bool, valueIfTrue, valueIfFalse) { //ternary switch statement (also converts undefined values to blank string automatically)
+        return bool ? (valueIfTrue == undefined ? '' : valueIfTrue ) : (valueIfFalse == undefined ? '' : valueIfFalse );
     },
-    traverse_object: function (object, property) {
-
+    traverse_object: function (object, property) { //gets a property from an object
         return getProp(object, Array.prototype.slice.call(arguments, 1).join("."));
+    },
+    append_to_array: function (elements) { //creates an array from the given arguments
+        return Array.prototype.slice.call(arguments, 0);
+    },
+    eq: function (a, b) { //equality comparison (used to get around lack of grouping in liquid)
+        return a == b;
+    },
+    eval: function (expression, context) { //evaluates expression as JavaScript in the given context
+        var vm = require('vm');
+        return vm.runInNewContext(expression, context || {});
     }
 });
 
@@ -153,7 +162,7 @@ function processFile(filename, specData, commentInfo, callback) {
 
         processNextAutogenBlock(data.toString(), commentInfo, 0, function (result) {
             if (data.toString() != result) //Write results if the content was changed (don't need to re-write the same content)
-                fs.writeFile(filename, result, {}, function (err) {
+                fs.writeFile(path.resolve(__dirname, "..", filename), result, {}, function (err) {
                     callback(filename, err);
                 });
             else

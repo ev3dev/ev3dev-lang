@@ -1,13 +1,14 @@
 {
     "meta": {
-        "version": "0.9.1-pre",
-        "specRevision": "4"
+        "version": "0.9.2-pre",
+        "specRevision": 1
     },
     "classes": {
         "motor": {
             "friendlyName": "Motor",
             "description": "The motor class provides a uniform interface for using motors with positional and directional feedback such as the EV3 and NXT motors. This feedback allows for precise control of the motors. This is the most common type of motor, so we just call it \"motor\".",
             "docsLink": "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
+            "systemName":  "tacho-motor",
             "systemProperties": [
                 { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
@@ -46,11 +47,12 @@
             "friendlyName": "DC Motor",
             "description": "The DC motor class provides a uniform interface for using regular DC motors with no fancy controls or feedback. This includes LEGO MINDSTORMS RCX motors and LEGO Power Functions motors.",
             "docsLink": "http://www.ev3dev.org/docs/drivers/dc-motor-class/",
+            "systemName":  "dc-motor",
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Ramp Down MS", "systemName": "ramp_down_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Ramp Up MS", "systemName": "ramp_up_ms", "type": "int", "readAccess": true, "writeAccess": true },
@@ -61,9 +63,10 @@
             "friendlyName": "Servo Motor",
             "description": "The servo motor class provides a uniform interface for using hobby type servo motors.",
             "docsLink": "http://www.ev3dev.org/docs/drivers/servo-motor-class/",
+            "systemName":  "servo-motor",
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Type Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
@@ -76,6 +79,7 @@
         "led": {
             "friendlyName": "LED",
             "description": "Any device controlled by the generic LED driver.",
+            "systemName":  "leds",
             "systemProperties": [
                 { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
@@ -85,8 +89,10 @@
         "sensor": {
             "friendlyName": "Sensor",
             "description": "A generic interface to control most EV3 sensors.",
+            "docsLink":  "http://www.ev3dev.org/docs/drivers/lego-sensor-class/",
+            "systemName":  "lego-sensor",
             "systemProperties": [
-                { "name": "DP", "systemName": "dp", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Decimals", "systemName": "decimals", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
@@ -94,7 +100,7 @@
                 { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Driver Name", "systemName": "name", "type": "string", "readAccess": true, "writeAccess": false, "description": "Maps to system property \"name\"" }
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false }
             ]
         },
         "i2cSensor": {
@@ -103,6 +109,7 @@
             "inheritance": [
                 "sensor"
             ],
+            "systemName": "lego-sensor",
             "systemProperties": [
                 { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false },
@@ -112,9 +119,7 @@
         "powerSupply": {
             "friendlyName": "Power Supply",
             "description": "A generic interface to read data from the system's power_supply class. Uses the built-in legoev3-battery if none is specified.",
-            "inheritance": [
-                "sensor"
-            ],
+            "systemName":  "power_supply",
             "systemProperties": [
                 { "name": "Current Now", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Voltage Now", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false },

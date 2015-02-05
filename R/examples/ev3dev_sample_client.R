@@ -1,4 +1,5 @@
-#   Sample application for EV3 client.
+#   Sample application for EV3 (client).
+#
 #   It transfers the necessary files to EV3, starts Rserve on EV3, sources the files
 #   With the correctly built EV3 robot this application controls the robot so that:
 #   -it looks around with infrared sensor (360 degree on medium motor with polling the infrared)
@@ -44,7 +45,9 @@
 
 # Setup the ip of EV3
 
-ip="192.168.1.10"
+#ip="192.168.1.10"
+ip="10.1.6.163"
+ip="192.168.1.3"
 
 # Set working directory to source file location:
 # e.g. in RStudio Session->Set Working Directory -> To Source File Location
@@ -71,22 +74,16 @@ RSeval( c, quote(source("~/R/ev3dev_sample.R") ))
 # END Setup
 
 # Send some sample commands
+RSeval( c, quote(Speak("Hello") )
 
-RSeval( c, quote(Drive(left_motor, right_motor, 10)) )
-RSeval( c, quote(Look(head_motor, 20)) )
+RSeval( c, quote(Drive(left_motor, right_motor, 50)) )
+RSeval( c, quote(Look(head_motor, -90)) )
 RSeval( c, quote(Look(head_motor, 0)) )
 RSeval( c, quote(Sense(infrared)))
 RSeval( c, quote(Rotate(left_motor, right_motor, 90)) )
 
-Degree=function(radian)
-{
-  radian*180/pi
-}
-
-Radian=function(degree)
-{
-  degree*pi/180
-}
+Degree=function(radian){ radian*180/pi }
+Radian=function(degree){ degree*pi/180 }
 
 PlotReadings=function(readings)
 {
