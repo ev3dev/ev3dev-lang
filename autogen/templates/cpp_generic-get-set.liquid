@@ -1,12 +1,12 @@
-{% for prop in currentClass.systemProperties %}{% 
+{% for prop in currentClass.systemProperties %}{%
   assign cppName = prop.name | downcase | underscore_spaces %}{%
   unless prop.type contains 'array' %}{%
-    assign type = prop.type %}{%    
-    assign attr = type %}{%    
+    assign type = prop.type %}{%
+    assign attr = type %}{%
     if type == 'string' %}{%
       assign type = 'std::string' %}{%
     endif %}{%
     if prop.readAccess == true %}  {{ type }} {{ cppName }}() const { return get_attr_{{ attr }}("{{ prop.systemName }}"); }
 {% endif %}{%if prop.writeAccess == true %}  void set_{{ cppName }}({{ type }} v) { set_attr_{{ attr }}("{{ prop.systemName }}", v); }
-    {% endif %}{% endunless %}
+{% endif %}{% endunless %}
 {% endfor %}
