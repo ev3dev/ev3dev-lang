@@ -12,3 +12,4 @@ js/bin/*
 /autogen/node_modules
 /autogen/npm-debug.log
 *.orig
+*.swp
