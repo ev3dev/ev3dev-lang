@@ -163,7 +163,7 @@ function processFile(filename, specData, commentInfo, callback) {
 
         processNextAutogenBlock(data.toString(), commentInfo, 0, function (result) {
             if (data.toString() != result) //Write results if the content was changed (don't need to re-write the same content)
-                fs.writeFile(filename, result, {}, function (err) {
+                fs.writeFile(path.resolve(__dirname, "..", filename), result, {}, function (err) {
                     callback(filename, err);
                 });
             else

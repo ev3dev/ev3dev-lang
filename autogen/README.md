@@ -2,8 +2,22 @@
 To help us maintain our language bindings, we have written a script to automatically update sections of code according to changes in our API specification. We define code templates using [Liquid](http://liquidmarkup.org/), which are stored in the `templates` folder with the `.liquid` extension.
 
 ## Usage
-To use the script, make sure that you have cloned the repo and `cd`d in to the autogen directory. You must have have Node.JS and `npm` installed.
-If you have not yet done so, run `npm install` to install the dependencies for auto-generation. Then you can re-generate all files by running `node autogen.js` on a Windows system or `nodejs autogen.js` on most Linux distros.
+
+### Prerequisites
+- Make sure that you have cloned the repo (including submodules) and `cd`d in to the autogen directory
+- You must have Node.JS and `npm` installed
+- If you have not yet done so yet, run `npm install` to install the dependencies for auto-generation
+
+### Running from the command line
+If you run the script without any parameters, it will auto-generate all language groups:
+```
+$ node autogen.js
+```
+
+If you would like to only process a single group (as defined in `autogen-list.json`), you can provide the name of the group as a command-line parameter:
+```
+$ node autogen.js docs
+```
 
 ## How it works
 Our script searches code files for comments that define blocks of code that it should automatically generate. The inline comment tags are formatted as follows (C-style comments):

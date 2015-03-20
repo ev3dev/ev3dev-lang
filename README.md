@@ -7,7 +7,8 @@ We currently have libraries for the following languages here:
 - C++
 - Lua
 - Node.JS
-- Vala
-- R (experimental)
+- Vala/GLib
+- Python
+- R
 
 Each binding complies with our universal language binding specification, which also serves as high-level documentation for our wrappers.
