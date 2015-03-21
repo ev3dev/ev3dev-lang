@@ -1,0 +1,10 @@
+{% assign class_name = currentClass.friendlyName | downcase | underscore_spaces %}{%
+for prop in currentClass.systemProperties %}{%
+  assign prop_name = prop.name | downcase | underscore_spaces %}{%
+  if prop.readAccess == false %}
+            .def("set_{{ prop_name }}", &ev3::{{ class_name }}::set_{{ prop_name }}){%
+  else %}
+            .add_property("{{ prop_name }}", &ev3::{{ class_name }}::{{ prop_name }}{%
+      if prop.writeAccess == true %}, &ev3::{{ class_name }}::set_{{ prop_name }}{% endif %}){%
+  endif%}{%
+endfor %}
