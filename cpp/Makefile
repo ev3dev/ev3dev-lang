@@ -3,7 +3,7 @@ CFLAGS=-O2 -march=armv5
 CCFLAGS=-std=c++11 -D_GLIBCXX_USE_NANOSLEEP
 DEPS=ev3dev.h
 OBJ=ev3dev.o
-LIBS=-lstdc++
+LIBS=-lstdc++ -lm
 
 %.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(CCFLAGS)
@@ -19,7 +19,7 @@ remote_control-test: $(OBJ) remote_control-test.o
 
 drive-test: $(OBJ) drive-test.o
 	$(CC) -o $@ $^ $(CFLAGS) $(CCFLAGS) $(LIBS) -lpthread
-	
+
 button-test: $(OBJ) button-test.o
 	$(CC) -o $@ $^ $(CFLAGS) $(CCFLAGS) $(LIBS)
 

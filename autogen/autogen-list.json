@@ -1,4 +1,7 @@
 {
+    "cpp": [
+        "cpp/ev3dev.h"
+    ],
     "js": [
         "js/extras.ts",
         "js/motor.ts",
