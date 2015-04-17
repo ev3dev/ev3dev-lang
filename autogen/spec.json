@@ -45,7 +45,7 @@
             "docsLink": "http://www.ev3dev.org/docs/drivers/dc-motor-class/",
             "systemName":  "dc-motor",
             "systemProperties": [
-                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },

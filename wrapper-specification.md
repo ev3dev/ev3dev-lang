@@ -90,7 +90,7 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 <!-- ~autogen md_generic-property-table classes.dcMotor>currentClass -->
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|string|Write|
+Command|string|Read/Write|
 Commands|string array|Read|
 Driver Name|string|Read|
 Duty Cycle|int|Read|
