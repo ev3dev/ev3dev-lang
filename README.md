@@ -7,7 +7,6 @@ We currently have libraries for the following languages here:
 - C++
 - Lua
 - Node.JS
-- Vala/GLib
 - Python
 - R
 
