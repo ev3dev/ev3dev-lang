@@ -1,7 +1,8 @@
 {
     "meta": {
         "version": "0.9.2-pre",
-        "specRevision": 1
+        "specRevision": 2,
+        "supportedKernel": "v3.16.7-ckt9-ev3dev1"
     },
     "classes": {
         "motor": {
@@ -10,37 +11,32 @@
             "docsLink": "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
             "systemName":  "tacho-motor",
             "systemProperties": [
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Count Per Rot", "systemName": "count_per_rot", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Encoder Mode", "systemName": "encoder_mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Encoder Modes", "systemName": "encoder_modes", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Emergency Stop", "systemName": "estop", "type": "string", "readAccess": true, "writeAccess": true, "description": "Used to immediately remove power from the motor (emergency stop)." },
-                { "name": "Debug Log", "systemName": "log", "type": "string", "readAccess": true, "writeAccess": false, "description": "Used for debugging." },
-                { "name": "Polarity Mode", "systemName": "polarity_mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Polarity Modes", "systemName": "polarity_modes", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Encoder Polarity", "systemName": "encoder_polarity", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Position Mode", "systemName": "position_mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Position Modes", "systemName": "position_modes", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Position P", "systemName": "hold_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Position I", "systemName": "hold_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Position D", "systemName": "hold_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Pulses Per Second", "systemName": "pulses_per_second", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Pulses Per Second SP", "systemName": "pulses_per_second_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed", "systemName": "speed", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Speed SP", "systemName": "speed_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Regulation Mode", "systemName": "regulation_mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Regulation Modes", "systemName": "regulation_modes", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Run", "systemName": "run", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Run Mode", "systemName": "run_mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Run Modes", "systemName": "run_modes", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Speed Regulation P", "systemName": "speed_regulation_P", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation I", "systemName": "speed_regulation_I", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation D", "systemName": "speed_regulation_D", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation K", "systemName": "speed_regulation_K", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "State", "systemName": "state", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Stop Mode", "systemName": "stop_mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Stop Modes", "systemName": "stop_modes", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
+                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation Enabled", "systemName": "speed_regulation", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation P", "systemName": "speed_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation I", "systemName": "speed_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Speed Regulation D", "systemName": "speed_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true }
             ]
         },
         "dcMotor": {
@@ -51,12 +47,13 @@
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Ramp Down MS", "systemName": "ramp_down_ms", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Ramp Up MS", "systemName": "ramp_up_ms", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true }
+                { "name": "Ramp Up MS", "systemName": "ramp_up_ms", "type": "int", "readAccess": true, "writeAccess": true }
             ]
         },
         "servoMotor": {
@@ -67,11 +64,11 @@
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Min Pulse MS", "systemName": "min_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Rate", "systemName": "rate", "type": "int", "readAccess": true, "writeAccess": true }
             ]
@@ -92,15 +89,15 @@
             "docsLink":  "http://www.ev3dev.org/docs/drivers/lego-sensor-class/",
             "systemName":  "lego-sensor",
             "systemProperties": [
-                { "name": "Decimals", "systemName": "decimals", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
+                { "name": "Decimals", "systemName": "decimals", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false }
+                { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false }
             ]
         },
         "i2cSensor": {

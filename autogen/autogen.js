@@ -73,11 +73,12 @@ function setProp(object, property, value) {
 //  var x = foo['bar']['abc'];
 //  var x = getProp(foo, 'bar.abc');
 function getProp(object, property) {
+
+    if (object == undefined || property.length < 1)
+        return undefined;
+
     if (typeof property == 'string')
         property = property.split('.');
-
-    if (property.length < 1)
-        return;
 
     var first = property.shift();
     if (property.length == 0)
@@ -175,7 +176,6 @@ function processFile(filename, specData, commentInfo, callback) {
 //Recursively updates the autogen blocks
 function processNextAutogenBlock(allData, commentInfo, pos, callback) {
     //Update the position of the next block. If there isn't one, call the callback and break the recursion.
-
     if (commentInfo.start instanceof RegExp)
         pos = allData.regexIndexOf(commentInfo.start, pos);
     else
