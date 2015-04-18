@@ -14,7 +14,7 @@
         
         if prop.readAccess == true
 %}    get {{ prop.name | camel_case }}(): {{ type }}{{ array }} {
-        return this.get{{ typeCaps }}("{{ prop.systemName }}"){%
+        return this.read{{ typeCaps }}("{{ prop.systemName }}"){%
             if array
                 %}.split(' '){%
             endif %};
