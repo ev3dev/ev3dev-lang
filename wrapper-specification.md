@@ -1,6 +1,6 @@
 ev3dev Language Wrapper Specification (DRAFT ver `0.9.2`, rev 1)
 ===
-This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs. 
+This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs.
 
 General Notes
 ---
@@ -27,11 +27,12 @@ Implementation Notes (important)
 Argument Name|Type|Description
 ---|---|---
 Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `OUTPUT_*` constants.
-Type|String|The type of motor to accept. Can be left empty or undefined (in the languages that support it) to specify a wildcard.
+Driver Name|String|The motor driver that should be driving the target motor (generally specifies the type of motor). Can be left empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.motor>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Command|string|Write|
@@ -62,6 +63,7 @@ Stop Commands|string array|Read|
 Time SP|int|Read/Write|
 
 <!-- ~autogen -->
+
 ###Special properties:
 
 Property Name|Type|Accessibility|Description
@@ -88,6 +90,7 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.dcMotor>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Command|string|Read/Write|
@@ -122,6 +125,7 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.servoMotor>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Command|string|Read/Write|
@@ -151,12 +155,13 @@ Connected|Boolean|Read
 
 Argument Name|Type|Description
 ---|---|---
-Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `INPUT_*` constants. 
+Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `INPUT_*` constants.
 Types|String Array|The types of sensors (device IDs) to allow. Leave the array empty or undefined (in the languages that support it) to specify a wildcard.
 
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.sensor>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Command|string|Write|
@@ -198,6 +203,7 @@ I2C Address (optional)|String|The I2C address that will be used to narrow down t
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.i2cSensor>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 FW Version|string|Read|
@@ -219,6 +225,7 @@ Device (optional)|String|The name of the device to control (as listed in `/sys/c
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.powerSupply>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Current Now|int|Read|
@@ -253,6 +260,7 @@ Device|String|The name of the device to control (as listed in `/sys/class/leds/`
 ###Direct attribute mappings:
 
 <!-- ~autogen md_generic-property-table classes.led>currentClass -->
+
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Max Brightness|int|Read|
@@ -302,7 +310,7 @@ An IO Device handles control tasks for a single port or index. These  classes mu
 
 All IO devices should have a `connected` variable. If a valid device is found while enumerating the ports, the `connected` variable should be set to `true` (by default, it should be false). If `connected` is false when an attempt is made to read from or write to a property file, an error should be thrown (except while in the consructor).
 
-If an error occurs after the initial connection, an exception should be thrown by the binding informing the caller of what went wrong. Unless the error is fatal to the application, no other actions should be taken. 
+If an error occurs after the initial connection, an exception should be thrown by the binding informing the caller of what went wrong. Unless the error is fatal to the application, no other actions should be taken.
 
 Compatibility
 ---
