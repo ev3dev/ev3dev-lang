@@ -220,7 +220,7 @@ function processNextAutogenBlock(allData, commentInfo, pos, callback) {
     //Find the end of the line (and the start of content)
     //    Handle both styles of line endings
     var endOfAutogenLine = allData.regexIndexOf(/[\r|\n]/, pos);
-    var startBlock = allData.regexIndexOf(/[^\r\n]/, endOfAutogenLine);
+    var startBlock = allData.regexIndexOf(/[\n]/, endOfAutogenLine) + 1;
     var endBlock = allData.indexOf(commentInfo.end, startBlock);
 
     //Prepare and load the required data

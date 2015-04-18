@@ -109,7 +109,6 @@
             "systemName": "lego-sensor",
             "systemProperties": [
                 { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Poll MS", "systemName": "poll_ms", "type": "int", "readAccess": true, "writeAccess": true }
             ]
         },

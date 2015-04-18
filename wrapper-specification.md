@@ -8,7 +8,7 @@ Because this specification is meant to be implemented in multiple languages, the
 
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
-<!-- ~autogen autogen-header 'xml'>commentStyle -->
+<!-- ~autogen autogen-header 'xml'>commentStyle --><!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 2. -->
 <!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 2. -->
 <!-- ~autogen -->
 
@@ -75,7 +75,7 @@ Connected|Boolean|Read
 
 Method Name|Return Type|Arguments|Description
 ---|---|---|---
-Reset|Void|None|Sets the `reset` motor property to `1`, which causes the motor driver to reset all of the parameters.
+Reset|Void|None|Sets the `command` motor property to `reset`, which causes the motor driver to reset all of the motor's parameters and state.
 
 <hr/>
 
@@ -195,10 +195,8 @@ Get Float Value|Number (float)|Value Index : Number|Gets the value at the specif
 `I2C Sensor` (class) : extends `Sensor`
 -----
 ###Constructor:
-
-Argument Name|Type|Description
----|---|---
-I2C Address (optional)|String|The I2C address that will be used to narrow down the search. Only necessary if multiple I2C devices are connected to the same port.
+The constructor for the `I2C Sensor` class is the same as its parent's constructor
+(the `Sensor` class).
 
 ###Direct attribute mappings:
 
@@ -207,7 +205,6 @@ I2C Address (optional)|String|The I2C address that will be used to narrow down t
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 FW Version|string|Read|
-Address|string|Read|
 Poll MS|int|Read/Write|
 
 <!-- ~autogen -->
