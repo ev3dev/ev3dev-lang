@@ -10,7 +10,6 @@ Some concepts that apply to multiple classes are described as "abstracts". These
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
 <!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 2. -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 2. -->
 <!-- ~autogen -->
 
 Implementation Notes (important)
@@ -226,10 +225,10 @@ Device (optional)|String|The name of the device to control (as listed in `/sys/c
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Current Now|int|Read|
-Voltage Now|int|Read|
-Voltage Max Design|int|Read|
-Voltage Min Design|int|Read|
+Measured Current|int|Read|The measured current that the battery is supplying (in microamps)
+Measured Voltage|int|Read|The measured voltage that the battery is supplying (in microvolts)
+Max Voltage|int|Read|
+Min Voltage|int|Read|
 Technology|string|Read|
 Type|string|Read|
 

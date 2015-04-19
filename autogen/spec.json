@@ -117,10 +117,10 @@
             "description": "A generic interface to read data from the system's power_supply class. Uses the built-in legoev3-battery if none is specified.",
             "systemName":  "power_supply",
             "systemProperties": [
-                { "name": "Current Now", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Voltage Now", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Voltage Max Design", "systemName": "voltage_max_design", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Voltage Min Design", "systemName": "voltage_min_design", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Measured Current", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false, "description": "The measured current that the battery is supplying (in microamps)" },
+                { "name": "Measured Voltage", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false, "description": "The measured voltage that the battery is supplying (in microvolts)" },
+                { "name": "Max Voltage", "systemName": "voltage_max_design", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Min Voltage", "systemName": "voltage_min_design", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Technology", "systemName": "technology", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
             ]
