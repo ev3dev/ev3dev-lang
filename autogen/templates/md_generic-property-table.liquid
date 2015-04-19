@@ -2,5 +2,5 @@
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 {% for prop in currentClass.systemProperties
-%}{{prop.name}}|{{prop.type}}|{{ '(readAccess ? "Read" : "") + (readAccess && writeAccess ? "/" : "") + (writeAccess ? "Write" : "")' | eval: prop }}|
+%}{{prop.name}}|{{prop.type}}|{{ '(readAccess ? "Read" : "") + (readAccess && writeAccess ? "/" : "") + (writeAccess ? "Write" : "")' | eval: prop }}|{{prop.description}}
 {% endfor %}
