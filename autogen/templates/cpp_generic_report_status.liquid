@@ -1,0 +1,7 @@
+{% for prop in currentClass.systemProperties %}{%
+  assign cppName = prop.name | downcase | underscore_spaces %}{%
+  if prop.readAccess == true %}
+         << "    {{ prop.name }}: " << dev.{{ cppName }}() << endl{%
+  endif %}{%
+endfor %}
+
