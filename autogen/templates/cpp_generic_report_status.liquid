@@ -3,7 +3,7 @@
   if prop.readAccess == true %}
     cout << "    {{ prop.name }}: ";
     try { cout << dev.{{ cppName }}() << endl; }
-    catch(...) { cout << "[not supported by the device]" << endl; }{%
+    catch(...) { cout << "[" << strerror(errno) << "]" << endl; }{%
   endif %}{%
 endfor %}
 
