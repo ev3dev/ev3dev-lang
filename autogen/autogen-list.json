@@ -12,6 +12,9 @@
         "js/motor.ts",
         "js/sensor.ts"
     ],
+    "lua": [
+        "lua/ev3dev.lua"
+    ],
     "docs": [
         "wrapper-specification.md"
     ]
