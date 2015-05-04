@@ -65,15 +65,16 @@
             "systemClassName":  "servo-motor",
             "systemDeviceNameConvention":  "motor{0}",
             "systemProperties": [
-                { "name": "Command", "systemName": "command", "type": "string", "readAccess": true, "writeAccess": true },
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
                 { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Max Pulse MS", "systemName": "max_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Mid Pulse MS", "systemName": "mid_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Min Pulse MS", "systemName": "min_pulse_ms", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Max Pulse SP", "systemName": "max_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Mid Pulse SP", "systemName": "mid_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Min Pulse SP", "systemName": "min_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Rate", "systemName": "rate", "type": "int", "readAccess": true, "writeAccess": true }
+                { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "Rate SP", "systemName": "rate_sp", "type": "int", "readAccess": true, "writeAccess": true },
+                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false }
             ]
         },
         "led": {
