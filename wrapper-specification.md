@@ -317,5 +317,5 @@ Compatibility table:
 
 Language Binding Version|Fully Supported Kernel Version
 ---|---|---
-`v0.9.1`|`3.16.1-7-ev3dev`
-`v0.9.2`|`v3.16.7-ckt9-ev3dev1`
+`v0.9.1`|`v3.16.1-7-ev3dev`
+`v0.9.2`|`v3.16.7-ckt10-4-ev3dev-ev3`
