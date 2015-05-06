@@ -161,6 +161,24 @@ function Device:getAttrString(name)
   return s
 end
 
+function Device:getAttrStringArray(name)
+  
+  if (self._path == nil) then
+    error("no device connected")
+  end
+  
+  local tf = io.open(self._path..name, "r")
+
+  if (tf == nil) then
+    error("no such attribute: "..self._path..name)
+  end
+
+  local s = tf:read("*l")
+  tf:close()
+      
+  return s
+end
+
 function Device:setAttrString(name, value)
   
   if (self._path == nil) then
@@ -478,7 +496,7 @@ function DCMotor:init(port)
   Device.init(self, "dc-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -491,7 +509,7 @@ function DCMotor:type()
 end
 
 function DCMotor:typeName()
-  return self:getAttrString("name")
+  return self:getAttrString("driver_name")
 end
 
 function DCMotor:portName()
@@ -579,7 +597,7 @@ function ServoMotor:init(port)
   Device.init(self, "servo-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -677,22 +695,22 @@ Sensor.NXTSound       = "lego-nxt-sound"
 Sensor.NXTUltrasonic  = "lego-nxt-ultrasonic"
 
 Sensor.EV3Touch       = "lego-ev3-touch"
-Sensor.EV3Color       = "ev3-uart-29"
-Sensor.EV3Ultrasonic  = "ev3-uart-30"
-Sensor.EV3Gyro        = "ev3-uart-32"
-Sensor.EV3Infrared    = "ev3-uart-33"
+Sensor.EV3Color       = "lego-ev3-uart-29"
+Sensor.EV3Ultrasonic  = "lego-ev3-uart-30"
+Sensor.EV3Gyro        = "lego-ev3-uart-32"
+Sensor.EV3Infrared    = "lego-ev3-uart-33"
 
 function Sensor:init(port, sensor_types)
   local m = { port_name = { port } }
   
   if (sensor_types ~= nil) then
-    m["name"] = sensor_types
+    m["driver_name"] = sensor_types
   end
   
-  Device.init(self, "msensor", "sensor", m)
+  Device.init(self, "lego-sensor", "sensor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -723,7 +741,7 @@ function Sensor:floatValue(id)
     id = 0
   end
 
-  local scale = math.pow(10, -self:getAttrInt("dp"))
+  local scale = math.pow(10, -self:getAttrInt("decimals"))
   return self:getAttrInt("value"..id) * scale
 end
 
@@ -781,16 +799,16 @@ I2CSensor = class(Sensor)
 
 function I2CSensor:init(port, i2cAddress)
   local m = { port_name = { port } }
-  m["name"] = { "nxt-i2c-sensor" }
+  m["driver_name"] = { "nxt-i2c-sensor" }
   
   if (i2cAddress ~= nil) then
     m["address"] = i2cAddress
   end
   
-  Device.init(self, "msensor", "sensor", m)
+  Device.init(self, "lego-sensor", "sensor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
