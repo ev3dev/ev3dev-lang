@@ -105,6 +105,9 @@ liquidEngine.registerFilters({
     underscore_spaces: function (input) { //replaces sections of whitespace with underscores
         return String(input).replace(/\s/g, '_');
     },
+    underscore_non_wc: function (input) { //replaces non-word characters with underscores
+        return String(input).replace(/\W/g, '_');
+    },
     ternary_if: function (bool, valueIfTrue, valueIfFalse) { //ternary switch statement (also converts undefined values to blank string automatically)
         return bool ? (valueIfTrue == undefined ? '' : valueIfTrue ) : (valueIfFalse == undefined ? '' : valueIfFalse );
     },
