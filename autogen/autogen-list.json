@@ -1,6 +1,7 @@
 {
     "cpp": [
         "cpp/ev3dev.h",
+        "cpp/ev3dev.cpp",
         "cpp/ev3dev-lang-test.cpp",
         "cpp/ev3dev-lang-demo.cpp"
     ],
