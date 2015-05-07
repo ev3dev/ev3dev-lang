@@ -38,6 +38,49 @@
                 { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": true, "writeAccess": true },
                 { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true }
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Command",
+                    "values": [
+                        { "name": "run-forever" },
+                        { "name": "run-to-abs-pos" },
+                        { "name": "run-to-rel-pos" },
+                        { "name": "run-timed" },
+                        { "name": "run-direct" },
+                        { "name": "stop" },
+                        { "name": "reset" }
+                    ]
+                },
+                {
+                    "propertyName": "Encoder Polarity",
+                    "values": [
+                        { "name": "normal" },
+                        { "name": "inverted" }
+                    ]
+                },
+                {
+                    "propertyName": "Polarity",
+                    "values": [
+                        { "name": "normal" },
+                        { "name": "inverted" }
+                    ]
+                },
+                {
+                    "propertyName": "Speed Regulation",
+                    "values": [
+                        { "name": "on" },
+                        { "name": "off" }
+                    ]
+                },
+                {
+                    "propertyName": "Stop Command",
+                    "values": [
+                        { "name": "coast" },
+                        { "name": "brake" },
+                        { "name": "hold" }
+                    ]
+                }
             ]
         },
         "dcMotor": {
@@ -59,6 +102,30 @@
                 { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false },
                 { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": false, "writeAccess": true },
                 { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false }
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Command",
+                    "values": [
+                        { "name": "run-forever" },
+                        { "name": "run-timed" },
+                        { "name": "stop" }
+                    ]
+                },
+                {
+                    "propertyName": "Polarity",
+                    "values": [
+                        { "name": "normal" },
+                        { "name": "inverted" }
+                    ]
+                },
+                {
+                    "propertyName": "Stop Command",
+                    "values": [
+                        { "name": "coast" },
+                        { "name": "brake" }
+                    ]
+                }
             ]
         },
         "servoMotor": {
@@ -78,6 +145,22 @@
                 { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "Rate SP", "systemName": "rate_sp", "type": "int", "readAccess": true, "writeAccess": true },
                 { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false }
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Command",
+                    "values": [
+                        { "name": "run" },
+                        { "name": "float" }
+                    ]
+                },
+                {
+                    "propertyName": "Polarity",
+                    "values": [
+                        { "name": "normal" },
+                        { "name": "inverted" }
+                    ]
+                }
             ]
         },
         "led": {
@@ -119,6 +202,94 @@
             "systemProperties": [
                 { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false },
                 { "name": "Poll MS", "systemName": "poll_ms", "type": "int", "readAccess": true, "writeAccess": true }
+            ]
+        },
+        "colorSensor": {
+            "friendlyName": "Color Sensor",
+            "description": "LEGO EV3 color sensor.",
+            "systemClassName":  "lego-sensor",
+            "systemDeviceNameConvention":  "sensor{0}",
+            "inheritance": [
+                "sensor"
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "COL-REFLECT" },
+                        { "name": "COL-AMBIENT" },
+                        { "name": "COL-COLOR" },
+                        { "name": "REF-RAW" },
+                        { "name": "RGB-RAW" },
+                        { "name": "COL-CAL" }
+                    ]
+                }
+            ]
+        },
+        "ultrasonicSensor": {
+            "friendlyName": "Ultrasonic Sensor",
+            "description": "LEGO EV3 ultrasonic sensor.",
+            "systemClassName":  "lego-sensor",
+            "systemDeviceNameConvention":  "sensor{0}",
+            "inheritance": [
+                "sensor"
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "US-DIST-CM" },
+                        { "name": "US-DIST-IN" },
+                        { "name": "US-LISTEN" },
+                        { "name": "US-SI-CM" },
+                        { "name": "US-SI-IN" },
+                        { "name": "US-DC-CM" },
+                        { "name": "US-DC-IN" }
+                    ]
+                }
+            ]
+        },
+        "gyroSensor": {
+            "friendlyName": "Gyro Sensor",
+            "description": "LEGO EV3 gyro sensor.",
+            "systemClassName":  "lego-sensor",
+            "systemDeviceNameConvention":  "sensor{0}",
+            "inheritance": [
+                "sensor"
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "GYRO-ANG" },
+                        { "name": "GYRO-RATE" },
+                        { "name": "GYRO-FAS" },
+                        { "name": "GYRO-G&A" },
+                        { "name": "GYRO-CAL" }
+                    ]
+                }
+            ]
+        },
+        "infraredSensor": {
+            "friendlyName": "Infrared Sensor",
+            "description": "LEGO EV3 infrared sensor.",
+            "systemClassName":  "lego-sensor",
+            "systemDeviceNameConvention":  "sensor{0}",
+            "inheritance": [
+                "sensor"
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "IR-PROX" },
+                        { "name": "IR-SEEK" },
+                        { "name": "IR-REMOTE" },
+                        { "name": "IR-REM-A" },
+                        { "name": "IR-S-ALT" },
+                        { "name": "IR-CAL" }
+                    ]
+                }
             ]
         },
         "powerSupply": {
