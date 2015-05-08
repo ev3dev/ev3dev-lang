@@ -7,6 +7,7 @@
     ],
     "python": [
         "python/ev3dev/pyev3dev.cpp",
+        "python/ev3dev/__init__.py",
         "python/spec_version.py"
     ],
     "js": [
