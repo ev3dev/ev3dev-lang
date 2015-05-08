@@ -6,7 +6,8 @@
         "cpp/ev3dev-lang-demo.cpp"
     ],
     "python": [
-        "python/ev3dev/pyev3dev.cpp"
+        "python/ev3dev/pyev3dev.cpp",
+        "python/spec_version.py"
     ],
     "js": [
         "js/extras.ts",
