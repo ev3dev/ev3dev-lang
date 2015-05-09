@@ -1,0 +1,12 @@
+{% for prop in currentClass.propertyValues %}{%
+    if prop.propertyName == 'Command' %}{%
+        assign className = currentClass.friendlyName | downcase | underscore_spaces %}{%
+        for value in prop.values %}{%
+            assign commandName = value.name | downcase | underscore_non_wc %}{%
+            if commandName == 'float' %}{%
+                assign commandName = 'float_' %}{%
+            endif %}
+    void {{ commandName }}() { set_command("{{ value.name }}"); }{%
+        endfor %}{%
+    endif %}{%
+endfor %}
