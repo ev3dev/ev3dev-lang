@@ -12,7 +12,7 @@
     {{ type }} {{ cppName }}() const { return get_attr_{{ attr }}("{{ prop.systemName }}"); }{%
     endif %}{%
     if prop.writeAccess == true %}
-    void set_{{ cppName }}({{ type }} v) { set_attr_{{ attr }}("{{ prop.systemName }}", v); }{%
+    auto set_{{ cppName }}({{ type }} v) -> decltype(*this) { set_attr_{{ attr }}("{{ prop.systemName }}", v); return *this; }{%
     endif %}{%
   endif %}{%
 endfor %}
