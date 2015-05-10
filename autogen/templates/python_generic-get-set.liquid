@@ -2,9 +2,20 @@
 for prop in currentClass.systemProperties %}{%
   assign prop_name = prop.name | downcase | underscore_spaces %}{%
   if prop.readAccess == false %}
-            .add_property("{{ prop_name }}", no_getter<ev3::{{ class_name }}>, make_function(&ev3::{{ class_name }}::set_{{ prop_name }}, drop_return_value())){%
+            .add_property("{{ prop_name }}", no_getter<ev3::{{ class_name }}>, make_function(&ev3::{{ class_name }}::set_{{ prop_name }}, drop_return_value()){%
   else %}
             .add_property("{{ prop_name }}", &ev3::{{ class_name }}::{{ prop_name }}{%
-      if prop.writeAccess == true %}, make_function(&ev3::{{ class_name }}::set_{{ prop_name }}, drop_return_value()){% endif %}){%
-  endif%}{%
+      if prop.writeAccess == true %}, make_function(&ev3::{{ class_name }}::set_{{ prop_name }}, drop_return_value()){% endif %}{%
+  endif%},
+                    "{{ prop.name }}:{%
+  if prop.readAccess %}{%
+    if prop.writeAccess %} read/write{%
+    else %} read-only{%
+    endif %}{%
+  else %} write-only{%
+  endif %}\n\n"{%
+  for line in prop.description %}
+                    "{{ line }}\n"{%
+  endfor %}
+                    ){%
 endfor %}
