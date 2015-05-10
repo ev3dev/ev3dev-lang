@@ -9,7 +9,7 @@ Because this specification is meant to be implemented in multiple languages, the
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 2. -->
+<!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 3. -->
 <!-- ~autogen -->
 
 Implementation Notes (important)
@@ -22,6 +22,16 @@ Implementation Notes (important)
 
 `Motor` (class) : abstract "IO Device"
 -----
+
+<!-- ~autogen md_generic-class-description classes.motor>currentClass -->
+
+The motor class provides a uniform interface for using motors with
+positional and directional feedback such as the EV3 and NXT motors.
+This feedback allows for precise control of the motors. This is the
+most common type of motor, so we just call it `motor`.
+
+<!-- ~autogen -->
+
 ###Constructor:
 
 Argument Name|Type|Description
@@ -35,32 +45,33 @@ Driver Name|String|The motor driver that should be driving the target motor (gen
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|string|Write|
-Commands|string array|Read|
-Count Per Rot|int|Read|
-Driver Name|string|Read|
-Duty Cycle|int|Read|
-Duty Cycle SP|int|Read/Write|
-Encoder Polarity|string|Read/Write|
-Polarity|string|Read/Write|
-Port Name|string|Read|
-Position|int|Read/Write|
-Position P|int|Read/Write|
-Position I|int|Read/Write|
-Position D|int|Read/Write|
-Position SP|int|Read/Write|
-Speed|int|Read|
-Speed SP|int|Read/Write|
-Ramp Up SP|int|Read/Write|
-Ramp Down SP|int|Read/Write|
-Speed Regulation Enabled|string|Read/Write|
-Speed Regulation P|int|Read/Write|
-Speed Regulation I|int|Read/Write|
-Speed Regulation D|int|Read/Write|
-State|string array|Read|
-Stop Command|string|Read/Write|
-Stop Commands|string array|Read|
-Time SP|int|Read/Write|
+Command|string|Write| Sends a command to the motor controller. See `commands` for a list of possible values.
+Commands|string array|Read| Returns a space separated list of commands that are supported by the motor controller. Possible values are `run-forever`, `run-to-abs-pos`, `run-to-rel-pos`, `run-timed`, `run-direct`, `stop` and `reset`. Not all commands may be supported. `run-forever` will cause the motor to run until another command is sent. `run-to-abs-pos` will run to an absolute position specified by `position_sp` and then stop using the command specified in `stop_command`. `run-to-rel-pos` will run to a position relative to the current `position` value. The new position will be current `position` + `position_sp`. When the new position is reached, the motor will stop using the command specified by `stop_command`. `run-timed` will run the motor for the amount of time specified in `time_sp` and then stop the motor using the command specified by `stop_command`. `run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`. Unlike other run commands, changing `duty_cycle_sp` while running *will* take effect immediately. `stop` will stop any of the run commands before they are complete using the command specified by `stop_command`. `reset` will reset all of the motor parameter attributes to their default value. This will also have the effect of stopping the motor.
+Count Per Rot|int|Read| Returns the number of tacho counts in one rotation of the motor. Tacho counts are used by the position and speed attributes, so you can use this value to convert rotations or degrees to tacho counts. In the case of linear actuators, the units here will be counts per centimeter.
+Driver Name|string|Read| Returns the name of the driver that provides this tacho motor device.
+Duty Cycle|int|Read| Returns the current duty cycle of the motor. Units are percent. Values are -100 to 100.
+Duty Cycle SP|int|Read/Write| Writing sets the duty cycle setpoint. Reading returns the current value. Units are in percent. Valid values are -100 to 100. A negative value causes the motor to rotate in reverse. This value is only used when `speed_regulation` is off.
+Encoder Polarity|string|Read/Write| Sets the polarity of the rotary encoder. This is an advanced feature to all use of motors that send inverted encoder signals to the EV3. This should be set correctly by the driver of a device. It You only need to change this value if you are using a unsupported device. Valid values are `normal` and `inverted`.
+Polarity|string|Read/Write| Sets the polarity of the motor. With `normal` polarity, a positive duty cycle will cause the motor to rotate clockwise. With `inverted` polarity, a positive duty cycle will cause the motor to rotate counter-clockwise. Valid values are `normal` and `inverted`.
+Port Name|string|Read| Returns the name of the port that the motor is connected to.
+Position|int|Read/Write| Returns the current position of the motor in pulses of the rotary encoder. When the motor rotates clockwise, the position will increase. Likewise, rotating counter-clockwise causes the position to decrease. Writing will set the position to that value.
+Position P|int|Read/Write| The proportional constant for the position PID.
+Position I|int|Read/Write| The integral constant for the position PID.
+Position D|int|Read/Write| The derivative constant for the position PID.
+Position SP|int|Read/Write| Writing specifies the target position for the `run-to-abs-pos` and `run-to-rel-pos` commands. Reading returns the current value. Units are in tacho counts. You can use the value returned by `counts_per_rot` to convert tacho counts to/from rotations or degrees.
+Speed|int|Read| Returns the current motor speed in tacho counts per second. Not, this is not necessarily degrees (although it is for LEGO motors). Use the `count_per_rot` attribute to convert this value to RPM or deg/sec.
+Speed SP|int|Read/Write| Writing sets the target speed in tacho counts per second used when `speed_regulation` is on. Reading returns the current value.  Use the `count_per_rot` attribute to convert RPM or deg/sec to tacho counts per second.
+Ramp Up SP|int|Read/Write| Writing sets the ramp up setpoint. Reading returns the current value. Units are in milliseconds. When set to a value > 0, the motor will ramp the power sent to the motor from 0 to 100% duty cycle over the span of this setpoint when starting the motor. If the maximum duty cycle is limited by `duty_cycle_sp` or speed regulation, the actual ramp time duration will be less than the setpoint.
+Ramp Down SP|int|Read/Write| Writing sets the ramp down setpoint. Reading returns the current value. Units are in milliseconds. When set to a value > 0, the motor will ramp the power sent to the motor from 100% duty cycle down to 0 over the span of this setpoint when stopping the motor. If the starting duty cycle is less than 100%, the ramp time duration will be less than the full span of the setpoint.
+Speed Regulation Enabled|string|Read/Write| Turns speed regulation on or off. If speed regulation is on, the motor controller will vary the power supplied to the motor to try to maintain the speed specified in `speed_sp`. If speed regulation is off, the controller will use the power specified in `duty_cycle_sp`. Valid values are `on` and `off`.
+Speed Regulation P|int|Read/Write| The proportional constant for the speed regulation PID.
+Speed Regulation I|int|Read/Write| The integral constant for the speed regulation PID.
+Speed Regulation D|int|Read/Write| The derivative constant for the speed regulation PID.
+State|string array|Read| Reading returns a space separated list of state flags. Possible flags are `running`, `ramping` `holding` and `stalled`.
+Stop Command|string|Read/Write| Reading returns the current stop command. Writing sets the stop command. The value determines the motors behavior when `command` is set to `stop`. Also, it determines the motors behavior when a run command completes. See `stop_commands` for a list of possible values.
+Stop Commands|string array|Read| Returns a space-separated list of stop modes supported by the motor controller. Possible values are `coast`, `brake` and `hold`. `coast` means that power will be removed from the motor and it will freely coast to a stop. `brake` means that power will be removed from the motor and a passive electrical load will be placed on the motor. This is usually done by shorting the motor terminals together. This load will absorb the energy from the rotation of the motors and cause the motor to stop more quickly than coasting. `hold` does not remove power from the motor. Instead it actively try to hold the motor at the current position. If an external force tries to turn the motor, the motor will 'push back' to maintain its position.
+Time SP|int|Read/Write| Writing specifies the amount of time the motor will run when using the `run-timed` command. Reading returns the current value. Units are in milliseconds.
+
 
 <!-- ~autogen -->
 
@@ -81,6 +92,15 @@ Reset|Void|None|Sets the `command` motor property to `reset`, which causes the m
 
 `DC Motor` (class) : abstract "IO Device"
 -----
+
+<!-- ~autogen md_generic-class-description classes.dcMotor>currentClass -->
+
+The DC motor class provides a uniform interface for using regular DC motors
+with no fancy controls or feedback. This includes LEGO MINDSTORMS RCX motors
+and LEGO Power Functions motors.
+
+<!-- ~autogen -->
+
 ###Constructor:
 
 Argument Name|Type|Description
@@ -93,15 +113,19 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|string|Read/Write|
-Commands|string array|Read|
-Driver Name|string|Read|
-Duty Cycle|int|Read|
-Duty Cycle SP|int|Read/Write|
-Polarity|string|Read/Write|
-Port Name|string|Read|
-Ramp Down MS|int|Read/Write|
-Ramp Up MS|int|Read/Write|
+Command|string|Write| Sets the command for the motor. Possible values are `run-forever`, `run-timed` and `stop`. Not all commands may be supported, so be sure to check the contents of the `commands` attribute.
+Commands|string array|Read| Returns a space separated list of commands supported by the motor controller.
+Driver Name|string|Read| Returns the name of the motor driver that loaded this device. See the list of [supported devices] for a list of drivers.
+Duty Cycle|int|Read| Shows the current duty cycle of the PWM signal sent to the motor. Values are -100 to 100 (-100% to 100%).
+Duty Cycle SP|int|Read/Write| Writing sets the duty cycle setpoint of the PWM signal sent to the motor. Valid values are -100 to 100 (-100% to 100%). Reading returns the current setpoint.
+Polarity|string|Read/Write| Sets the polarity of the motor. Valid values are `normal` and `inverted`.
+Port Name|string|Read| Returns the name of the port that the motor is connected to.
+Ramp Down SP|int|Read/Write| Sets the time in milliseconds that it take the motor to ramp down from 100% to 0%. Valid values are 0 to 10000 (10 seconds). Default is 0.
+Ramp Up SP|int|Read/Write| Sets the time in milliseconds that it take the motor to up ramp from 0% to 100%. Valid values are 0 to 10000 (10 seconds). Default is 0.
+State|string array|Read| Gets a space separated list of flags indicating the motor status. Possible flags are `running` and `ramping`. `running` indicates that the motor is powered. `ramping` indicates that the motor has not yet reached the `duty_cycle_sp`.
+Stop Command|string|Write| Sets the stop command that will be used when the motor stops. Read `stop_commands` to get the list of valid values.
+Stop Commands|string array|Read| Gets a space separated list of stop commands. Valid values are `coast` and `brake`.
+
 
 <!-- ~autogen -->
 
@@ -116,6 +140,14 @@ Connected|Boolean|Read
 
 `Servo Motor` (class) : abstract "IO Device"
 -----
+
+<!-- ~autogen md_generic-class-description classes.servoMotor>currentClass -->
+
+The servo motor class provides a uniform interface for using hobby type
+servo motors.
+
+<!-- ~autogen -->
+
 ###Constructor:
 
 Argument Name|Type|Description
@@ -128,15 +160,17 @@ Port|String|The port to control. Specify a blank string (or the undefined/null v
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|string|Read/Write|
-Driver Name|string|Read|
-Max Pulse MS|int|Read/Write|
-Mid Pulse MS|int|Read/Write|
-Min Pulse MS|int|Read/Write|
-Polarity|string|Read/Write|
-Port Name|string|Read|
-Position|int|Read/Write|
-Rate|int|Read/Write|
+Command|string|Write| Sets the command for the servo. Valid values are `run` and `float`. Setting to `run` will cause the servo to be driven to the position_sp set in the `position_sp` attribute. Setting to `float` will remove power from the motor.
+Driver Name|string|Read| Returns the name of the motor driver that loaded this device. See the list of [supported devices] for a list of drivers.
+Max Pulse SP|int|Read/Write| Used to set the pulse size in milliseconds for the signal that tells the servo to drive to the maximum (clockwise) position_sp. Default value is 2400. Valid values are 2300 to 2700. You must write to the position_sp attribute for changes to this attribute to take effect.
+Mid Pulse SP|int|Read/Write| Used to set the pulse size in milliseconds for the signal that tells the servo to drive to the mid position_sp. Default value is 1500. Valid values are 1300 to 1700. For example, on a 180 degree servo, this would be 90 degrees. On continuous rotation servo, this is the 'neutral' position_sp where the motor does not turn. You must write to the position_sp attribute for changes to this attribute to take effect.
+Min Pulse SP|int|Read/Write| Used to set the pulse size in milliseconds for the signal that tells the servo to drive to the miniumum (counter-clockwise) position_sp. Default value is 600. Valid values are 300 to 700. You must write to the position_sp attribute for changes to this attribute to take effect.
+Polarity|string|Read/Write| Sets the polarity of the servo. Valid values are `normal` and `inverted`. Setting the value to `inverted` will cause the position_sp value to be inverted. i.e `-100` will correspond to `max_pulse_sp`, and `100` will correspond to `min_pulse_sp`.
+Port Name|string|Read| Returns the name of the port that the motor is connected to.
+Position SP|int|Read/Write| Reading returns the current position_sp of the servo. Writing instructs the servo to move to the specified position_sp. Units are percent. Valid values are -100 to 100 (-100% to 100%) where `-100` corresponds to `min_pulse_sp`, `0` corresponds to `mid_pulse_sp` and `100` corresponds to `max_pulse_sp`.
+Rate SP|int|Read/Write| Sets the rate_sp at which the servo travels from 0 to 100.0% (half of the full range of the servo). Units are in milliseconds. Example: Setting the rate_sp to 1000 means that it will take a 180 degree servo 2 second to move from 0 to 180 degrees. Note: Some servo controllers may not support this in which case reading and writing will fail with `-EOPNOTSUPP`. In continuous rotation servos, this value will affect the rate_sp at which the speed ramps up or down.
+State|string array|Read| Returns a space separated list of flags indicating the state of the servo. Possible values are: * `running`: Indicates that the motor is powered.
+
 
 <!-- ~autogen -->
 
@@ -164,15 +198,16 @@ Types|String Array|The types of sensors (device IDs) to allow. Leave the array e
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Command|string|Write|
-Commands|string array|Read|
-Decimals|int|Read|
-Driver Name|string|Read|
-Mode|string|Read/Write|
-Modes|string array|Read|
-Num Values|int|Read|
-Port Name|string|Read|
-Units|string|Read|
+Command|string|Write| Sends a command to the sensor.
+Commands|string array|Read| Returns a space separated list of the valid commands for the sensor. Returns -EOPNOTSUPP if no commands are supported.
+Decimals|int|Read| Returns the number of decimal places for the values in the `value<N>` attributes of the current mode.
+Driver Name|string|Read| Returns the name of the sensor device/driver. See the list of [supported sensors] for a complete list of drivers.
+Mode|string|Read/Write| Returns the current mode. Writing one of the values returned by `modes` sets the sensor to that mode.
+Modes|string array|Read| Returns a space separated list of the valid modes for the sensor.
+Num Values|int|Read| Returns the number of `value<N>` attributes that will return a valid value for the current mode.
+Port Name|string|Read| Returns the name of the port that the sensor is connected to, e.g. `ev3:in1`. I2C sensors also include the I2C address (decimal), e.g. `ev3:in1:i2c8`.
+Units|string|Read| Returns the units of the measured value for the current mode. May return empty string
+
 
 <!-- ~autogen -->
 
@@ -194,6 +229,13 @@ Get Float Value|Number (float)|Value Index : Number|Gets the value at the specif
 
 `I2C Sensor` (class) : extends `Sensor`
 -----
+
+<!-- ~autogen md_generic-class-description classes.i2cSensor>currentClass -->
+
+A generic interface to control I2C-type EV3 sensors.
+
+<!-- ~autogen -->
+
 ###Constructor:
 The constructor for the `I2C Sensor` class is the same as its parent's constructor
 (the `Sensor` class).
@@ -204,8 +246,9 @@ The constructor for the `I2C Sensor` class is the same as its parent's construct
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-FW Version|string|Read|
-Poll MS|int|Read/Write|
+FW Version|string|Read| Returns the firmware version of the sensor if available. Currently only I2C/NXT sensors support this.
+Poll MS|int|Read/Write| Returns the polling period of the sensor in milliseconds. Writing sets the polling period. Setting to 0 disables polling. Minimum value is hard coded as 50 msec. Returns -EOPNOTSUPP if changing polling is not supported. Currently only I2C/NXT sensors support changing the polling period.
+
 
 <!-- ~autogen -->
 
@@ -213,6 +256,14 @@ Poll MS|int|Read/Write|
 
 `Power Supply` (class)
 -----
+
+<!-- ~autogen md_generic-class-description classes.powerSupply>currentClass -->
+
+A generic interface to read data from the system's power_supply class.
+Uses the built-in legoev3-battery if none is specified.
+
+<!-- ~autogen -->
+
 ###Constructor:
 
 Argument Name|Type|Description
@@ -225,12 +276,13 @@ Device (optional)|String|The name of the device to control (as listed in `/sys/c
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Measured Current|int|Read|The measured current that the battery is supplying (in microamps)
-Measured Voltage|int|Read|The measured voltage that the battery is supplying (in microvolts)
+Measured Current|int|Read| The measured current that the battery is supplying (in microamps)
+Measured Voltage|int|Read| The measured voltage that the battery is supplying (in microvolts)
 Max Voltage|int|Read|
 Min Voltage|int|Read|
 Technology|string|Read|
 Type|string|Read|
+
 
 <!-- ~autogen -->
 
@@ -248,6 +300,13 @@ Connected|Boolean|Read
 
 `LED` (class)
 -----
+
+<!-- ~autogen md_generic-class-description classes.led>currentClass -->
+
+Any device controlled by the generic LED driver.
+
+<!-- ~autogen -->
+
 ###Constructor:
 
 Argument Name|Type|Description
@@ -260,9 +319,10 @@ Device|String|The name of the device to control (as listed in `/sys/class/leds/`
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
-Max Brightness|int|Read|
-Brightness|int|Read/Write|
-Trigger|string|Read/Write|
+Max Brightness|int|Read| Gets the maximum allowable brightness value
+Brightness|int|Read/Write| Sets the brightness level. Possible values are from 0 to `max_brightness`.
+Trigger|string|Read/Write| Sets the led trigger.
+
 
 <!-- ~autogen -->
 
