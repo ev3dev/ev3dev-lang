@@ -1,7 +1,17 @@
-{% for prop in currentClass.systemProperties %}{%
+{% for prop in currentClass.systemProperties %}
+  // {{ prop.name }}:{%
+  if prop.readAccess %}{%
+    if prop.writeAccess %} read/write{%
+    else %} read-only{%
+    endif %}{%
+  else %} write-only{%
+  endif %}{%
+  for line in prop.description %}
+  // {{ line }}{%
+  endfor %}{%
   assign cppName = prop.name | downcase | underscore_spaces %}{%
   if prop.type contains 'array' %}
-    mode_set {{ cppName }}() const { return get_attr_set("{{ prop.systemName }}"); }{%
+  mode_set {{ cppName }}() const { return get_attr_set("{{ prop.systemName }}"); }{%
   else %}{%
     assign type = prop.type %}{%
     assign attr = type %}{%
@@ -9,10 +19,13 @@
       assign type = 'std::string' %}{%
     endif %}{%
     if prop.readAccess == true %}
-    {{ type }} {{ cppName }}() const { return get_attr_{{ attr }}("{{ prop.systemName }}"); }{%
+  {{ type }} {{ cppName }}() const { return get_attr_{{ attr }}("{{ prop.systemName }}"); }{%
     endif %}{%
     if prop.writeAccess == true %}
-    auto set_{{ cppName }}({{ type }} v) -> decltype(*this) { set_attr_{{ attr }}("{{ prop.systemName }}", v); return *this; }{%
+  auto set_{{ cppName }}({{ type }} v) -> decltype(*this) {
+    set_attr_{{ attr }}("{{ prop.systemName }}", v);
+    return *this;
+  }{%
     endif %}{%
-  endif %}{%
-endfor %}
+  endif %}
+{%endfor %}
