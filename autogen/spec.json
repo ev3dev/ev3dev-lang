@@ -7,37 +7,215 @@
     "classes": {
         "motor": {
             "friendlyName": "Motor",
-            "description": "The motor class provides a uniform interface for using motors with positional and directional feedback such as the EV3 and NXT motors. This feedback allows for precise control of the motors. This is the most common type of motor, so we just call it \"motor\".",
+            "description": [
+                "The motor class provides a uniform interface for using motors with",
+                "positional and directional feedback such as the EV3 and NXT motors.",
+                "This feedback allows for precise control of the motors. This is the",
+                "most common type of motor, so we just call it `motor`."
+                ],
             "docsLink": "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
             "systemClassName":  "tacho-motor",
             "systemDeviceNameConvention":  "motor{0}",
             "systemProperties": [
-                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
-                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Count Per Rot", "systemName": "count_per_rot", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Encoder Polarity", "systemName": "encoder_polarity", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Position P", "systemName": "hold_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Position I", "systemName": "hold_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Position D", "systemName": "hold_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed", "systemName": "speed", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Speed SP", "systemName": "speed_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation Enabled", "systemName": "speed_regulation", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation P", "systemName": "speed_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation I", "systemName": "speed_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Speed Regulation D", "systemName": "speed_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true }
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true,
+                  "description": [
+                      "Sends a command to the motor controller. See `commands` for a list of",
+                      "possible values."
+                  ]
+                },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a space separated list of commands that are supported by the motor",
+                      "controller. Possible values are `run-forever`, `run-to-abs-pos`, `run-to-rel-pos`,",
+                      "`run-timed`, `run-direct`, `stop` and `reset`. Not all commands may be supported.",
+                      "`run-forever` will cause the motor to run until another command is sent.",
+                      "`run-to-abs-pos` will run to an absolute position specified by `position_sp`",
+                      "and then stop using the command specified in `stop_command`.",
+                      "`run-to-rel-pos` will run to a position relative to the current `position` value.",
+                      "The new position will be current `position` + `position_sp`. When the new",
+                      "position is reached, the motor will stop using the command specified by `stop_command`.",
+                      "`run-timed` will run the motor for the amount of time specified in `time_sp`",
+                      "and then stop the motor using the command specified by `stop_command`.",
+                      "`run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`.",
+                      "Unlike other run commands, changing `duty_cycle_sp` while running *will*",
+                      "take effect immediately.",
+                      "`stop` will stop any of the run commands before they are complete using the",
+                      "command specified by `stop_command`.",
+                      "`reset` will reset all of the motor parameter attributes to their default value.",
+                      "This will also have the effect of stopping the motor."
+                  ]
+                },
+                { "name": "Count Per Rot", "systemName": "count_per_rot", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the number of tacho counts in one rotation of the motor. Tacho counts",
+                      "are used by the position and speed attributes, so you can use this value",
+                      "to convert rotations or degrees to tacho counts. In the case of linear",
+                      "actuators, the units here will be counts per centimeter."
+                  ]
+                },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the driver that provides this tacho motor device."
+                  ]
+                },
+                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the current duty cycle of the motor. Units are percent. Values",
+                      "are -100 to 100."
+                  ]
+                },
+                { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing sets the duty cycle setpoint. Reading returns the current value.",
+                      "Units are in percent. Valid values are -100 to 100. A negative value causes",
+                      "the motor to rotate in reverse. This value is only used when `speed_regulation`",
+                      "is off."
+                  ]
+                },
+                { "name": "Encoder Polarity", "systemName": "encoder_polarity", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the polarity of the rotary encoder. This is an advanced feature to all",
+                      "use of motors that send inverted encoder signals to the EV3. This should",
+                      "be set correctly by the driver of a device. It You only need to change this",
+                      "value if you are using a unsupported device. Valid values are `normal` and",
+                      "`inverted`."
+                  ]
+                },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the polarity of the motor. With `normal` polarity, a positive duty",
+                      "cycle will cause the motor to rotate clockwise. With `inverted` polarity,",
+                      "a positive duty cycle will cause the motor to rotate counter-clockwise.",
+                      "Valid values are `normal` and `inverted`."
+                  ]
+                },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the port that the motor is connected to."
+                  ]
+                },
+                { "name": "Position", "systemName": "position", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Returns the current position of the motor in pulses of the rotary",
+                      "encoder. When the motor rotates clockwise, the position will increase.",
+                      "Likewise, rotating counter-clockwise causes the position to decrease.",
+                      "Writing will set the position to that value."
+                  ]
+                },
+                { "name": "Position P", "systemName": "hold_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The proportional constant for the position PID."
+                  ]
+                },
+                { "name": "Position I", "systemName": "hold_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The integral constant for the position PID."
+                  ]
+                },
+                { "name": "Position D", "systemName": "hold_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The derivative constant for the position PID."
+                  ]
+                },
+                { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing specifies the target position for the `run-to-abs-pos` and `run-to-rel-pos`",
+                      "commands. Reading returns the current value. Units are in tacho counts. You",
+                      "can use the value returned by `counts_per_rot` to convert tacho counts to/from",
+                      "rotations or degrees."
+                  ]
+                },
+                { "name": "Speed", "systemName": "speed", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the current motor speed in tacho counts per second. Not, this is",
+                      "not necessarily degrees (although it is for LEGO motors). Use the `count_per_rot`",
+                      "attribute to convert this value to RPM or deg/sec."
+                  ]
+                },
+                { "name": "Speed SP", "systemName": "speed_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing sets the target speed in tacho counts per second used when `speed_regulation`",
+                      "is on. Reading returns the current value.  Use the `count_per_rot` attribute",
+                      "to convert RPM or deg/sec to tacho counts per second."
+                  ]
+                },
+                { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing sets the ramp up setpoint. Reading returns the current value. Units",
+                      "are in milliseconds. When set to a value > 0, the motor will ramp the power",
+                      "sent to the motor from 0 to 100% duty cycle over the span of this setpoint",
+                      "when starting the motor. If the maximum duty cycle is limited by `duty_cycle_sp`",
+                      "or speed regulation, the actual ramp time duration will be less than the setpoint."
+                  ]
+                },
+                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing sets the ramp down setpoint. Reading returns the current value. Units",
+                      "are in milliseconds. When set to a value > 0, the motor will ramp the power",
+                      "sent to the motor from 100% duty cycle down to 0 over the span of this setpoint",
+                      "when stopping the motor. If the starting duty cycle is less than 100%, the",
+                      "ramp time duration will be less than the full span of the setpoint."
+                  ]
+                },
+                { "name": "Speed Regulation Enabled", "systemName": "speed_regulation", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Turns speed regulation on or off. If speed regulation is on, the motor",
+                      "controller will vary the power supplied to the motor to try to maintain the",
+                      "speed specified in `speed_sp`. If speed regulation is off, the controller",
+                      "will use the power specified in `duty_cycle_sp`. Valid values are `on` and",
+                      "`off`."
+                  ]
+                },
+                { "name": "Speed Regulation P", "systemName": "speed_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The proportional constant for the speed regulation PID."
+                  ]
+                },
+                { "name": "Speed Regulation I", "systemName": "speed_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The integral constant for the speed regulation PID."
+                  ]
+                },
+                { "name": "Speed Regulation D", "systemName": "speed_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The derivative constant for the speed regulation PID."
+                  ]
+                },
+                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Reading returns a space separated list of state flags. Possible flags are",
+                      "`running`, `ramping` `holding` and `stalled`."
+                  ]
+                },
+                { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Reading returns the current stop command. Writing sets the stop command.",
+                      "The value determines the motors behavior when `command` is set to `stop`.",
+                      "Also, it determines the motors behavior when a run command completes. See",
+                      "`stop_commands` for a list of possible values."
+                  ]
+                },
+                { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a space-separated list of stop modes supported by the motor controller.",
+                      "Possible values are `coast`, `brake` and `hold`. `coast` means that power will",
+                      "be removed from the motor and it will freely coast to a stop. `brake` means",
+                      "that power will be removed from the motor and a passive electrical load will",
+                      "be placed on the motor. This is usually done by shorting the motor terminals",
+                      "together. This load will absorb the energy from the rotation of the motors and",
+                      "cause the motor to stop more quickly than coasting. `hold` does not remove",
+                      "power from the motor. Instead it actively try to hold the motor at the current",
+                      "position. If an external force tries to turn the motor, the motor will 'push",
+                      "back' to maintain its position."
+                  ]
+                },
+                { "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing specifies the amount of time the motor will run when using the",
+                      "`run-timed` command. Reading returns the current value. Units are in",
+                      "milliseconds."
+                  ]
+                }
             ],
             "propertyValues": [
                 {
@@ -85,23 +263,89 @@
         },
         "dcMotor": {
             "friendlyName": "DC Motor",
-            "description": "The DC motor class provides a uniform interface for using regular DC motors with no fancy controls or feedback. This includes LEGO MINDSTORMS RCX motors and LEGO Power Functions motors.",
+            "description": [
+                "The DC motor class provides a uniform interface for using regular DC motors",
+                "with no fancy controls or feedback. This includes LEGO MINDSTORMS RCX motors",
+                "and LEGO Power Functions motors."
+            ],
             "docsLink": "http://www.ev3dev.org/docs/drivers/dc-motor-class/",
             "systemClassName":  "dc-motor",
             "systemDeviceNameConvention":  "motor{0}",
             "systemProperties": [
-                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
-                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": false, "writeAccess": true },
-                { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false }
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true,
+                  "description": [
+                      "Sets the command for the motor. Possible values are `run-forever`, `run-timed` and",
+                      "`stop`. Not all commands may be supported, so be sure to check the contents",
+                      "of the `commands` attribute."
+                  ]
+                },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a space separated list of commands supported by the motor",
+                      "controller."
+                  ]
+                },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the motor driver that loaded this device. See the list",
+                      "of [supported devices] for a list of drivers."
+                  ]
+                },
+                { "name": "Duty Cycle", "systemName": "duty_cycle", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Shows the current duty cycle of the PWM signal sent to the motor. Values",
+                      "are -100 to 100 (-100% to 100%)."
+                  ]
+                },
+                { "name": "Duty Cycle SP", "systemName": "duty_cycle_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing sets the duty cycle setpoint of the PWM signal sent to the motor.",
+                      "Valid values are -100 to 100 (-100% to 100%). Reading returns the current",
+                      "setpoint."
+                  ]
+                },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the polarity of the motor. Valid values are `normal` and `inverted`."
+                  ]
+                },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the port that the motor is connected to."
+                  ]
+                },
+                { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the time in milliseconds that it take the motor to ramp down from 100%",
+                      "to 0%. Valid values are 0 to 10000 (10 seconds). Default is 0."
+                  ]
+                },
+                { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the time in milliseconds that it take the motor to up ramp from 0% to",
+                      "100%. Valid values are 0 to 10000 (10 seconds). Default is 0."
+                  ]
+                },
+                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Gets a space separated list of flags indicating the motor status. Possible",
+                      "flags are `running` and `ramping`. `running` indicates that the motor is",
+                      "powered. `ramping` indicates that the motor has not yet reached the",
+                      "`duty_cycle_sp`."
+                  ]
+                },
+                { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": false, "writeAccess": true,
+                  "description": [
+                      "Sets the stop command that will be used when the motor stops. Read",
+                      "`stop_commands` to get the list of valid values."
+                  ]
+                },
+                { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Gets a space separated list of stop commands. Valid values are `coast`",
+                      "and `brake`."
+                  ]
+                }
             ],
             "propertyValues": [
                 {
@@ -130,21 +374,91 @@
         },
         "servoMotor": {
             "friendlyName": "Servo Motor",
-            "description": "The servo motor class provides a uniform interface for using hobby type servo motors.",
+            "description": [
+                "The servo motor class provides a uniform interface for using hobby type",
+                "servo motors."
+            ],
             "docsLink": "http://www.ev3dev.org/docs/drivers/servo-motor-class/",
             "systemClassName":  "servo-motor",
             "systemDeviceNameConvention":  "motor{0}",
             "systemProperties": [
-                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
-                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Max Pulse SP", "systemName": "max_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Mid Pulse SP", "systemName": "mid_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Min Pulse SP", "systemName": "min_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Rate SP", "systemName": "rate_sp", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false }
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true,
+                  "description": [
+                      "Sets the command for the servo. Valid values are `run` and `float`. Setting",
+                      "to `run` will cause the servo to be driven to the position_sp set in the",
+                      "`position_sp` attribute. Setting to `float` will remove power from the motor."
+                  ]
+                },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the motor driver that loaded this device. See the list",
+                      "of [supported devices] for a list of drivers."
+                  ]
+                },
+                { "name": "Max Pulse SP", "systemName": "max_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Used to set the pulse size in milliseconds for the signal that tells the",
+                      "servo to drive to the maximum (clockwise) position_sp. Default value is 2400.",
+                      "Valid values are 2300 to 2700. You must write to the position_sp attribute for",
+                      "changes to this attribute to take effect."
+                  ]
+                },
+                { "name": "Mid Pulse SP", "systemName": "mid_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Used to set the pulse size in milliseconds for the signal that tells the",
+                      "servo to drive to the mid position_sp. Default value is 1500. Valid",
+                      "values are 1300 to 1700. For example, on a 180 degree servo, this would be",
+                      "90 degrees. On continuous rotation servo, this is the 'neutral' position_sp",
+                      "where the motor does not turn. You must write to the position_sp attribute for",
+                      "changes to this attribute to take effect."
+                  ]
+                },
+                { "name": "Min Pulse SP", "systemName": "min_pulse_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Used to set the pulse size in milliseconds for the signal that tells the",
+                      "servo to drive to the miniumum (counter-clockwise) position_sp. Default value",
+                      "is 600. Valid values are 300 to 700. You must write to the position_sp",
+                      "attribute for changes to this attribute to take effect."
+                  ]
+                },
+                { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the polarity of the servo. Valid values are `normal` and `inverted`.",
+                      "Setting the value to `inverted` will cause the position_sp value to be",
+                      "inverted. i.e `-100` will correspond to `max_pulse_sp`, and `100` will",
+                      "correspond to `min_pulse_sp`."
+                  ]
+                },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the port that the motor is connected to."
+                  ]
+                },
+                { "name": "Position SP", "systemName": "position_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Reading returns the current position_sp of the servo. Writing instructs the",
+                      "servo to move to the specified position_sp. Units are percent. Valid values",
+                      "are -100 to 100 (-100% to 100%) where `-100` corresponds to `min_pulse_sp`,",
+                      "`0` corresponds to `mid_pulse_sp` and `100` corresponds to `max_pulse_sp`."
+                  ]
+                },
+                { "name": "Rate SP", "systemName": "rate_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the rate_sp at which the servo travels from 0 to 100.0% (half of the full",
+                      "range of the servo). Units are in milliseconds. Example: Setting the rate_sp",
+                      "to 1000 means that it will take a 180 degree servo 2 second to move from 0",
+                      "to 180 degrees. Note: Some servo controllers may not support this in which",
+                      "case reading and writing will fail with `-EOPNOTSUPP`. In continuous rotation",
+                      "servos, this value will affect the rate_sp at which the speed ramps up or down."
+                  ]
+                },
+                { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a space separated list of flags indicating the state of the servo.",
+                      "Possible values are:",
+                      "* `running`: Indicates that the motor is powered."
+                  ]
+                }
             ],
             "propertyValues": [
                 {
@@ -165,48 +479,136 @@
         },
         "led": {
             "friendlyName": "LED",
-            "description": "Any device controlled by the generic LED driver.",
+            "description": [
+                "Any device controlled by the generic LED driver."
+            ],
             "systemClassName":  "leds",
             "systemProperties": [
-                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true },
-                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true }
+                { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Gets the maximum allowable brightness value"
+                  ]
+                },
+                { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the brightness level. Possible values are from 0 to `max_brightness`."
+                  ]
+                },
+                { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Sets the led trigger."
+                  ]
+                }
             ]
         },
         "sensor": {
             "friendlyName": "Sensor",
-            "description": "A generic interface to control most EV3 sensors.",
+            "description": [
+                "The sensor class provides a uniform interface for using most of the",
+                "sensors available for the EV3. The various underlying device drivers will",
+                "create a `lego-sensor` device for interacting with the sensors.",
+                "",
+                "Sensors are primarily controlled by setting the `mode` and monitored by",
+                "reading the `value<N>` attributes. Values can be converted to floating point",
+                "if needed by `value<N>` / 10.0 ^ `decimals`.",
+                "",
+                "Since the name of the `sensor<N>` device node does not correspond to the port",
+                "that a sensor is plugged in to, you must look at the `port_name` attribute if",
+                "you need to know which port a sensor is plugged in to. However, if you don't",
+                "have more than one sensor of each type, you can just look for a matching",
+                "`driver_name`. Then it will not matter which port a sensor is plugged in to - your",
+                "program will still work."
+            ],
             "docsLink":  "http://www.ev3dev.org/docs/drivers/lego-sensor-class/",
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "systemProperties": [
-                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true },
-                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Decimals", "systemName": "decimals", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true },
-                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false },
-                { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false }
+                { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true,
+                  "description": [
+                      "Sends a command to the sensor."
+                  ]
+                },
+                { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a space separated list of the valid commands for the sensor.",
+                      "Returns -EOPNOTSUPP if no commands are supported."
+                  ]
+                },
+                { "name": "Decimals", "systemName": "decimals", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the number of decimal places for the values in the `value<N>`",
+                      "attributes of the current mode."
+                  ]
+                },
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the sensor device/driver. See the list of [supported",
+                      "sensors] for a complete list of drivers."
+                  ]
+                },
+                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Returns the current mode. Writing one of the values returned by `modes`",
+                      "sets the sensor to that mode."
+                  ]
+                },
+                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a space separated list of the valid modes for the sensor."
+                  ]
+                },
+                { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the number of `value<N>` attributes that will return a valid value",
+                      "for the current mode."
+                  ]
+                },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the port that the sensor is connected to, e.g. `ev3:in1`.",
+                      "I2C sensors also include the I2C address (decimal), e.g. `ev3:in1:i2c8`."
+                  ]
+                },
+                { "name": "Units", "systemName": "units", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the units of the measured value for the current mode. May return",
+                      "empty string"
+                  ]
+                }
             ]
         },
         "i2cSensor": {
             "friendlyName": "I2C Sensor",
-            "description": "A generic interface to control I2C-type EV3 sensors.",
+            "description": [
+                "A generic interface to control I2C-type EV3 sensors."
+            ],
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
                 "sensor"
             ],
             "systemProperties": [
-                { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Poll MS", "systemName": "poll_ms", "type": "int", "readAccess": true, "writeAccess": true }
+                { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the firmware version of the sensor if available. Currently only",
+                      "I2C/NXT sensors support this."
+                  ]
+                },
+                { "name": "Poll MS", "systemName": "poll_ms", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Returns the polling period of the sensor in milliseconds. Writing sets the",
+                      "polling period. Setting to 0 disables polling. Minimum value is hard",
+                      "coded as 50 msec. Returns -EOPNOTSUPP if changing polling is not supported.",
+                      "Currently only I2C/NXT sensors support changing the polling period."
+                  ]
+                }
             ]
         },
         "colorSensor": {
             "friendlyName": "Color Sensor",
-            "description": "LEGO EV3 color sensor.",
+            "description": [
+                "LEGO EV3 color sensor."
+            ],
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -228,7 +630,9 @@
         },
         "ultrasonicSensor": {
             "friendlyName": "Ultrasonic Sensor",
-            "description": "LEGO EV3 ultrasonic sensor.",
+            "description": [
+                "LEGO EV3 ultrasonic sensor."
+            ],
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -251,7 +655,9 @@
         },
         "gyroSensor": {
             "friendlyName": "Gyro Sensor",
-            "description": "LEGO EV3 gyro sensor.",
+            "description": [
+                "LEGO EV3 gyro sensor."
+            ],
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -272,7 +678,9 @@
         },
         "infraredSensor": {
             "friendlyName": "Infrared Sensor",
-            "description": "LEGO EV3 infrared sensor.",
+            "description": [
+                "LEGO EV3 infrared sensor."
+            ],
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -294,11 +702,22 @@
         },
         "powerSupply": {
             "friendlyName": "Power Supply",
-            "description": "A generic interface to read data from the system's power_supply class. Uses the built-in legoev3-battery if none is specified.",
+            "description": [
+                "A generic interface to read data from the system's power_supply class.",
+                "Uses the built-in legoev3-battery if none is specified."
+            ],
             "systemClassName":  "power_supply",
             "systemProperties": [
-                { "name": "Measured Current", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false, "description": "The measured current that the battery is supplying (in microamps)" },
-                { "name": "Measured Voltage", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false, "description": "The measured voltage that the battery is supplying (in microvolts)" },
+                { "name": "Measured Current", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "The measured current that the battery is supplying (in microamps)"
+                  ]
+                },
+                { "name": "Measured Voltage", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false,
+                    "description": [
+                        "The measured voltage that the battery is supplying (in microvolts)"
+                    ]
+                },
                 { "name": "Max Voltage", "systemName": "voltage_max_design", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Min Voltage", "systemName": "voltage_min_design", "type": "int", "readAccess": true, "writeAccess": false },
                 { "name": "Technology", "systemName": "technology", "type": "string", "readAccess": true, "writeAccess": false },
