@@ -221,42 +221,123 @@
                 {
                     "propertyName": "Command",
                     "values": [
-                        { "name": "run-forever" },
-                        { "name": "run-to-abs-pos" },
-                        { "name": "run-to-rel-pos" },
-                        { "name": "run-timed" },
-                        { "name": "run-direct" },
-                        { "name": "stop" },
-                        { "name": "reset" }
+                        { "name": "run-forever",
+                            "description": [
+                                "Run the motor until another command is sent."
+                            ]
+                        },
+                        { "name": "run-to-abs-pos",
+                            "description": [
+                                "Run to an absolute position specified by `position_sp` and then",
+                                "stop using the command specified in `stop_command`."
+                            ]
+                        },
+                        { "name": "run-to-rel-pos",
+                            "description": [
+                                "Run to a position relative to the current `position` value.",
+                                "The new position will be current `position` + `position_sp`.",
+                                "When the new position is reached, the motor will stop using",
+                                "the command specified by `stop_command`."
+                            ]
+                        },
+                        { "name": "run-timed",
+                            "description": [
+                                "Run the motor for the amount of time specified in `time_sp`",
+                                "and then stop the motor using the command specified by `stop_command`."
+                            ]
+                        },
+                        { "name": "run-direct",
+                            "description": [
+                                "Run the motor at the duty cycle specified by `duty_cycle_sp`.",
+                                "Unlike other run commands, changing `duty_cycle_sp` while running *will*",
+                                "take effect immediately."
+                            ]
+                        },
+                        { "name": "stop",
+                            "description": [
+                                "Stop any of the run commands before they are complete using the",
+                                "command specified by `stop_command`."
+                            ]
+                        },
+                        { "name": "reset",
+                            "description": [
+                                "Reset all of the motor parameter attributes to their default value.",
+                                "This will also have the effect of stopping the motor."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Encoder Polarity",
                     "values": [
-                        { "name": "normal" },
-                        { "name": "inverted" }
+                        { "name": "normal",
+                            "description": [
+                                "Sets the normal polarity of the rotary encoder."
+                            ]
+                        },
+                        { "name": "inverted",
+                            "description": [
+                                "Sets the inverted polarity of the rotary encoder."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Polarity",
                     "values": [
-                        { "name": "normal" },
-                        { "name": "inverted" }
+                        { "name": "normal",
+                            "description": [
+                                "With `normal` polarity, a positive duty cycle will",
+                                "cause the motor to rotate clockwise."
+                            ]
+                        },
+                        { "name": "inverted",
+                            "description": [
+                                "With `inverted` polarity, a positive duty cycle will",
+                                "cause the motor to rotate counter-clockwise."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Speed Regulation",
                     "values": [
-                        { "name": "on" },
-                        { "name": "off" }
+                        { "name": "on",
+                            "description": [
+                                "The motor controller will vary the power supplied to the motor",
+                                "to try to maintain the speed specified in `speed_sp`."
+                            ]
+                        },
+                        { "name": "off",
+                            "description": [
+                                "The motor controller will use the power specified in `duty_cycle_sp`."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Stop Command",
                     "values": [
-                        { "name": "coast" },
-                        { "name": "brake" },
-                        { "name": "hold" }
+                        { "name": "coast",
+                            "description": [
+                                "Power will be removed from the motor and it will freely coast to a stop."
+                            ]
+                        },
+                        { "name": "brake",
+                            "description": [
+                                "Power will be removed from the motor and a passive electrical load will",
+                                "be placed on the motor. This is usually done by shorting the motor terminals",
+                                "together. This load will absorb the energy from the rotation of the motors and",
+                                "cause the motor to stop more quickly than coasting."
+                            ]
+                        },
+                        { "name": "hold",
+                            "description": [
+                                "Does not remove power from the motor. Instead it actively try to hold the motor",
+                                "at the current position. If an external force tries to turn the motor, the motor",
+                                "will ``push back`` to maintain its position."
+                            ]
+                        }
                     ]
                 }
             ]
@@ -351,23 +432,58 @@
                 {
                     "propertyName": "Command",
                     "values": [
-                        { "name": "run-forever" },
-                        { "name": "run-timed" },
-                        { "name": "stop" }
+                        { "name": "run-forever",
+                            "description": [
+                                "Run the motor until another command is sent."
+                            ]
+                        },
+                        { "name": "run-timed",
+                            "description": [
+                                "Run the motor for the amount of time specified in `time_sp`",
+                                "and then stop the motor using the command specified by `stop_command`."
+                            ]
+                        },
+                        { "name": "stop",
+                            "description": [
+                                "Stop any of the run commands before they are complete using the",
+                                "command specified by `stop_command`."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Polarity",
                     "values": [
-                        { "name": "normal" },
-                        { "name": "inverted" }
+                        { "name": "normal",
+                            "description": [
+                                "With `normal` polarity, a positive duty cycle will",
+                                "cause the motor to rotate clockwise."
+                            ]
+                        },
+                        { "name": "inverted",
+                            "description": [
+                                "With `inverted` polarity, a positive duty cycle will",
+                                "cause the motor to rotate counter-clockwise."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Stop Command",
                     "values": [
-                        { "name": "coast" },
-                        { "name": "brake" }
+                        { "name": "coast",
+                            "description": [
+                                "Power will be removed from the motor and it will freely coast to a stop."
+                            ]
+                        },
+                        { "name": "brake",
+                            "description": [
+                                "Power will be removed from the motor and a passive electrical load will",
+                                "be placed on the motor. This is usually done by shorting the motor terminals",
+                                "together. This load will absorb the energy from the rotation of the motors and",
+                                "cause the motor to stop more quickly than coasting."
+                            ]
+                        }
                     ]
                 }
             ]
@@ -464,15 +580,33 @@
                 {
                     "propertyName": "Command",
                     "values": [
-                        { "name": "run" },
-                        { "name": "float" }
+                        { "name": "run",
+                            "description": [
+                                "Drive servo to the position set in the `position_sp` attribute."
+                            ]
+                        },
+                        { "name": "float",
+                            "description": [
+                                "Remove power from the motor."
+                            ]
+                        }
                     ]
                 },
                 {
                     "propertyName": "Polarity",
                     "values": [
-                        { "name": "normal" },
-                        { "name": "inverted" }
+                        { "name": "normal",
+                            "description": [
+                                "With `normal` polarity, a positive duty cycle will",
+                                "cause the motor to rotate clockwise."
+                            ]
+                        },
+                        { "name": "inverted",
+                            "description": [
+                                "With `inverted` polarity, a positive duty cycle will",
+                                "cause the motor to rotate counter-clockwise."
+                            ]
+                        }
                     ]
                 }
             ]
@@ -618,12 +752,30 @@
                 {
                     "propertyName": "Mode",
                     "values": [
-                        { "name": "COL-REFLECT" },
-                        { "name": "COL-AMBIENT" },
-                        { "name": "COL-COLOR" },
-                        { "name": "REF-RAW" },
-                        { "name": "RGB-RAW" },
-                        { "name": "COL-CAL" }
+                        { "name": "COL-REFLECT",
+                            "description": [
+                                "Reflected light. Red LED on."
+                            ]
+                        },
+                        { "name": "COL-AMBIENT",
+                            "description": [
+                                "Ambient light. Red LEDs off."
+                            ]
+                        },
+                        { "name": "COL-COLOR",
+                            "description": [
+                                "Color. All LEDs rapidly cycling, appears white."
+                            ]
+                        },
+                        { "name": "REF-RAW",
+                            "description": [
+                                "Raw Color Components. All LEDs rapidly cycling, appears white."
+                            ]
+                        },
+                        { "name": "RGB-RAW",
+                            "description": [
+                            ]
+                        }
                     ]
                 }
             ]
@@ -642,13 +794,35 @@
                 {
                     "propertyName": "Mode",
                     "values": [
-                        { "name": "US-DIST-CM" },
-                        { "name": "US-DIST-IN" },
-                        { "name": "US-LISTEN" },
-                        { "name": "US-SI-CM" },
-                        { "name": "US-SI-IN" },
-                        { "name": "US-DC-CM" },
-                        { "name": "US-DC-IN" }
+                        { "name": "US-DIST-CM",
+                            "description": [
+                                "Continuous measurement in centimeters.",
+                                "LEDs: On, steady"
+                            ]
+                        },
+                        { "name": "US-DIST-IN",
+                            "description": [
+                                "Continuous measurement in inches.",
+                                "LEDs: On, steady"
+                            ]
+                        },
+                        { "name": "US-LISTEN",
+                            "description": [
+                                "Listen.  LEDs: On, blinking"
+                            ]
+                        },
+                        { "name": "US-SI-CM",
+                            "description": [
+                                "Single measurement in centimeters.",
+                                "LEDs: On momentarily when mode is set, then off"
+                            ]
+                        },
+                        { "name": "US-SI-IN",
+                            "description": [
+                                "Single measurement in inches.",
+                                "LEDs: On momentarily when mode is set, then off"
+                            ]
+                        }
                     ]
                 }
             ]
@@ -667,11 +841,31 @@
                 {
                     "propertyName": "Mode",
                     "values": [
-                        { "name": "GYRO-ANG" },
-                        { "name": "GYRO-RATE" },
-                        { "name": "GYRO-FAS" },
-                        { "name": "GYRO-G&A" },
-                        { "name": "GYRO-CAL" }
+                        { "name": "GYRO-ANG",
+                            "description": [
+                                "Angle"
+                            ]
+                        },
+                        { "name": "GYRO-RATE",
+                            "description": [
+                                "Rotational speed"
+                            ]
+                        },
+                        { "name": "GYRO-FAS",
+                            "description": [
+                                "Raw sensor value"
+                            ]
+                        },
+                        { "name": "GYRO-G&A",
+                            "description": [
+                                "Angle and rotational speed"
+                            ]
+                        },
+                        { "name": "GYRO-CAL",
+                            "description": [
+                                "Calibration ???"
+                            ]
+                        }
                     ]
                 }
             ]
@@ -690,12 +884,31 @@
                 {
                     "propertyName": "Mode",
                     "values": [
-                        { "name": "IR-PROX" },
-                        { "name": "IR-SEEK" },
-                        { "name": "IR-REMOTE" },
-                        { "name": "IR-REM-A" },
-                        { "name": "IR-S-ALT" },
-                        { "name": "IR-CAL" }
+                        { "name": "IR-PROX",
+                            "description": [
+                                "Proximity"
+                            ]
+                        },
+                        { "name": "IR-SEEK",
+                            "description": [
+                                "IR Seeker"
+                            ]
+                        },
+                        { "name": "IR-REMOTE",
+                            "description": [
+                                "IR Remote Control"
+                            ]
+                        },
+                        { "name": "IR-REM-A",
+                            "description": [
+                                "IR Remote Control. State of the buttons is coded in binary"
+                            ]
+                        },
+                        { "name": "IR-CAL",
+                            "description": [
+                                "Calibration ???"
+                            ]
+                        }
                     ]
                 }
             ]
