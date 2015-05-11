@@ -4,6 +4,10 @@
         for value in prop.values %}{%
             assign commandName = value.name | downcase | underscore_non_wc %}
 def {{ className }}_{{ commandName }}(self, **attr):
+    """{%
+    for line in value.description %}{{ line }}
+    {% endfor %}"""
+
     for key in attr:
         setattr(self, key, attr[key])
     self.command = "{{ value.name }}"
