@@ -769,11 +769,12 @@
                         },
                         { "name": "REF-RAW",
                             "description": [
-                                "Raw Color Components. All LEDs rapidly cycling, appears white."
+                                "Raw reflected. Red LED on"
                             ]
                         },
                         { "name": "RGB-RAW",
                             "description": [
+                                "Raw Color Components. All LEDs rapidly cycling, appears white."
                             ]
                         }
                     ]
