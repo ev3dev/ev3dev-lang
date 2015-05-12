@@ -743,6 +743,7 @@
             "description": [
                 "LEGO EV3 color sensor."
             ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-color-sensor/",
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -786,6 +787,7 @@
             "description": [
                 "LEGO EV3 ultrasonic sensor."
             ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-ultrasonic-sensor/",
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -833,6 +835,7 @@
             "description": [
                 "LEGO EV3 gyro sensor."
             ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-gyro-sensor/",
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -876,6 +879,7 @@
             "description": [
                 "LEGO EV3 infrared sensor."
             ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-infrared-sensor/",
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
             "inheritance": [
@@ -908,6 +912,64 @@
                         { "name": "IR-CAL",
                             "description": [
                                 "Calibration ???"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "soundSensor": {
+            "friendlyName": "Sound Sensor",
+            "description": [
+                "LEGO NXT Sound Sensor"
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-sound-sensor/",
+            "systemClassName":  "lego-nxt-sound",
+            "systemDeviceNameConvention":  "sensor{0}",
+            "inheritance": [
+                "sensor"
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "DB",
+                            "description": [
+                                "Sound pressure level. Flat weighting"
+                            ]
+                        },
+                        { "name": "DBA",
+                            "description": [
+                                "Sound pressure level. A weighting"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "lightSensor": {
+            "friendlyName": "Light Sensor",
+            "description": [
+                "LEGO NXT Light Sensor"
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-light-sensor/",
+            "systemClassName":  "lego-nxt-light",
+            "systemDeviceNameConvention":  "sensor{0}",
+            "inheritance": [
+                "sensor"
+            ],
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "REFLECT",
+                            "description": [
+                                "Reflected light. LED on"
+                            ]
+                        },
+                        { "name": "AMBIENT",
+                            "description": [
+                                "Ambient light. LED off"
                             ]
                         }
                     ]
