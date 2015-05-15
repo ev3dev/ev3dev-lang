@@ -8,6 +8,5 @@ We currently have libraries for the following languages here:
 - Lua
 - Node.JS
 - Python
-- R
 
 Each binding complies with our universal language binding specification, which also serves as high-level documentation for our wrappers.
