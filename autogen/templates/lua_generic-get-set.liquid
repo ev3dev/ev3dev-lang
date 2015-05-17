@@ -1,0 +1,16 @@
+{% for prop in currentClass.systemProperties %}{%
+  assign luaName = prop.name | camel_case %}{%
+  assign type = prop.type | camel_case | capitalize %}{%
+  if prop.readAccess == true %}
+function {{ currentClass.friendlyName | remove:' ' }}:{{ luaName }}()
+  return self:getAttr{{ type }}("{{ prop.systemName }}")
+end
+{%
+  endif %}{%
+  if prop.writeAccess == true %}
+function {{ currentClass.friendlyName | remove:' ' }}:set{{ prop.name  | remove:' ' }}(value)
+  self:setAttr{{ type }}("{{ prop.systemName }}", value)
+end
+{%
+  endif %}{%
+endfor %}

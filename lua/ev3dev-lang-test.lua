@@ -25,22 +25,11 @@ require 'ev3dev'
 
 function printMotorInfo(o)
   print("  Current state is "..o:state())
-  print("    duty cycle: "..o:dutyCycle().."   pulses/sec: "..o:pulsesPerSecond().."\n")
-  print("  Current run mode is "..o:runMode())
-  print("    stop mode: "..o:stopMode())
-  print("    regulation mode: "..o:regulationMode().."\n")
-  --print("  Speed setpoint is "..o:speedSetpoint())
-  
-  if (o:runMode() == o.runModeTime) then
-    print("  Time setpoint is "..o:timeSetpoint())
-  end
-  
-  if (o:runMode() == o.runModePosition) then
-    print("  Position setpoint is "..o:positionSetpoint())
-  end
-  
-  --print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
-
+  print("    duty cycle: "..o:dutyCycle())
+  print("    speed: "..o:speed())
+  print("    position: "..o:position())
+  print("    stop command: "..o:stopCommand())
+  print("    speed regulation: "..o:speedRegulationEnabled())
 end
 
 s = TouchSensor()
@@ -55,7 +44,7 @@ ic = I2CSensor()
 if (ic:connected()) then
 	print("Connected to I2C sensor @ "..c:portName().." with mode "..c:mode())
 	print ("Value is "..c:value())
-	if (c:dp() > 0) then
+	if (c:decimals() > 0) then
 	  print ("Float value is "..c:floatValue())
 	end
 else
@@ -66,7 +55,7 @@ c = ColorSensor()
 if (c:connected()) then
 	print("Connected to color sensor @ "..c:portName().." with mode "..c:mode())
 	print ("Value is "..c:value())
-	if (c:dp() > 0) then
+	if (c:decimals() > 0) then
 	  print ("Float value is "..c:floatValue())
 	end
 else
@@ -77,7 +66,7 @@ u = UltrasonicSensor()
 if (u:connected()) then
 	print("Connected to ultrasonic sensor @ "..u:portName().." with mode "..u:mode())
 	print ("Value is "..u:value())
-	if (u:dp() > 0) then
+	if (u:decimals() > 0) then
 	  print ("Float value is "..u:floatValue())
 	end
 else
@@ -88,7 +77,7 @@ g = GyroSensor()
 if (g:connected()) then
 	print("Connected to gyro sensor @ "..g:portName().." with mode "..g:mode())
 	print ("Value is "..g:value())
-	if (g:dp() > 0) then
+	if (g:decimals() > 0) then
 	  print ("Float value is "..g:floatValue())
 	end
 else
@@ -99,7 +88,7 @@ i = InfraredSensor()
 if (i:connected()) then
 	print("Connected to IR sensor @ "..i:portName().." with mode "..i:mode())	
 	print ("Value is "..i:value())
-	if (i:dp() > 0) then
+	if (i:decimals() > 0) then
 	  print ("Float value is "..i:floatValue())
 	end
 else
@@ -166,7 +155,7 @@ if (ledPFoutD:connected()) then
 end
 
 print("Beeping...")
-Sound.beep();
+--Sound.beep();
 
 print("Sound volume is "..Sound.volume())
   

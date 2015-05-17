@@ -161,6 +161,24 @@ function Device:getAttrString(name)
   return s
 end
 
+function Device:getAttrStringArray(name)
+  
+  if (self._path == nil) then
+    error("no device connected")
+  end
+  
+  local tf = io.open(self._path..name, "r")
+
+  if (tf == nil) then
+    error("no such attribute: "..self._path..name)
+  end
+
+  local s = tf:read("*l")
+  tf:close()
+      
+  return s
+end
+
 function Device:setAttrString(name, value)
   
   if (self._path == nil) then
@@ -199,8 +217,8 @@ OUTPUT_D    = "outD"
 
 Motor = class(Device)
 
-Motor.Large  = "tacho"
-Motor.Medium = "minitacho"
+Motor.Large  = "lego-ev3-l-motor"
+Motor.Medium = "lego-ev3-m-motor"
 
 Motor.ModeOff = "off"
 Motor.ModeOn  = "on"
@@ -220,13 +238,13 @@ function Motor:init(port, motor_types)
   local m = { port_name = { port } }
   
   if (motor_types ~= nil) then
-    m["type"] = motor_types
+    m["driver_name"] = motor_types
   end
   
   Device.init(self, "tacho-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("type")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -240,10 +258,6 @@ end
 
 function Motor:portName()
   return self._port
-end
-
-function Motor:state()
-  return self:getAttrString("state")
 end
 
 function Motor:run(run)
@@ -266,12 +280,54 @@ function Motor:running()
   return (self:getAttrInt("run") ~= 0)
 end
 
+-- ~autogen lua_generic-get-set classes.motor>currentClass
+
+function Motor:setCommand(value)
+  self:setAttrString("command", value)
+end
+
+function Motor:commands()
+  return self:getAttrStringArray("commands")
+end
+
+function Motor:countPerRot()
+  return self:getAttrInt("count_per_rot")
+end
+
+function Motor:driverName()
+  return self:getAttrString("driver_name")
+end
+
 function Motor:dutyCycle()
   return self:getAttrInt("duty_cycle")
 end
 
-function Motor:pulsesPerSecond()
-  return self:getAttrInt("pulses_per_second")
+function Motor:dutyCycleSp()
+  return self:getAttrInt("duty_cycle_sp")
+end
+
+function Motor:setDutyCycleSP(value)
+  self:setAttrInt("duty_cycle_sp", value)
+end
+
+function Motor:encoderPolarity()
+  return self:getAttrString("encoder_polarity")
+end
+
+function Motor:setEncoderPolarity(value)
+  self:setAttrString("encoder_polarity", value)
+end
+
+function Motor:polarity()
+  return self:getAttrString("polarity")
+end
+
+function Motor:setPolarity(value)
+  self:setAttrString("polarity", value)
+end
+
+function Motor:portName()
+  return self:getAttrString("port_name")
 end
 
 function Motor:position()
@@ -282,67 +338,31 @@ function Motor:setPosition(value)
   self:setAttrInt("position", value)
 end
 
-function Motor:runMode()
-  return self:getAttrString("run_mode")
+function Motor:positionP()
+  return self:getAttrInt("hold_pid/Kp")
 end
 
-function Motor:setRunMode(value)
-  self:setAttrString("run_mode", value)
+function Motor:setPositionP(value)
+  self:setAttrInt("hold_pid/Kp", value)
 end
 
-function Motor:stopModes()
-  return self:getAttrStringArray("stop_modes")
+function Motor:positionI()
+  return self:getAttrInt("hold_pid/Ki")
 end
 
-function Motor:stopMode()
-  return self:getAttrString("stop_mode")
+function Motor:setPositionI(value)
+  self:setAttrInt("hold_pid/Ki", value)
 end
 
-function Motor:setStopMode(value)
-  self:setAttrString("stop_mode", value)
+function Motor:positionD()
+  return self:getAttrInt("hold_pid/Kd")
 end
 
-function Motor:regulationMode()
-  return self:getAttrString("regulation_mode")
+function Motor:setPositionD(value)
+  self:setAttrInt("hold_pid/Kd", value)
 end
 
-function Motor:setRegulationMode(value)
-  self:setAttrString("regulation_mode", value)
-end
-
-function Motor:positionMode()
-  return self:getAttrString("position_mode")
-end
-
-function Motor:setPositionMode(value)
-  self:setAttrString("position_mode", value)
-end
-
-function Motor:dutyCycleSP()
-  return self:getAttrInt("duty_cycle_sp")
-end
-
-function Motor:setDutyCycleSP(value)
-  self:setAttrInt("duty_cycle_sp", value)
-end
-
-function Motor:pulsesPerSecondSP()
-  return self:getAttrInt("pulses_per_second_sp")
-end
-
-function Motor:setPulsesPerSecondSP(value)
-  self:setAttrInt("pulses_per_second_sp", value)
-end
-
-function Motor:timeSP()
-  return self:getAttrInt("time_sp")
-end
-
-function Motor:setTimeSP(value)
-  self:setAttrInt("time_sp", value)
-end
-
-function Motor:positionSP()
+function Motor:positionSp()
   return self:getAttrInt("position_sp")
 end
 
@@ -350,7 +370,19 @@ function Motor:setPositionSP(value)
   self:setAttrInt("position_sp", value)
 end
 
-function Motor:rampUpSP()
+function Motor:speed()
+  return self:getAttrInt("speed")
+end
+
+function Motor:speedSp()
+  return self:getAttrInt("speed_sp")
+end
+
+function Motor:setSpeedSP(value)
+  self:setAttrInt("speed_sp", value)
+end
+
+function Motor:rampUpSp()
   return self:getAttrInt("ramp_up_sp")
 end
 
@@ -358,7 +390,7 @@ function Motor:setRampUpSP(value)
   self:setAttrInt("ramp_up_sp", value)
 end
 
-function Motor:rampDownSP()
+function Motor:rampDownSp()
   return self:getAttrInt("ramp_down_sp")
 end
 
@@ -366,37 +398,64 @@ function Motor:setRampDownSP(value)
   self:setAttrInt("ramp_down_sp", value)
 end
 
+function Motor:speedRegulationEnabled()
+  return self:getAttrString("speed_regulation")
+end
+
+function Motor:setSpeedRegulationEnabled(value)
+  self:setAttrString("speed_regulation", value)
+end
+
 function Motor:speedRegulationP()
-  return self:getAttrInt("speed_regulation_p")
+  return self:getAttrInt("speed_pid/Kp")
 end
 
 function Motor:setSpeedRegulationP(value)
-  self:setAttrInt("speed_regulation_p", value)
+  self:setAttrInt("speed_pid/Kp", value)
 end
 
 function Motor:speedRegulationI()
-  return self:getAttrInt("speed_regulation_i")
+  return self:getAttrInt("speed_pid/Ki")
 end
 
 function Motor:setSpeedRegulationI(value)
-  self:setAttrInt("speed_regulation_i", value)
+  self:setAttrInt("speed_pid/Ki", value)
 end
 
 function Motor:speedRegulationD()
-  return self:getAttrInt("speed_regulation_d")
+  return self:getAttrInt("speed_pid/Kd")
 end
 
 function Motor:setSpeedRegulationD(value)
-  self:setAttrInt("speed_regulation_d", value)
+  self:setAttrInt("speed_pid/Kd", value)
 end
 
-function Motor:speedRegulationK()
-  return self:getAttrInt("speed_regulation_k")
+function Motor:state()
+  return self:getAttrStringArray("state")
 end
 
-function Motor:setSpeedRegulationK(value)
-  self:setAttrInt("speed_regulation_k", value)
+function Motor:stopCommand()
+  return self:getAttrString("stop_command")
 end
+
+function Motor:setStopCommand(value)
+  self:setAttrString("stop_command", value)
+end
+
+function Motor:stopCommands()
+  return self:getAttrStringArray("stop_commands")
+end
+
+function Motor:timeSp()
+  return self:getAttrInt("time_sp")
+end
+
+function Motor:setTimeSP(value)
+  self:setAttrInt("time_sp", value)
+end
+
+
+-- ~autogen
 
 ------------------------------------------------------------------------------
 -- LargeMotor
@@ -404,7 +463,7 @@ end
 LargeMotor = class(Motor)
 
 function LargeMotor:init(port)
-  Motor.init(self, port, { "tacho" } )
+  Motor.init(self, port, { Motor.Large } )
 end
 
 ------------------------------------------------------------------------------
@@ -413,7 +472,7 @@ end
 MediumMotor = class(Motor)
 
 function MediumMotor:init(port)
-  Motor.init(self, port, { "minitacho" } )
+  Motor.init(self, port, { Motor.Medium } )
 end
 
 ------------------------------------------------------------------------------
@@ -437,7 +496,7 @@ function DCMotor:init(port)
   Device.init(self, "dc-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -450,12 +509,14 @@ function DCMotor:type()
 end
 
 function DCMotor:typeName()
-  return self:getAttrString("name")
+  return self:getAttrString("driver_name")
 end
 
 function DCMotor:portName()
   return self._port
 end
+
+-- ~autogen lua_generic-get-set classes.dcMotor>currentClass
 
 function DCMotor:command()
   return self:getAttrString("command")
@@ -469,28 +530,20 @@ function DCMotor:commands()
   return self:getAttrStringArray("commands")
 end
 
+function DCMotor:driverName()
+  return self:getAttrString("driver_name")
+end
+
 function DCMotor:dutyCycle()
   return self:getAttrInt("duty_cycle")
 end
 
-function DCMotor:setDutyCycle(value)
-  self:setAttrInt("duty_cycle", value)
+function DCMotor:dutyCycleSp()
+  return self:getAttrInt("duty_cycle_sp")
 end
 
-function DCMotor:rampDownMS()
-  return self:getAttrInt("ramp_down_ms")
-end
-
-function DCMotor:setRampDownMS(value)
-  self:setAttrInt("ramp_down_ms", value)
-end
-
-function DCMotor:rampUpMS()
-  return self:getAttrInt("ramp_up_ms")
-end
-
-function DCMotor:setRampUpMS(value)
-  self:setAttrInt("ramp_up_ms", value)
+function DCMotor:setDutyCycleSP(value)
+  self:setAttrInt("duty_cycle_sp", value)
 end
 
 function DCMotor:polarity()
@@ -500,6 +553,29 @@ end
 function DCMotor:setPolarity(value)
   self:setAttrString("polarity", value)
 end
+
+function DCMotor:portName()
+  return self:getAttrString("port_name")
+end
+
+function DCMotor:rampDownMs()
+  return self:getAttrInt("ramp_down_ms")
+end
+
+function DCMotor:setRampDownMS(value)
+  self:setAttrInt("ramp_down_ms", value)
+end
+
+function DCMotor:rampUpMs()
+  return self:getAttrInt("ramp_up_ms")
+end
+
+function DCMotor:setRampUpMS(value)
+  self:setAttrInt("ramp_up_ms", value)
+end
+
+
+-- ~autogen
 
 ------------------------------------------------------------------------------
 --
@@ -521,7 +597,7 @@ function ServoMotor:init(port)
   Device.init(self, "servo-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -533,13 +609,11 @@ function ServoMotor:type()
   return self._type
 end
 
-function ServoMotor:typeName()
-  return self:getAttrString("name")
-end
-
 function ServoMotor:portName()
   return self._port
 end
+
+-- ~autogen lua_generic-get-set classes.servoMotor>currentClass
 
 function ServoMotor:command()
   return self:getAttrString("command")
@@ -547,6 +621,46 @@ end
 
 function ServoMotor:setCommand(value)
   self:setAttrString("command", value)
+end
+
+function ServoMotor:driverName()
+  return self:getAttrString("driver_name")
+end
+
+function ServoMotor:maxPulseMs()
+  return self:getAttrInt("max_pulse_ms")
+end
+
+function ServoMotor:setMaxPulseMS(value)
+  self:setAttrInt("max_pulse_ms", value)
+end
+
+function ServoMotor:midPulseMs()
+  return self:getAttrInt("mid_pulse_ms")
+end
+
+function ServoMotor:setMidPulseMS(value)
+  self:setAttrInt("mid_pulse_ms", value)
+end
+
+function ServoMotor:minPulseMs()
+  return self:getAttrInt("min_pulse_ms")
+end
+
+function ServoMotor:setMinPulseMS(value)
+  self:setAttrInt("min_pulse_ms", value)
+end
+
+function ServoMotor:polarity()
+  return self:getAttrString("polarity")
+end
+
+function ServoMotor:setPolarity(value)
+  self:setAttrString("polarity", value)
+end
+
+function ServoMotor:portName()
+  return self:getAttrString("port_name")
 end
 
 function ServoMotor:position()
@@ -565,37 +679,8 @@ function ServoMotor:setRate(value)
   self:setAttrInt("rate", value)
 end
 
-function ServoMotor:maxPulseMS()
-  return self:getAttrInt("max_pulse_ms")
-end
 
-function ServoMotor:setMaxPulseMS(value)
-  self:setAttrInt("max_pulse_ms", value)
-end
-
-function ServoMotor:midPulseMS()
-  return self:getAttrInt("mid_pulse_ms")
-end
-
-function ServoMotor:setMidPulseMS(value)
-  self:setAttrInt("mid_pulse_ms", value)
-end
-
-function ServoMotor:minPulseMS()
-  return self:getAttrInt("min_pulse_ms")
-end
-
-function ServoMotor:setMinPulseMS(value)
-  self:setAttrInt("min_pulse_ms", value)
-end
-
-function ServoMotor:polarity()
-  return self:getAttrString("polarity")
-end
-
-function ServoMotor:setPolarity(value)
-  self:setAttrString("polarity", value)
-end
+-- ~autogen
 
 ------------------------------------------------------------------------------
 --
@@ -610,22 +695,22 @@ Sensor.NXTSound       = "lego-nxt-sound"
 Sensor.NXTUltrasonic  = "lego-nxt-ultrasonic"
 
 Sensor.EV3Touch       = "lego-ev3-touch"
-Sensor.EV3Color       = "ev3-uart-29"
-Sensor.EV3Ultrasonic  = "ev3-uart-30"
-Sensor.EV3Gyro        = "ev3-uart-32"
-Sensor.EV3Infrared    = "ev3-uart-33"
+Sensor.EV3Color       = "lego-ev3-uart-29"
+Sensor.EV3Ultrasonic  = "lego-ev3-uart-30"
+Sensor.EV3Gyro        = "lego-ev3-uart-32"
+Sensor.EV3Infrared    = "lego-ev3-uart-33"
 
 function Sensor:init(port, sensor_types)
   local m = { port_name = { port } }
   
   if (sensor_types ~= nil) then
-    m["name"] = sensor_types
+    m["driver_name"] = sensor_types
   end
   
-  Device.init(self, "msensor", "sensor", m)
+  Device.init(self, "lego-sensor", "sensor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -637,28 +722,8 @@ function Sensor:type()
   return self._type
 end
 
-function Sensor:typeName()
-  return self:getAttrString("name")
-end
-
 function Sensor:portName()
   return self._port
-end
-
-function Sensor:modes()
-  return self:getAttrString("modes")
-end
-
-function Sensor:mode()
-  return self:getAttrString("mode")
-end
-
-function Sensor:setMode(value)
-  self:setAttrString("mode", value)
-end
-
-function Sensor:numValues()
-  return self:getAttrInt("num_values")
 end
 
 function Sensor:value(id)
@@ -676,14 +741,55 @@ function Sensor:floatValue(id)
     id = 0
   end
 
-  local scale = math.pow(10, -self:getAttrInt("dp"))
+  local scale = math.pow(10, -self:getAttrInt("decimals"))
   return self:getAttrInt("value"..id) * scale
 end
 
-function Sensor:dp()
-  return self:getAttrInt("dp")
+-- ~autogen lua_generic-get-set classes.sensor>currentClass
+
+function Sensor:setCommand(value)
+  self:setAttrString("command", value)
 end
-    
+
+function Sensor:commands()
+  return self:getAttrStringArray("commands")
+end
+
+function Sensor:decimals()
+  return self:getAttrInt("decimals")
+end
+
+function Sensor:driverName()
+  return self:getAttrString("driver_name")
+end
+
+function Sensor:mode()
+  return self:getAttrString("mode")
+end
+
+function Sensor:setMode(value)
+  self:setAttrString("mode", value)
+end
+
+function Sensor:modes()
+  return self:getAttrStringArray("modes")
+end
+
+function Sensor:numValues()
+  return self:getAttrInt("num_values")
+end
+
+function Sensor:portName()
+  return self:getAttrString("port_name")
+end
+
+function Sensor:units()
+  return self:getAttrString("units")
+end
+
+
+-- ~autogen
+
 ------------------------------------------------------------------------------
 --
 -- I2C Sensor
@@ -693,16 +799,16 @@ I2CSensor = class(Sensor)
 
 function I2CSensor:init(port, i2cAddress)
   local m = { port_name = { port } }
-  m["name"] = { "nxt-i2c-sensor" }
+  m["driver_name"] = { "nxt-i2c-sensor" }
   
   if (i2cAddress ~= nil) then
     m["address"] = i2cAddress
   end
   
-  Device.init(self, "msensor", "sensor", m)
+  Device.init(self, "lego-sensor", "sensor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("name")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -710,12 +816,13 @@ function I2CSensor:init(port, i2cAddress)
   end
 end
 
+-- ~autogen lua_generic-get-set classes.i2cSensor>currentClass
 
-function I2CSensor:address()
-  return self:getAttrString("address")
+function I2CSensor:fwVersion()
+  return self:getAttrString("fw_version")
 end
 
-function I2CSensor:pollMS()
+function I2CSensor:pollMs()
   return self:getAttrInt("poll_ms")
 end
 
@@ -723,9 +830,8 @@ function I2CSensor:setPollMS(value)
   self:setAttrInt("poll_ms", value)
 end
 
-function I2CSensor:fwVersion()
-  return self:getAttrString("fw_version")
-end
+
+-- ~autogen
 
 ------------------------------------------------------------------------------
 -- TouchSensor
@@ -816,20 +922,22 @@ function PowerSupply:init(device)
   end
 end
 
-function PowerSupply:currentNow()
+-- ~autogen lua_generic-get-set classes.powerSupply>currentClass
+
+function PowerSupply:measuredCurrent()
   return self:getAttrInt("current_now")
 end
 
-function PowerSupply:voltageNow()
+function PowerSupply:measuredVoltage()
   return self:getAttrInt("voltage_now")
 end
 
-function PowerSupply:voltageMinDesign()
-  return self:getAttrInt("voltage_min_design")
+function PowerSupply:maxVoltage()
+  return self:getAttrInt("voltage_max_design")
 end
 
-function PowerSupply:voltageMaxDesign()
-  return self:getAttrInt("voltage_max_design")
+function PowerSupply:minVoltage()
+  return self:getAttrInt("voltage_min_design")
 end
 
 function PowerSupply:technology()
@@ -839,6 +947,9 @@ end
 function PowerSupply:type()
   return self:getAttrString("type")
 end
+
+
+-- ~autogen
 
 function PowerSupply:currentAmps()
   return self:getAttrInt("current_now") / 1000000
@@ -868,6 +979,12 @@ function LED:init(name)
   end
 end
 
+-- ~autogen lua_generic-get-set classes.led>currentClass
+
+function LED:maxBrightness()
+  return self:getAttrInt("max_brightness")
+end
+
 function LED:brightness()
   return self:getAttrInt("brightness")
 end
@@ -876,9 +993,16 @@ function LED:setBrightness(value)
   self:setAttrInt("brightness", value)
 end
 
-function LED:maxBrightness()
-  return self:getAttrInt("max_brightness")
+function LED:trigger()
+  return self:getAttrString("trigger")
 end
+
+function LED:setTrigger(value)
+  self:setAttrString("trigger", value)
+end
+
+
+-- ~autogen
 
 function LED:trigger()
   local file = io.open(self._path.."trigger", "r")
@@ -891,10 +1015,6 @@ function LED:trigger()
   end
   
   return ""
-end
-
-function LED:setTrigger(value)
-  self:setAttrString("trigger", value)
 end
 
 function LED:on()
@@ -913,14 +1033,6 @@ function LED:flash(interval)
   end 
 end
 
-function LED:setOnDelay(ms)
-  self:setAttrInt("delay_on", ms)
-end
-
-function LED:setOffDelay(ms)
-  self:setAttrInt("delay_off", ms)
-end
-  
 function LED:triggers()
   local file = io.open(self._path.."trigger", "r")
   if (file ~= nil) then 
