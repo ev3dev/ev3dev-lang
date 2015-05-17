@@ -217,8 +217,8 @@ OUTPUT_D    = "outD"
 
 Motor = class(Device)
 
-Motor.Large  = "tacho"
-Motor.Medium = "minitacho"
+Motor.Large  = "lego-ev3-l-motor"
+Motor.Medium = "lego-ev3-m-motor"
 
 Motor.ModeOff = "off"
 Motor.ModeOn  = "on"
@@ -238,13 +238,13 @@ function Motor:init(port, motor_types)
   local m = { port_name = { port } }
   
   if (motor_types ~= nil) then
-    m["type"] = motor_types
+    m["driver_name"] = motor_types
   end
   
   Device.init(self, "tacho-motor", "motor", m)
 
   if (self:connected()) then
-    self._type = self:getAttrString("type")
+    self._type = self:getAttrString("driver_name")
     self._port = self:getAttrString("port_name")
   else
     self._type = nil
@@ -463,7 +463,7 @@ end
 LargeMotor = class(Motor)
 
 function LargeMotor:init(port)
-  Motor.init(self, port, { "tacho" } )
+  Motor.init(self, port, { Motor.Large } )
 end
 
 ------------------------------------------------------------------------------
@@ -472,7 +472,7 @@ end
 MediumMotor = class(Motor)
 
 function MediumMotor:init(port)
-  Motor.init(self, port, { "minitacho" } )
+  Motor.init(self, port, { Motor.Medium } )
 end
 
 ------------------------------------------------------------------------------

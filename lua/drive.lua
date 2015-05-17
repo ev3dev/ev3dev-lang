@@ -2,6 +2,8 @@
 
 require 'ev3dev'
 
+error("This file is based on outdated motor APIs and therefore no longer works.")
+
 MotorControl = class()
 
 MotorControl.ninetyDegrees = 250

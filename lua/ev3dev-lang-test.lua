@@ -25,22 +25,11 @@ require 'ev3dev'
 
 function printMotorInfo(o)
   print("  Current state is "..o:state())
-  print("    duty cycle: "..o:dutyCycle().."   speed: "..o:speed().."\n")
-  print("  Current command is "..o:commands())
+  print("    duty cycle: "..o:dutyCycle())
+  print("    speed: "..o:speed())
+  print("    position: "..o:position())
   print("    stop command: "..o:stopCommand())
-  print("    speed regulation: "..o:speedRegulationEnabled().."\n")
-  --print("  Speed setpoint is "..o:speedSetpoint())
-  
-  if (o:runMode() == o.runModeTime) then
-    print("  Time setpoint is "..o:timeSetpoint())
-  end
-  
-  if (o:runMode() == o.runModePosition) then
-    print("  Position setpoint is "..o:positionSetpoint())
-  end
-  
-  --print("    ramp up: "..o:rampUp().."   ramp down: "..o:rampDown())
-
+  print("    speed regulation: "..o:speedRegulationEnabled())
 end
 
 s = TouchSensor()
@@ -166,7 +155,7 @@ if (ledPFoutD:connected()) then
 end
 
 print("Beeping...")
-Sound.beep();
+--Sound.beep();
 
 print("Sound volume is "..Sound.volume())
   
