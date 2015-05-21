@@ -75,18 +75,18 @@
                 { "name": "Encoder Polarity", "systemName": "encoder_polarity", "type": "string", "readAccess": true, "writeAccess": true,
                   "description": [
                       "Sets the polarity of the rotary encoder. This is an advanced feature to all",
-                      "use of motors that send inverted encoder signals to the EV3. This should",
+                      "use of motors that send inversed encoder signals to the EV3. This should",
                       "be set correctly by the driver of a device. It You only need to change this",
                       "value if you are using a unsupported device. Valid values are `normal` and",
-                      "`inverted`."
+                      "`inversed`."
                   ]
                 },
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
                   "description": [
                       "Sets the polarity of the motor. With `normal` polarity, a positive duty",
-                      "cycle will cause the motor to rotate clockwise. With `inverted` polarity,",
+                      "cycle will cause the motor to rotate clockwise. With `inversed` polarity,",
                       "a positive duty cycle will cause the motor to rotate counter-clockwise.",
-                      "Valid values are `normal` and `inverted`."
+                      "Valid values are `normal` and `inversed`."
                   ]
                 },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
@@ -275,9 +275,9 @@
                                 "Sets the normal polarity of the rotary encoder."
                             ]
                         },
-                        { "name": "inverted",
+                        { "name": "inversed",
                             "description": [
-                                "Sets the inverted polarity of the rotary encoder."
+                                "Sets the inversed polarity of the rotary encoder."
                             ]
                         }
                     ]
@@ -291,9 +291,9 @@
                                 "cause the motor to rotate clockwise."
                             ]
                         },
-                        { "name": "inverted",
+                        { "name": "inversed",
                             "description": [
-                                "With `inverted` polarity, a positive duty cycle will",
+                                "With `inversed` polarity, a positive duty cycle will",
                                 "cause the motor to rotate counter-clockwise."
                             ]
                         }
@@ -387,7 +387,7 @@
                 },
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
                   "description": [
-                      "Sets the polarity of the motor. Valid values are `normal` and `inverted`."
+                      "Sets the polarity of the motor. Valid values are `normal` and `inversed`."
                   ]
                 },
                 { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
@@ -460,9 +460,9 @@
                                 "cause the motor to rotate clockwise."
                             ]
                         },
-                        { "name": "inverted",
+                        { "name": "inversed",
                             "description": [
-                                "With `inverted` polarity, a positive duty cycle will",
+                                "With `inversed` polarity, a positive duty cycle will",
                                 "cause the motor to rotate counter-clockwise."
                             ]
                         }
@@ -539,9 +539,9 @@
                 },
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
                   "description": [
-                      "Sets the polarity of the servo. Valid values are `normal` and `inverted`.",
-                      "Setting the value to `inverted` will cause the position_sp value to be",
-                      "inverted. i.e `-100` will correspond to `max_pulse_sp`, and `100` will",
+                      "Sets the polarity of the servo. Valid values are `normal` and `inversed`.",
+                      "Setting the value to `inversed` will cause the position_sp value to be",
+                      "inversed. i.e `-100` will correspond to `max_pulse_sp`, and `100` will",
                       "correspond to `min_pulse_sp`."
                   ]
                 },
@@ -601,9 +601,9 @@
                                 "cause the motor to rotate clockwise."
                             ]
                         },
-                        { "name": "inverted",
+                        { "name": "inversed",
                             "description": [
-                                "With `inverted` polarity, a positive duty cycle will",
+                                "With `inversed` polarity, a positive duty cycle will",
                                 "cause the motor to rotate counter-clockwise."
                             ]
                         }
