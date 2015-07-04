@@ -88,6 +88,12 @@ Method Name|Return Type|Arguments|Description
 ---|---|---|---
 Reset|Void|None|Sets the `command` motor property to `reset`, which causes the motor driver to reset all of the motor's parameters and state.
 
+###Helper functions:
+
+Each motor class should have helper functions for each command that the library supports.
+These helper functions can accept parameters to set properties before the command is sent,
+or can just require that necessary properties are set beforehand.
+
 <hr/>
 
 `DC Motor` (class) : abstract "IO Device"
