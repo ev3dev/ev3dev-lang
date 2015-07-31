@@ -51,8 +51,8 @@ Count Per Rot|int|Read| Returns the number of tacho counts in one rotation of th
 Driver Name|string|Read| Returns the name of the driver that provides this tacho motor device.
 Duty Cycle|int|Read| Returns the current duty cycle of the motor. Units are percent. Values are -100 to 100.
 Duty Cycle SP|int|Read/Write| Writing sets the duty cycle setpoint. Reading returns the current value. Units are in percent. Valid values are -100 to 100. A negative value causes the motor to rotate in reverse. This value is only used when `speed_regulation` is off.
-Encoder Polarity|string|Read/Write| Sets the polarity of the rotary encoder. This is an advanced feature to all use of motors that send inverted encoder signals to the EV3. This should be set correctly by the driver of a device. It You only need to change this value if you are using a unsupported device. Valid values are `normal` and `inverted`.
-Polarity|string|Read/Write| Sets the polarity of the motor. With `normal` polarity, a positive duty cycle will cause the motor to rotate clockwise. With `inverted` polarity, a positive duty cycle will cause the motor to rotate counter-clockwise. Valid values are `normal` and `inverted`.
+Encoder Polarity|string|Read/Write| Sets the polarity of the rotary encoder. This is an advanced feature to all use of motors that send inversed encoder signals to the EV3. This should be set correctly by the driver of a device. It You only need to change this value if you are using a unsupported device. Valid values are `normal` and `inversed`.
+Polarity|string|Read/Write| Sets the polarity of the motor. With `normal` polarity, a positive duty cycle will cause the motor to rotate clockwise. With `inversed` polarity, a positive duty cycle will cause the motor to rotate counter-clockwise. Valid values are `normal` and `inversed`.
 Port Name|string|Read| Returns the name of the port that the motor is connected to.
 Position|int|Read/Write| Returns the current position of the motor in pulses of the rotary encoder. When the motor rotates clockwise, the position will increase. Likewise, rotating counter-clockwise causes the position to decrease. Writing will set the position to that value.
 Position P|int|Read/Write| The proportional constant for the position PID.
@@ -124,7 +124,7 @@ Commands|string array|Read| Returns a space separated list of commands supported
 Driver Name|string|Read| Returns the name of the motor driver that loaded this device. See the list of [supported devices] for a list of drivers.
 Duty Cycle|int|Read| Shows the current duty cycle of the PWM signal sent to the motor. Values are -100 to 100 (-100% to 100%).
 Duty Cycle SP|int|Read/Write| Writing sets the duty cycle setpoint of the PWM signal sent to the motor. Valid values are -100 to 100 (-100% to 100%). Reading returns the current setpoint.
-Polarity|string|Read/Write| Sets the polarity of the motor. Valid values are `normal` and `inverted`.
+Polarity|string|Read/Write| Sets the polarity of the motor. Valid values are `normal` and `inversed`.
 Port Name|string|Read| Returns the name of the port that the motor is connected to.
 Ramp Down SP|int|Read/Write| Sets the time in milliseconds that it take the motor to ramp down from 100% to 0%. Valid values are 0 to 10000 (10 seconds). Default is 0.
 Ramp Up SP|int|Read/Write| Sets the time in milliseconds that it take the motor to up ramp from 0% to 100%. Valid values are 0 to 10000 (10 seconds). Default is 0.
@@ -171,7 +171,7 @@ Driver Name|string|Read| Returns the name of the motor driver that loaded this d
 Max Pulse SP|int|Read/Write| Used to set the pulse size in milliseconds for the signal that tells the servo to drive to the maximum (clockwise) position_sp. Default value is 2400. Valid values are 2300 to 2700. You must write to the position_sp attribute for changes to this attribute to take effect.
 Mid Pulse SP|int|Read/Write| Used to set the pulse size in milliseconds for the signal that tells the servo to drive to the mid position_sp. Default value is 1500. Valid values are 1300 to 1700. For example, on a 180 degree servo, this would be 90 degrees. On continuous rotation servo, this is the 'neutral' position_sp where the motor does not turn. You must write to the position_sp attribute for changes to this attribute to take effect.
 Min Pulse SP|int|Read/Write| Used to set the pulse size in milliseconds for the signal that tells the servo to drive to the miniumum (counter-clockwise) position_sp. Default value is 600. Valid values are 300 to 700. You must write to the position_sp attribute for changes to this attribute to take effect.
-Polarity|string|Read/Write| Sets the polarity of the servo. Valid values are `normal` and `inverted`. Setting the value to `inverted` will cause the position_sp value to be inverted. i.e `-100` will correspond to `max_pulse_sp`, and `100` will correspond to `min_pulse_sp`.
+Polarity|string|Read/Write| Sets the polarity of the servo. Valid values are `normal` and `inversed`. Setting the value to `inversed` will cause the position_sp value to be inversed. i.e `-100` will correspond to `max_pulse_sp`, and `100` will correspond to `min_pulse_sp`.
 Port Name|string|Read| Returns the name of the port that the motor is connected to.
 Position SP|int|Read/Write| Reading returns the current position_sp of the servo. Writing instructs the servo to move to the specified position_sp. Units are percent. Valid values are -100 to 100 (-100% to 100%) where `-100` corresponds to `min_pulse_sp`, `0` corresponds to `mid_pulse_sp` and `100` corresponds to `max_pulse_sp`.
 Rate SP|int|Read/Write| Sets the rate_sp at which the servo travels from 0 to 100.0% (half of the full range of the servo). Units are in milliseconds. Example: Setting the rate_sp to 1000 means that it will take a 180 degree servo 2 second to move from 0 to 180 degrees. Note: Some servo controllers may not support this in which case reading and writing will fail with `-EOPNOTSUPP`. In continuous rotation servos, this value will affect the rate_sp at which the speed ramps up or down.
@@ -336,6 +336,70 @@ Trigger|string|Read/Write| Sets the led trigger.
 
 Property Name|Type|Accessibility|Description
 ---|---|---|---
+Connected|Boolean|Read
+
+<hr/>
+
+`Lego Port` (class) : abstract "IO Device"
+-----
+
+<!-- ~autogen md_generic-class-description classes.legoPort>currentClass -->
+
+The `lego-port` class provides an interface for working with input and
+output ports that are compatible with LEGO MINDSTORMS RCX/NXT/EV3, LEGO
+WeDo and LEGO Power Functions sensors and motors. Supported devices include
+the LEGO MINDSTORMS EV3 Intelligent Brick, the LEGO WeDo USB hub and
+various sensor multiplexers from 3rd party manufacturers.
+
+Some types of ports may have multiple modes of operation. For example, the
+input ports on the EV3 brick can communicate with sensors using UART, I2C
+or analog validate signals - but not all at the same time. Therefore there
+are multiple modes available to connect to the different types of sensors.
+
+In most cases, ports are able to automatically detect what type of sensor
+or motor is connected. In some cases though, this must be manually specified
+using the `mode` and `set_device` attributes. The `mode` attribute affects
+how the port communicates with the connected device. For example the input
+ports on the EV3 brick can communicate using UART, I2C or analog voltages,
+but not all at the same time, so the mode must be set to the one that is
+appropriate for the connected sensor. The `set_device` attribute is used to
+specify the exact type of sensor that is connected. Note: the mode must be
+correctly set before setting the sensor type.
+
+Ports can be found at `/sys/class/lego-port/port<N>` where `<N>` is
+incremented each time a new port is registered. Note: The number is not
+related to the actual port at all - use the `port_name` attribute to find
+a specific port.
+
+<!-- ~autogen -->
+
+###Constructor:
+
+Argument Name|Type|Description
+---|---|---
+Port|String|The port to control. Specify a blank string (or the undefined/null value for the language) for an automatic search. It is recommended to use the `OUTPUT_*` constants.
+
+###Direct attribute mappings:
+
+<!-- ~autogen md_generic-property-table classes.legoPort>currentClass -->
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Driver Name|string|Read| Returns the name of the driver that loaded this device. You can find the complete list of drivers in the [list of port drivers].
+Modes|string array|Read| Returns a space separated list of the available modes of the port.
+Mode|string|Read/Write| Reading returns the currently selected mode. Writing sets the mode. Generally speaking when the mode changes any sensor or motor devices associated with the port will be removed new ones loaded, however this this will depend on the individual driver implementing this class.
+Port Name|string|Read| Returns the name of the port. See individual driver documentation for the name that will be returned.
+Set Device|string|Write| For modes that support it, writing the name of a driver will cause a new device to be registered for that driver and attached to this port. For example, since NXT/Analog sensors cannot be auto-detected, you must use this attribute to load the correct driver. Returns -EOPNOTSUPP if setting a device is not supported.
+Status|string|Read| In most cases, reading status will return the same value as `mode`. In cases where there is an `auto` mode additional values may be returned, such as `no-device` or `error`. See individual port driver documentation for the full list of possible values.
+
+
+<!-- ~autogen -->
+
+###Special properties:
+
+Property Name|Type|Accessibility|Description
+---|---|---|---
+Device Index|Number|Read
 Connected|Boolean|Read
 
 <hr/>
