@@ -25,7 +25,7 @@
                 },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Returns a space separated list of commands that are supported by the motor",
+                      "Returns a list of commands that are supported by the motor",
                       "controller. Possible values are `run-forever`, `run-to-abs-pos`, `run-to-rel-pos`,",
                       "`run-timed`, `run-direct`, `stop` and `reset`. Not all commands may be supported.",
                       "`run-forever` will cause the motor to run until another command is sent.",
@@ -183,7 +183,7 @@
                 },
                 { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Reading returns a space separated list of state flags. Possible flags are",
+                      "Reading returns a list of state flags. Possible flags are",
                       "`running`, `ramping` `holding` and `stalled`."
                   ]
                 },
@@ -362,7 +362,7 @@
                 },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Returns a space separated list of commands supported by the motor",
+                      "Returns a list of commands supported by the motor",
                       "controller."
                   ]
                 },
@@ -409,7 +409,7 @@
                 },
                 { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Gets a space separated list of flags indicating the motor status. Possible",
+                      "Gets a list of flags indicating the motor status. Possible",
                       "flags are `running` and `ramping`. `running` indicates that the motor is",
                       "powered. `ramping` indicates that the motor has not yet reached the",
                       "`duty_cycle_sp`."
@@ -423,7 +423,7 @@
                 },
                 { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Gets a space separated list of stop commands. Valid values are `coast`",
+                      "Gets a list of stop commands. Valid values are `coast`",
                       "and `brake`."
                   ]
                 }
@@ -570,7 +570,7 @@
                 },
                 { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Returns a space separated list of flags indicating the state of the servo.",
+                      "Returns a list of flags indicating the state of the servo.",
                       "Possible values are:",
                       "* `running`: Indicates that the motor is powered."
                   ]
@@ -664,7 +664,7 @@
                 },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Returns a space separated list of the valid commands for the sensor.",
+                      "Returns a list of the valid commands for the sensor.",
                       "Returns -EOPNOTSUPP if no commands are supported."
                   ]
                 },
@@ -688,7 +688,7 @@
                 },
                 { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Returns a space separated list of the valid modes for the sensor."
+                      "Returns a list of the valid modes for the sensor."
                   ]
                 },
                 { "name": "Num Values", "systemName": "num_values", "type": "int", "readAccess": true, "writeAccess": false,
@@ -1039,7 +1039,7 @@
                 },
                 { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false,
                     "description": [
-                        "Returns a space separated list of the available modes of the port."
+                        "Returns a list of the available modes of the port."
                     ]
                 },
                 { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true,
