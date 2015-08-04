@@ -342,10 +342,35 @@ Delay Off|int|Read/Write| The `timer` trigger will periodically change the LED b
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Connected|Boolean|Read
-Red Right|LED|Read/Write|EV3 red right LED
-Red Left|LED|Read/Write|EV3 red left LED
-Green Right|LED|Read/Write|EV3 green green LED
-Green Left|LED|Read/Write|EV3 green left LED
+
+###Methods
+
+Method name | Return type | Arguments | Description
+---|---|---|---
+On    | void | None | Turns the led on by setting its brightness to the maximum level.
+Off   | void | None | Turns the led off.
+Flash | void | ON interval: Number, OFF interval: Number | Enables `timer` trigger and sets `delay_on` and `delay_off` attributes to the provided values (in milliseconds).
+
+###Static methods
+
+Method name | Return type | Arguments | Description
+---|---|---|---
+Red On    | void | None | Turns both red leds on.
+Red Off   | void | None | Turns both red leds off.
+Green On  | void | None | Turns both green leds on.
+Green Off | void | None | Turns both green leds off.
+All On    | void | None | Turns all leds on.
+All Off   | void | None | Turns all leds off.
+
+###Predefined instances
+
+There are four predefined instances of the LED class corresponding to the EV3
+leds:
+
+* Red Right
+* Red Left
+* Green Right
+* Green Left
 
 <hr/>
 
