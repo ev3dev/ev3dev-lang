@@ -614,13 +614,15 @@
         "led": {
             "friendlyName": "LED",
             "description": [
-                "Any device controlled by the generic LED driver."
+                "Any device controlled by the generic LED driver.",
+                "See https://www.kernel.org/doc/Documentation/leds/leds-class.txt",
+                "for more details."
             ],
             "systemClassName":  "leds",
             "systemProperties": [
                 { "name": "Max Brightness", "systemName": "max_brightness", "type": "int", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Gets the maximum allowable brightness value"
+                      "Returns the maximum allowable brightness value."
                   ]
                 },
                 { "name": "Brightness", "systemName": "brightness", "type": "int", "readAccess": true, "writeAccess": true,
@@ -628,9 +630,41 @@
                       "Sets the brightness level. Possible values are from 0 to `max_brightness`."
                   ]
                 },
+                { "name": "Triggers", "systemName": "triggers", "type": "string array", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns a list of available triggers."
+                  ]
+                },
                 { "name": "Trigger", "systemName": "trigger", "type": "string", "readAccess": true, "writeAccess": true,
                   "description": [
-                      "Sets the led trigger."
+                      "Sets the led trigger. A trigger",
+                      "is a kernel based source of led events. Triggers can either be simple or",
+                      "complex. A simple trigger isn't configurable and is designed to slot into",
+                      "existing subsystems with minimal additional code. Examples are the `ide-disk` and",
+                      "`nand-disk` triggers.",
+                      "",
+                      "Complex triggers whilst available to all LEDs have LED specific",
+                      "parameters and work on a per LED basis. The `timer` trigger is an example.",
+                      "The `timer` trigger will periodically change the LED brightness between",
+                      "0 and the current brightness setting. The `on` and `off` time can",
+                      "be specified via `delay_{on,off}` attributes in milliseconds.",
+                      "You can change the brightness value of a LED independently of the timer",
+                      "trigger. However, if you set the brightness value to 0 it will",
+                      "also disable the `timer` trigger."
+                  ]
+                },
+                { "name": "Delay On", "systemName": "delay_on", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The `timer` trigger will periodically change the LED brightness between",
+                      "0 and the current brightness setting. The `on` time can",
+                      "be specified via `delay_on` attribute in milliseconds."
+                  ]
+                },
+                { "name": "Delay Off", "systemName": "delay_off", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "The `timer` trigger will periodically change the LED brightness between",
+                      "0 and the current brightness setting. The `off` time can",
+                      "be specified via `delay_off` attribute in milliseconds."
                   ]
                 }
             ]
