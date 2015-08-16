@@ -13,7 +13,12 @@
         endif %}{%
         
         if prop.readAccess == true
-%}    get {{ prop.name | camel_case }}(): {{ type }}{{ array }} {
+%}    /**{% for line in prop.description
+%}
+     * {{ line }}{%
+endfor %}
+     */
+    get {{ prop.name | camel_case }}(): {{ type }}{{ array }} {
         return this.read{{ typeCaps }}("{{ prop.systemName }}"){%
             if array
                 %}.split(' '){%
@@ -22,7 +27,12 @@
 {%
     endif %}{%
         if prop.writeAccess == true
-%}    set {{ prop.name | camel_case }}(value: {{type}}) {
+%}    /**{% for line in prop.description
+%}
+     * {{ line }}{%
+endfor %}
+     */
+     set {{ prop.name | camel_case }}(value: {{type}}) {
         this.set{{ typeCaps }}("{{ prop.systemName }}", value);
     }
     {% endif %}
