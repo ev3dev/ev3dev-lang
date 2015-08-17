@@ -342,6 +342,7 @@ Delay Off|int|Read/Write| The `timer` trigger will periodically change the LED b
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Connected|Boolean|Read
+Brightness Pct | Number | Read/Write | Gets or sets the LED's brightness as a percentage (0-1) of the maximum.
 
 ###Methods
 
@@ -350,7 +351,6 @@ Method name | Return type | Arguments | Description
 On    | void | None | Turns the led on by setting its brightness to the maximum level.
 Off   | void | None | Turns the led off.
 Flash | void | ON interval: Number, OFF interval: Number | Enables `timer` trigger and sets `delay_on` and `delay_off` attributes to the provided values (in milliseconds).
-Set Brightness Pct | void | Percent: Number | Sets the LED's brightness to the given percentage (0-1) of the maximum.
 
 ###Static methods
 
