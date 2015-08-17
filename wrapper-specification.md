@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (DRAFT ver `0.9.2`, rev 1)
+ev3dev Language Wrapper Specification (DRAFT ver `0.9.3`, rev 1)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs.
 
@@ -361,6 +361,9 @@ Green On  | void | None | Turns both green leds on.
 Green Off | void | None | Turns both green leds off.
 All On    | void | None | Turns all leds on.
 All Off   | void | None | Turns all leds off.
+Set Red   | void | Brightness: Number | Sets the brightness of the red LEDs to the given value
+Set Green | void | Brightness: Number | Sets the brightness of the green LEDs to the given value
+Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
 
 ###Predefined instances
 
