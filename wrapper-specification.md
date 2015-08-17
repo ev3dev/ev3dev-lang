@@ -365,6 +365,8 @@ Set Amber | void | Intensity: Number | Sets the brightness of the built-in EV3 L
 Amber On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear amber at full intensity.
 Set Orange | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear orange, using the specified intensity percentage (0-1).
 Orange On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear orange at full intensity.
+Set Yellow | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear yellow, using the specified intensity percentage (0-1).
+Yellow On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear yellow at full intensity.
 Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
 All Off   | void | None | Turns all leds off.
 <!-- ~autogen -->
