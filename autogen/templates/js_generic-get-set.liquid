@@ -32,7 +32,7 @@ endfor %}
      * {{ line }}{%
 endfor %}
      */
-     set {{ prop.name | camel_case }}(value: {{type}}) {
+    set {{ prop.name | camel_case }}(value: {{type}}) {
         this.set{{ typeCaps }}("{{ prop.systemName }}", value);
     }
     {% endif %}

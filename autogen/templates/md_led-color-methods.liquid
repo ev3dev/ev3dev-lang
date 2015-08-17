@@ -1,0 +1,8 @@
+Method name | Return type | Arguments | Description
+---|---|---|---
+{% for ledColor in classes.led.ev3LedColors
+%}Set {{ ledColor[0] | capitalize }} | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear {{ ledColor[0] }}, using the specified intensity percentage (0-1).
+{{ ledColor[0] | capitalize }} On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear {{ ledColor[0] }} at full intensity.
+{% endfor
+%}Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
+All Off   | void | None | Turns all leds off.

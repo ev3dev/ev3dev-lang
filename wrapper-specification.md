@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (DRAFT ver `0.9.2`, rev 1)
+ev3dev Language Wrapper Specification (DRAFT ver `0.9.3`, rev 1)
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs.
 
@@ -9,7 +9,7 @@ Because this specification is meant to be implemented in multiple languages, the
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 3. -->
+<!-- Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 1. -->
 <!-- ~autogen -->
 
 Implementation Notes (important)
@@ -342,6 +342,7 @@ Delay Off|int|Read/Write| The `timer` trigger will periodically change the LED b
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Connected|Boolean|Read
+Brightness Pct | Number | Read/Write | Gets or sets the LED's brightness as a percentage (0-1) of the maximum.
 
 ###Methods
 
@@ -353,14 +354,22 @@ Flash | void | ON interval: Number, OFF interval: Number | Enables `timer` trigg
 
 ###Static methods
 
+<!-- ~autogen md_led-color-methods -->
 Method name | Return type | Arguments | Description
 ---|---|---|---
-Red On    | void | None | Turns both red leds on.
-Red Off   | void | None | Turns both red leds off.
-Green On  | void | None | Turns both green leds on.
-Green Off | void | None | Turns both green leds off.
-All On    | void | None | Turns all leds on.
+Set Red | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear red, using the specified intensity percentage (0-1).
+Red On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear red at full intensity.
+Set Green | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear green, using the specified intensity percentage (0-1).
+Green On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear green at full intensity.
+Set Amber | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear amber, using the specified intensity percentage (0-1).
+Amber On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear amber at full intensity.
+Set Orange | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear orange, using the specified intensity percentage (0-1).
+Orange On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear orange at full intensity.
+Set Yellow | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear yellow, using the specified intensity percentage (0-1).
+Yellow On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear yellow at full intensity.
+Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
 All Off   | void | None | Turns all leds off.
+<!-- ~autogen -->
 
 ###Predefined instances
 

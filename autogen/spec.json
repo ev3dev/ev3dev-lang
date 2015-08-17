@@ -667,7 +667,14 @@
                       "be specified via `delay_off` attribute in milliseconds."
                   ]
                 }
-            ]
+            ],
+            "ev3LedColors": {
+                "red": { "red": 1.0, "green": 0.0 },
+                "green": { "red": 0.0, "green": 1.0 },
+                "amber": { "red": 1.0, "green": 1.0 },
+                "orange": { "red": 1.0, "green": 0.5 },
+                "yellow": { "red": 0.5, "green": 1.0 }
+            }
         },
         "sensor": {
             "friendlyName": "Sensor",
