@@ -357,14 +357,14 @@ Set Brightness Pct | void | Percent: Number | Sets the LED's brightness to the g
 <!-- ~autogen md_led-color-methods -->
 Method name | Return type | Arguments | Description
 ---|---|---|---
-Set Red | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear red, using the specified intensity percentage (0-1).
-Red On | void | None | Sets the brightness of the built-in LEDs so that they appear red at full intensity.
-Set Green | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear green, using the specified intensity percentage (0-1).
-Green On | void | None | Sets the brightness of the built-in LEDs so that they appear green at full intensity.
-Set Amber | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear amber, using the specified intensity percentage (0-1).
-Amber On | void | None | Sets the brightness of the built-in LEDs so that they appear amber at full intensity.
-Set Orange | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear orange, using the specified intensity percentage (0-1).
-Orange On | void | None | Sets the brightness of the built-in LEDs so that they appear orange at full intensity.
+Set Red | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear red, using the specified intensity percentage (0-1).
+Red On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear red at full intensity.
+Set Green | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear green, using the specified intensity percentage (0-1).
+Green On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear green at full intensity.
+Set Amber | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear amber, using the specified intensity percentage (0-1).
+Amber On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear amber at full intensity.
+Set Orange | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear orange, using the specified intensity percentage (0-1).
+Orange On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear orange at full intensity.
 Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
 All Off   | void | None | Turns all leds off.
 <!-- ~autogen -->
