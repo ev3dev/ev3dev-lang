@@ -9,7 +9,7 @@ Because this specification is meant to be implemented in multiple languages, the
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.2-pre, rev 3. -->
+<!-- Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 1. -->
 <!-- ~autogen -->
 
 Implementation Notes (important)
@@ -350,20 +350,24 @@ Method name | Return type | Arguments | Description
 On    | void | None | Turns the led on by setting its brightness to the maximum level.
 Off   | void | None | Turns the led off.
 Flash | void | ON interval: Number, OFF interval: Number | Enables `timer` trigger and sets `delay_on` and `delay_off` attributes to the provided values (in milliseconds).
+Set Brightness Pct | void | Percent: Number | Sets the LED's brightness to the given percentage (0-1) of the maximum.
 
 ###Static methods
 
+<!-- ~autogen md_led-color-methods -->
 Method name | Return type | Arguments | Description
 ---|---|---|---
-Red On    | void | None | Turns both red leds on.
-Red Off   | void | None | Turns both red leds off.
-Green On  | void | None | Turns both green leds on.
-Green Off | void | None | Turns both green leds off.
-All On    | void | None | Turns all leds on.
-All Off   | void | None | Turns all leds off.
-Set Red   | void | Brightness: Number | Sets the brightness of the red LEDs to the given value
-Set Green | void | Brightness: Number | Sets the brightness of the green LEDs to the given value
+Set Red | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear red, using the specified intensity percentage (0-1).
+Red On | void | None | Sets the brightness of the built-in LEDs so that they appear red at full intensity.
+Set Green | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear green, using the specified intensity percentage (0-1).
+Green On | void | None | Sets the brightness of the built-in LEDs so that they appear green at full intensity.
+Set Amber | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear amber, using the specified intensity percentage (0-1).
+Amber On | void | None | Sets the brightness of the built-in LEDs so that they appear amber at full intensity.
+Set Orange | void | Intensity: Number | Sets the brightness of the built-in LEDs so that they appear orange, using the specified intensity percentage (0-1).
+Orange On | void | None | Sets the brightness of the built-in LEDs so that they appear orange at full intensity.
 Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
+All Off   | void | None | Turns all leds off.
+<!-- ~autogen -->
 
 ###Predefined instances
 

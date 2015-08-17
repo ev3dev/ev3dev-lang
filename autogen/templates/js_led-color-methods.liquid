@@ -1,0 +1,9 @@
+{% for ledColor in classes.led.ev3LedColors %}
+    public static set{{ ledColor[0] | capitalize }}(intensity: number) {
+        this.mixColors({{ ledColor[1].red }} * (intensity || 1.0), {{ ledColor[1].green }} * (intensity || 1.0));
+    }
+    
+    public static {{ ledColor[0] }}On() {
+        this.set{{ ledColor[0] | capitalize }}(1.0);
+    }
+{% endfor %}
