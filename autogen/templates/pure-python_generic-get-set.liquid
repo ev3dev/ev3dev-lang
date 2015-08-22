@@ -1,0 +1,30 @@
+{% assign class_name = currentClass.friendlyName | downcase | underscore_spaces %}{%
+for prop in currentClass.systemProperties %}{%
+  assign prop_name = prop.name | downcase | underscore_spaces %}{%
+  if prop.readAccess %}
+
+    def __get_{{ prop_name }}(self):
+        return self._device._get_attribute( '{{ prop_name }}' ){%
+  endif %}{%
+  if prop.writeAccess %}
+
+    def __set_{{ prop_name }}(self, value):
+        self._device._set_attribute( '{{ prop_name }}', value ){%
+  endif %}
+
+    __doc_{{ prop_name }} = ({%
+  for line in prop.description %}
+        "{{ line }}"{%
+  endfor %}        ){%
+  if prop.readAccess and prop.writeAccess %}
+
+    {{ prop_name }} = property( __get_{{ prop_name }}, __set_{{ prop_name }}, None, __doc_{{ prop_name }} ){%
+  elsif prop.readAccess %}
+
+    {{ prop_name }} = property( __get_{{ prop_name }}, None, None, __doc_{{ prop_name }} ){%
+  elsif prop.writeAccess %}
+
+    {{ prop_name }} = property( None, __set_{{ prop_name }}, None, __doc_{{ prop_name }} ){%
+  endif %}{%
+endfor %}
+
