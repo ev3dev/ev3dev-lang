@@ -10,6 +10,10 @@
         "python/ev3dev/__init__.py",
         "python/spec_version.py"
     ],
+    "pure-python": [
+        "pure-python/ev3dev/ev3dev.py",
+        "pure-python/spec_version.py"
+    ],
     "js": [
         "js/extras.ts",
         "js/motor.ts",

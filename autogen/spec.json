@@ -355,9 +355,11 @@
             "systemProperties": [
                 { "name": "Command", "systemName": "command", "type": "string", "readAccess": false, "writeAccess": true,
                   "description": [
-                      "Sets the command for the motor. Possible values are `run-forever`, `run-timed` and",
-                      "`stop`. Not all commands may be supported, so be sure to check the contents",
-                      "of the `commands` attribute."
+                      "Sets the command for the motor. Possible values are `run-forever`,",
+		      "`run-timed`, `run-direct` and `stop`. Not all commands may be supported.",
+		      "`run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`.",
+                      "Unlike other run commands, changing `duty_cycle_sp` while running *will*",
+                      "take effect immediately.",
                   ]
                 },
                 { "name": "Commands", "systemName": "commands", "type": "string array", "readAccess": true, "writeAccess": false,
@@ -441,6 +443,13 @@
                             "description": [
                                 "Run the motor for the amount of time specified in `time_sp`",
                                 "and then stop the motor using the command specified by `stop_command`."
+                            ]
+                        },
+                        { "name": "run-direct",
+                            "description": [
+                                "Run the motor at the duty cycle specified by `duty_cycle_sp`.",
+                                "Unlike other run commands, changing `duty_cycle_sp` while running *will*",
+                                "take effect immediately."
                             ]
                         },
                         { "name": "stop",

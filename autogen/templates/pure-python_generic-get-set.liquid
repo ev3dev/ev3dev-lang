@@ -4,17 +4,17 @@ for prop in currentClass.systemProperties %}{%
   if prop.readAccess %}
 
     def __get_{{ prop_name }}(self):
-        return self._device._get_attribute( '{{ prop_name }}' ){%
+        return self._device._get_{{ prop.type | underscore_spaces }}_attribute( '{{ prop_name }}' ){%
   endif %}{%
   if prop.writeAccess %}
 
     def __set_{{ prop_name }}(self, value):
-        self._device._set_attribute( '{{ prop_name }}', value ){%
+        self._device._set_{{ prop.type | underscore_spaces }}_attribute( '{{ prop_name }}', value ){%
   endif %}
 
     __doc_{{ prop_name }} = ({%
   for line in prop.description %}
-        "{{ line }}"{%
+        "{{ line }}\n"{%
   endfor %}        ){%
   if prop.readAccess and prop.writeAccess %}
 
