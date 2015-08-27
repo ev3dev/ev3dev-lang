@@ -17,6 +17,14 @@ Implementation Notes (important)
 - File access. There should be one class that is used or inherited from in all other classes that need to access object properties via file I/O. This class should check paths for validity, do basic error checking, and generally implement as much of the core I/O functionality as possible.
 - Errors. All file access and other error-prone calls should be wrapped with error handling. If an error thrown by an external call is fatal, the wrapper should throw an error for the caller that states the error and gives some insight in to what actually happened.
 - Naming conventions. All names should follow the language's naming conventions. Keep the names consistent, so that users can easily find what they want.
+- Attribute types. `int` and `string` attributes are read-write files
+  containing a single value that is representable either as an integer or as a
+  single word. A `string array` attribute is a readonly file that contains
+  space-separated list of words, where each word is a possible value of some
+  other `string` atribute.  And a `string selector` attribute is a read-write
+  file that contains space-separated list of possible values, where the
+  currently selected value is enclosed in square brackets. Another value may be
+  selected by writing a single word to a file.
 
 <hr/>
 
@@ -330,7 +338,7 @@ Property Name|Type|Accessibility|Description
 Max Brightness|int|Read| Returns the maximum allowable brightness value.
 Brightness|int|Read/Write| Sets the brightness level. Possible values are from 0 to `max_brightness`.
 Triggers|string array|Read| Returns a list of available triggers.
-Trigger|string|Read/Write| Sets the led trigger. A trigger is a kernel based source of led events. Triggers can either be simple or complex. A simple trigger isn't configurable and is designed to slot into existing subsystems with minimal additional code. Examples are the `ide-disk` and `nand-disk` triggers.  Complex triggers whilst available to all LEDs have LED specific parameters and work on a per LED basis. The `timer` trigger is an example. The `timer` trigger will periodically change the LED brightness between 0 and the current brightness setting. The `on` and `off` time can be specified via `delay_{on,off}` attributes in milliseconds. You can change the brightness value of a LED independently of the timer trigger. However, if you set the brightness value to 0 it will also disable the `timer` trigger.
+Trigger|string selector|Read/Write| Sets the led trigger. A trigger is a kernel based source of led events. Triggers can either be simple or complex. A simple trigger isn't configurable and is designed to slot into existing subsystems with minimal additional code. Examples are the `ide-disk` and `nand-disk` triggers.  Complex triggers whilst available to all LEDs have LED specific parameters and work on a per LED basis. The `timer` trigger is an example. The `timer` trigger will periodically change the LED brightness between 0 and the current brightness setting. The `on` and `off` time can be specified via `delay_{on,off}` attributes in milliseconds. You can change the brightness value of a LED independently of the timer trigger. However, if you set the brightness value to 0 it will also disable the `timer` trigger.
 Delay On|int|Read/Write| The `timer` trigger will periodically change the LED brightness between 0 and the current brightness setting. The `on` time can be specified via `delay_on` attribute in milliseconds.
 Delay Off|int|Read/Write| The `timer` trigger will periodically change the LED brightness between 0 and the current brightness setting. The `off` time can be specified via `delay_off` attribute in milliseconds.
 
