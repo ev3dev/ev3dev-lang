@@ -24,7 +24,7 @@ Implementation Notes (important)
   other `string` atribute.  And a `string selector` attribute is a read-write
   file that contains space-separated list of possible values, where the
   currently selected value is enclosed in square brackets. Another value may be
-  selected by writing a single word to a file.
+  selected by writing a single word to the file.
 
 <hr/>
 
