@@ -3,7 +3,33 @@ import time
 
 dc_motor1 = DC_Motor( 'usb*wedo1' )
 
-# print dc_motor1.commands
+print dc_motor1.commands
+print dc_motor1.commands
+print dc_motor1.commands
+dc_motor1.command='run-direct'
+dc_motor1.command='run-direct'
+print dc_motor1.duty_cycle_sp
+print dc_motor1.duty_cycle_sp
+print dc_motor1.duty_cycle_sp
+dc_motor1.duty_cycle_sp = 50.25
+print dc_motor1.duty_cycle_sp
+# dc_motor1.command='run-forever'
+time.sleep(1)
+dc_motor1.duty_cycle_sp = 60
+# dc_motor1.command='run-forever'
+print dc_motor1.duty_cycle_sp
+time.sleep(1)
+dc_motor1.duty_cycle_sp = '70'
+# dc_motor1.command='run-forever'
+print dc_motor1.duty_cycle_sp
+time.sleep(1)
+dc_motor1.duty_cycle_sp = "80"
+# dc_motor1.command='run-forever'
+print dc_motor1.duty_cycle_sp
+time.sleep(1)
+dc_motor1.duty_cycle_sp = 0
+# dc_motor1.command='run-forever'
+dc_motor1.command='stop'
 # print dc_motor1.driver_name
 # print dc_motor1.duty_cycle
 # print dc_motor1.duty_cycle_sp

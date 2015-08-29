@@ -27,6 +27,7 @@
 
 import os.path
 import fnmatch
+import numbers
 
 #------------------------------------------------------------------------------ 
 # Define the base class from which all other ev3dev classes are defined.
@@ -35,8 +36,7 @@ global __EV3_MODULE_connected__
 global __EV3_MODULE_attribute
 
 __EV3_MODULE_connected__ = {} 
-
-__EV3_MODULE_attribute__ = {}
+__EV3_MODULE_filehandle_cache__ = {}
 
 class EV3_Device(object):
     """The ev3dev base class"""
@@ -71,40 +71,55 @@ class EV3_Device(object):
             else:
                 print '            ' + port_name + ' <-> ' + name
 
-    def __attribute_name( self, attribute ):
-        """Helper function that retuns the attribute path for a device"""
+    def __attribute_file( self, attribute, mode, reopen=False ):
+        """Manages the file handle cache and opening the files in the correct mode"""
+
         attribute_name = os.path.abspath( self._path + '/' + attribute )
-        if attribute_name not in __EV3_MODULE_attribute__:
-            __EV3_MODULE_attribute__[attribute_name] = ''
-            print 'Initializing ' + attribute_name
-        return attribute_name
+
+        if attribute_name not in __EV3_MODULE_filehandle_cache__:
+            f = open( attribute_name, mode )
+            __EV3_MODULE_filehandle_cache__[attribute_name] = f
+        elif reopen == True:
+            __EV3_MODULE_filehandle_cache__[attribute_name].close()
+            f = open( attribute_name, mode )
+            __EV3_MODULE_filehandle_cache__[attribute_name] = f
+        else:
+            f = __EV3_MODULE_filehandle_cache__[attribute_name]
+        return f
+
 
     def _get_attribute( self, attribute ):
         """Device attribute getter"""
-        attribute_name = self.__attribute_name( attribute )
-        print( 'Getting ' + attribute_name )
-        f = open( attribute_name, 'r' )
-        value = f.read()
-        f.close()
-        return value
+        f = self.__attribute_file( attribute, 'r' )
+        try:
+            f.seek(0)
+            value = f.read()
+        except IOError:
+            f = self.__attribute_file( attribute, 'w+', True )
+            value = f.read()
+        return value.strip()
 
     def _set_attribute( self, attribute, value ):
         """Device attribute setter"""
-        attribute_name = self.__attribute_name( attribute )
-        print( 'Setting ' + attribute_name + ' to ' + value )
-        __EV3_MODULE_attribute__[attribute_name] = value
-        print __EV3_MODULE_attribute__[attribute_name]
-        f = open( attribute_name, 'w' )
-        f.write( value + '\n' )
-        f.flush()
-        f.close()
+        f = self.__attribute_file( attribute, 'w' )
+        try:
+            f.seek(0)
+            f.write( value )
+        except IOError:
+            f = self.__attribute_file( attribute, 'r+', True )
+            f.write( value )
 
     def _get_int_attribute( self, attribute ):
-        return self._get_attribute( attribute )
+        return int( self._get_attribute( attribute ) )
 
     def _set_int_attribute( self, attribute, value ):
-        self._set_attribute( attribute, value )
-
+        if True == isinstance( value, numbers.Integral ):
+            self._set_attribute( attribute, '{0:d}'.format( value ) )
+        elif True == isinstance( value, numbers.Real ):
+            self._set_attribute( attribute, '{0:.0f}'.format( value ) )
+        elif True == isinstance( value, str ):
+            self._set_attribute( attribute, value )
+        
     def _get_string_attribute( self, attribute ):
         return self._get_attribute( attribute )
 
