@@ -1,8 +1,8 @@
 {
     "meta": {
         "version": "0.9.3-pre",
-        "specRevision": 1,
-        "supportedKernel": "v3.16.7-ckt10-4-ev3dev-ev3"
+        "specRevision": 2,
+        "supportedKernel": "v3.16.7-ckt16-7-ev3dev-ev3"
     },
     "classes": {
         "motor": {
@@ -441,6 +441,13 @@
                             "description": [
                                 "Run the motor for the amount of time specified in `time_sp`",
                                 "and then stop the motor using the command specified by `stop_command`."
+                            ]
+                        },
+                        { "name": "run-direct",
+                            "description": [
+                                "Run the motor at the duty cycle specified by `duty_cycle_sp`.",
+                                "Unlike other run commands, changing `duty_cycle_sp` while running *will*",
+                                "take effect immediately."
                             ]
                         },
                         { "name": "stop",
