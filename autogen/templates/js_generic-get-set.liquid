@@ -19,10 +19,13 @@
 endfor %}
      */
     get {{ prop.name | camel_case }}(): {{ type }}{{ array }} {
-        return this.read{{ typeCaps }}("{{ prop.systemName }}"){%
-            if array
-                %}.split(' '){%
-            endif %};
+    {% if array
+    %}    return this.read{{ typeCaps }}Array("{{ prop.systemName }}");{%
+    elsif prop.type contains 'selector'
+    %}    return this.read{{ typeCaps }}Selector("{{ prop.systemName }}");{%
+    else
+    %}    return this.read{{ typeCaps }}("{{ prop.systemName }}");{%
+    endif %}
     }
 {%
     endif %}{%
