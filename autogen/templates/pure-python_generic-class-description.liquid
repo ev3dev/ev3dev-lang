@@ -10,5 +10,5 @@ endfor %}
     SYSTEM_CLASS_NAME = '{{ currentClass.systemClassName }}'
     SYSTEM_DEVICE_NAME_CONVENTION = '{{ device_name_convention }}'
 
-    def __init__(self, port='auto'):
-        self._device = EV3_Device( {{ class_name }}.SYSTEM_CLASS_NAME, port, {{ class_name }}.SYSTEM_DEVICE_NAME_CONVENTION )
+    def __init__(self, port='auto', name='*' ):
+        self._device = EV3_Device( {{ class_name }}.SYSTEM_CLASS_NAME, port, name )
