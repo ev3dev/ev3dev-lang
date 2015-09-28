@@ -111,12 +111,10 @@ class EV3_Device(object):
         f = self.__attribute_file( attribute, sys_attribute, 'w' )
         try:
             f.seek(0)
-            print 'Write {0} -> {1}'.format( value, f )
             f.write( value )
             f.flush()
         except IOError:
             f = self.__attribute_file( attribute, sys_attribute, 'w+', True )
-            print 'Write {0} -> {1}'.format( value, f )
             f.write( value )
             f.flush()
         
