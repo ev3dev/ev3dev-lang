@@ -32,11 +32,8 @@ import numbers
 #------------------------------------------------------------------------------ 
 # Define the base class from which all other ev3dev classes are defined.
 
-global __EV3_MODULE_connected__
-global __EV3_MODULE_attribute
-
-__EV3_MODULE_connected__ = {} 
-__EV3_MODULE_filehandle_cache__ = {}
+__EV3_MODULE_connected = {} 
+__EV3_MODULE_filehandle_cache = {}
 
 class Ev3Device(object):
     """The ev3dev base class"""
@@ -66,13 +63,13 @@ class Ev3Device(object):
                     self._path = os.path.abspath( self._classpath + '/' + file )
                     break
 
-        if self._path not in __EV3_MODULE_connected__:
-            __EV3_MODULE_connected__[self._path] = True
+        if self._path not in __EV3_MODULE_connected:
+            __EV3_MODULE_connected[self._path] = True
             print self._path
 
     def __exit__(self, exc_type, exc_value, traceback):
         print "Well, this is embarassing...."
-        for f in __EV3_MODULE_filehandle_cache__:
+        for f in __EV3_MODULE_filehandle_cache:
             print f
             f.close()
             
@@ -81,19 +78,16 @@ class Ev3Device(object):
 
         attribute_name = os.path.abspath( self._path + '/' + sys_attribute )
 
-#       print( attribute_name, mode )
-        
-        if attribute_name not in __EV3_MODULE_filehandle_cache__:
+        if attribute_name not in __EV3_MODULE_filehandle_cache:
             f = open( attribute_name, mode )
-            __EV3_MODULE_filehandle_cache__[attribute_name] = f
+            __EV3_MODULE_filehandle_cache[attribute_name] = f
         elif reopen == True:
-            __EV3_MODULE_filehandle_cache__[attribute_name].close()
+            __EV3_MODULE_filehandle_cache[attribute_name].close()
             f = open( attribute_name, mode )
-            __EV3_MODULE_filehandle_cache__[attribute_name] = f
+            __EV3_MODULE_filehandle_cache[attribute_name] = f
         else:
-            f = __EV3_MODULE_filehandle_cache__[attribute_name]
+            f = __EV3_MODULE_filehandle_cache[attribute_name]
         return f
-
 
     def _get_attribute( self, attribute, sys_attribute ):
         """Device attribute getter"""
