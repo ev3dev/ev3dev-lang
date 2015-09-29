@@ -1,4 +1,4 @@
-{% assign class_name = currentClass.systemClassName | camel_case | capitalize %}
+{% assign class_name = currentClass.friendlyName | camel_case | capitalize %}
 {% assign device_name_convention = currentClass.systemDeviceNameConvention | replace: '\{0\}', '*' %} 
 class {{ class_name }}(Ev3Device):
 
