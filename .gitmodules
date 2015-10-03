@@ -1,6 +1,3 @@
 [submodule "js"]
 	path = js
 	url = https://github.com/wasabifan/ev3dev-lang-js
-[submodule "python"]
-	path = python
-	url = https://github.com/ddemidov/ev3dev-lang-python.git
