@@ -6,13 +6,9 @@
         "cpp/ev3dev-lang-demo.cpp"
     ],
     "python": [
-        "python/ev3dev/pyev3dev.cpp",
+        "python/ev3dev/ev3dev.py",
         "python/ev3dev/__init__.py",
         "python/spec_version.py"
-    ],
-    "pure-python": [
-        "pure-python/ev3dev/ev3dev.py",
-        "pure-python/spec_version.py"
     ],
     "js": [
         "js/extras.ts",
