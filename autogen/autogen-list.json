@@ -10,11 +10,11 @@
     },
     "python": {
         "files": [
-            "python/ev3dev/pyev3dev.cpp",
+            "python/ev3dev/ev3dev.py",
             "python/ev3dev/__init__.py",
             "python/spec_version.py"
         ],
-        "templateDir": "autogen/templates/"
+        "templateDir": "../python/templates/"
     },
     "js": {
         "files": [
