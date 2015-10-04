@@ -130,44 +130,49 @@ liquidEngine.registerFilters({
 
 //Load the spec data and list of files to process
 var specData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "spec.json")));
-var fileDefinitions = JSON.parse(fs.readFileSync(path.resolve(__dirname, "autogen-list.json")).toString());
+var groupDefinitions = JSON.parse(fs.readFileSync(path.resolve(__dirname, "autogen-list.json")).toString());
 var args = process.argv.slice(2);
 
-var filesToProcess = [];
+var groupsToProcess = [];
 
 //Only queue the files from the group that was specified (or default to all)
-for(var i in fileDefinitions)
-    if(args.length <= 0 || args.indexOf(i) >= 0)
-        filesToProcess.push.apply(filesToProcess, fileDefinitions[i]);
+for (var groupName in groupDefinitions) {
+    if (args.length <= 0 || args.indexOf(groupName) >= 0)
+        groupsToProcess.push(groupDefinitions[groupName]);
+}
 
-if (filesToProcess.length > 0)
-    console.log(filesToProcess.length + " files found");
+if (groupsToProcess.length > 0)
+    console.log("Queuing " + groupsToProcess.length + " file groups...");
 else
-    console.log("Warning: No files found");
+    console.log("Warning: No matching file groups found!");
 
 
 //Call the process function on each specified file, and log the result
-for (var i = 0; i < filesToProcess.length; i++) {
-    var commentInfo = autogenFenceComments[path.extname(filesToProcess[i])];
-    
-    processFile(filesToProcess[i].trim(), specData, commentInfo, function (filename, err) {
-        if (err)
-            console.log("Error processing file \"" + filename + "\": " + err);
-        else
-            console.log("Completed processing file \"" + filename + "\"");
-    });
+for (var groupIndex = 0; groupIndex < groupsToProcess.length; groupIndex++) {
+    for (var fileIndex = 0; fileIndex < groupsToProcess[groupIndex].files.length; fileIndex++) {
+        var filePath = groupsToProcess[groupIndex].files[fileIndex];
+
+        var commentInfo = autogenFenceComments[path.extname(filePath)];
+
+        processFile(filePath.trim(), groupsToProcess[groupIndex].templateDir, specData, commentInfo, function (filename, err) {
+            if (err)
+                console.log("Error processing file \"" + filename + "\": " + err);
+            else
+                console.log("Completed processing file \"" + filename + "\"");
+        });
+    }
 }
 
 //Processes the contents of the specified file, and writes the result back to the same location (uses recursion)
-function processFile(filename, specData, commentInfo, callback) {
-    fs.readFile(path.resolve(__dirname, "..", filename), function (err, data) {
+function processFile(filename, templateDir, specData, commentInfo, callback) {
+    fs.readFile(path.resolve(__dirname, "..", filename), function (err, sourceFileContentsBuffer) {
         if (err) {
             callback(filename, err);
             return;
         }
 
-        processNextAutogenBlock(data.toString(), commentInfo, 0, function (result) {
-            if (data.toString() != result) //Write results if the content was changed (don't need to re-write the same content)
+        processNextAutogenBlock(sourceFileContentsBuffer.toString(), templateDir, commentInfo, 0, function (result) {
+            if (sourceFileContentsBuffer.toString() != result) //Write results if the content was changed (don't need to re-write the same content)
                 fs.writeFile(path.resolve(__dirname, "..", filename), result, {}, function (err) {
                     callback(filename, err);
                 });
@@ -178,7 +183,7 @@ function processFile(filename, specData, commentInfo, callback) {
 }
 
 //Recursively updates the autogen blocks
-function processNextAutogenBlock(allData, commentInfo, pos, callback) {
+function processNextAutogenBlock(allData, templateDir, commentInfo, pos, callback) {
     //Update the position of the next block. If there isn't one, call the callback and break the recursion.
     if (commentInfo.start instanceof RegExp)
         pos = allData.regexIndexOf(commentInfo.start, pos);
@@ -219,7 +224,7 @@ function processNextAutogenBlock(allData, commentInfo, pos, callback) {
     }
 
     //Make file name in to a full path
-    filename = path.resolve(__dirname, "templates", filename + ".liquid");
+    filename = path.resolve(templateDir, filename + ".liquid");
     
     //Find the end of the line (and the start of content)
     //    Handle both styles of line endings
@@ -259,7 +264,7 @@ function processNextAutogenBlock(allData, commentInfo, pos, callback) {
                 + allData.substring(endBlock);
             
             //Start/continue the recursion, and update the position for the next iteration
-            processNextAutogenBlock(newData, commentInfo,
+            processNextAutogenBlock(newData, templateDir, commentInfo,
                 startBlock
                 + result.length
                 + os.EOL.length

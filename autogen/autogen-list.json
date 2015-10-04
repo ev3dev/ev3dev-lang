@@ -1,24 +1,39 @@
 {
-    "cpp": [
-        "cpp/ev3dev.h",
-        "cpp/ev3dev.cpp",
-        "cpp/ev3dev-lang-test.cpp",
-        "cpp/ev3dev-lang-demo.cpp"
-    ],
-    "python": [
-        "python/ev3dev/pyev3dev.cpp",
-        "python/ev3dev/__init__.py",
-        "python/spec_version.py"
-    ],
-    "js": [
-        "js/extras.ts",
-        "js/motor.ts",
-        "js/sensor.ts"
-    ],
-    "lua": [
-        "lua/ev3dev.lua"
-    ],
-    "docs": [
-        "wrapper-specification.md"
-    ]
+    "cpp": {
+        "files": [
+            "cpp/ev3dev.h",
+            "cpp/ev3dev.cpp",
+            "cpp/ev3dev-lang-test.cpp",
+            "cpp/ev3dev-lang-demo.cpp"
+        ],
+        "templateDir": "autogen/templates/"
+    },
+    "python": {
+        "files": [
+            "python/ev3dev/pyev3dev.cpp",
+            "python/ev3dev/__init__.py",
+            "python/spec_version.py"
+        ],
+        "templateDir": "autogen/templates/"
+    },
+    "js": {
+        "files": [
+            "js/extras.ts",
+            "js/motor.ts",
+            "js/sensor.ts"
+        ],
+        "templateDir": "autogen/templates/"
+    },
+    "lua": {
+        "files": [
+            "lua/ev3dev.lua"
+        ],
+        "templateDir": "autogen/templates/"
+    },
+    "docs": {
+        "files": [
+            "wrapper-specification.md"
+        ],
+        "templateDir": "autogen/templates/"
+    }
 }
