@@ -7,6 +7,6 @@ We currently have libraries for the following languages here:
 - C++
 - Lua
 - Node.JS
-- Python (pure or external file access library)
+- Python
 
 Each binding complies with our universal language binding specification, which also serves as high-level documentation for our wrappers.
