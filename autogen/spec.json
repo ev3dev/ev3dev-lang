@@ -340,6 +340,28 @@
                         }
                     ]
                 }
+            ],
+            "helperFunctions": [
+                { "name": "foo", "returns": "null",
+                  "description": [
+                      "Makes the bar device accept the fibblesnork",
+                      "command, runs to completion."
+                  ],
+                  "parameters": [
+                        { "name": "device",
+                            "description": [
+                                "Device name to update."
+                            ],
+			    "default": ""
+			},
+                        { "name": "value",
+                            "description": [
+                                "Value to assign to the device."
+                            ],
+			    "default": "0"
+                        }
+                  ]
+                }
             ]
         },
         "dcMotor": {
