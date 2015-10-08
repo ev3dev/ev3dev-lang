@@ -14,7 +14,7 @@
             "python/ev3dev/__init__.py",
             "python/spec_version.py"
         ],
-        "templateDir": "../python/templates/"
+        "templateDir": "python/templates/"
     },
     "js": {
         "files": [

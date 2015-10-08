@@ -153,8 +153,9 @@ for (var groupIndex = 0; groupIndex < groupsToProcess.length; groupIndex++) {
         var filePath = groupsToProcess[groupIndex].files[fileIndex];
 
         var commentInfo = autogenFenceComments[path.extname(filePath)];
+        var templateDir = path.resolve(__dirname, '..', groupsToProcess[groupIndex].templateDir);
 
-        processFile(filePath.trim(), groupsToProcess[groupIndex].templateDir, specData, commentInfo, function (filename, err) {
+        processFile(filePath.trim(), templateDir, specData, commentInfo, function (filename, err) {
             if (err)
                 console.log("Error processing file \"" + filename + "\": " + err);
             else
