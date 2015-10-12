@@ -448,6 +448,13 @@
                       "Gets a list of stop commands. Valid values are `coast`",
                       "and `brake`."
                   ]
+                },
+		{ "name": "Time SP", "systemName": "time_sp", "type": "int", "readAccess": true, "writeAccess": true,
+                  "description": [
+                      "Writing specifies the amount of time the motor will run when using the",
+                      "`run-timed` command. Reading returns the current value. Units are in",
+                      "milliseconds."
+                  ]
                 }
             ],
             "propertyValues": [
