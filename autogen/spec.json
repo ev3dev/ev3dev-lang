@@ -342,6 +342,26 @@
                 }
             ]
         },
+        "largeMotor": {
+            "friendlyName": "Large Motor",
+            "description": [
+                "EV3 large servo motor"
+            ],
+            "driverName": [
+                "lego-ev3-l-motor"
+            ],
+            "inheritance": "motor"
+        },
+        "mediumMotor": {
+            "friendlyName": "Medium Motor",
+            "description": [
+                "EV3 medium servo motor"
+            ],
+            "driverName": [
+                "lego-ev3-m-motor"
+            ],
+            "inheritance": "motor"
+        },
         "dcMotor": {
             "friendlyName": "DC Motor",
             "description": [
