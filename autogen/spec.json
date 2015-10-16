@@ -1040,6 +1040,17 @@
                 }
             ]
         },
+        "touchSensor": {
+            "friendlyName": "Touch Sensor",
+            "description": [
+                "Touch Sensor"
+            ],
+            "driverName": [
+                "lego-ev3-touch",
+                "lego-nxt-touch"
+            ],
+            "inheritance": "sensor"
+        },
         "powerSupply": {
             "friendlyName": "Power Supply",
             "description": [
