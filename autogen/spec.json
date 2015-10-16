@@ -773,9 +773,10 @@
             ],
             "systemClassName":  "lego-sensor",
             "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "nxt-i2c-sensor"
             ],
+            "inheritance": "sensor",
             "systemProperties": [
                 { "name": "FW Version", "systemName": "fw_version", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
@@ -799,11 +800,10 @@
                 "LEGO EV3 color sensor."
             ],
             "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-color-sensor/",
-            "systemClassName":  "lego-sensor",
-            "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "lego-ev3-color"
             ],
+            "inheritance": "sensor",
             "propertyValues": [
                 {
                     "propertyName": "Mode",
@@ -843,11 +843,11 @@
                 "LEGO EV3 ultrasonic sensor."
             ],
             "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-ultrasonic-sensor/",
-            "systemClassName":  "lego-sensor",
-            "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "lego-ev3-us",
+                "lego-nxt-us"
             ],
+            "inheritance": "sensor",
             "propertyValues": [
                 {
                     "propertyName": "Mode",
@@ -891,11 +891,10 @@
                 "LEGO EV3 gyro sensor."
             ],
             "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-gyro-sensor/",
-            "systemClassName":  "lego-sensor",
-            "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "lego-ev3-gyro"
             ],
+            "inheritance": "sensor",
             "propertyValues": [
                 {
                     "propertyName": "Mode",
@@ -935,11 +934,10 @@
                 "LEGO EV3 infrared sensor."
             ],
             "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-infrared-sensor/",
-            "systemClassName":  "lego-sensor",
-            "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "lego-ev3-ir"
             ],
+            "inheritance": "sensor",
             "propertyValues": [
                 {
                     "propertyName": "Mode",
@@ -979,11 +977,10 @@
                 "LEGO NXT Sound Sensor"
             ],
             "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-sound-sensor/",
-            "systemClassName":  "lego-nxt-sound",
-            "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "lego-nxt-sound"
             ],
+            "inheritance": "sensor",
             "propertyValues": [
                 {
                     "propertyName": "Mode",
@@ -1008,11 +1005,10 @@
                 "LEGO NXT Light Sensor"
             ],
             "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-light-sensor/",
-            "systemClassName":  "lego-nxt-light",
-            "systemDeviceNameConvention":  "sensor{0}",
-            "inheritance": [
-                "sensor"
+            "driverName": [
+                "lego-nxt-light"
             ],
+            "inheritance": "sensor",
             "propertyValues": [
                 {
                     "propertyName": "Mode",
