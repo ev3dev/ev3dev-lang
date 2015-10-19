@@ -701,14 +701,7 @@
                       "be specified via `delay_off` attribute in milliseconds."
                   ]
                 }
-            ],
-            "ev3LedColors": {
-                "red": { "red": 1.0, "green": 0.0 },
-                "green": { "red": 0.0, "green": 1.0 },
-                "amber": { "red": 1.0, "green": 1.0 },
-                "orange": { "red": 1.0, "green": 0.5 },
-                "yellow": { "red": 0.5, "green": 1.0 }
-            }
+            ]
         },
         "sensor": {
             "friendlyName": "Sensor",
@@ -1156,6 +1149,44 @@
                     ]
                 }
             ]
+        }
+    },
+    "platforms": {
+        "ev3": {
+            "led": {
+                "instances": [
+                    { "name" : "Red Left", "systemName": "ev3-left0:red:ev3dev" },
+                    { "name" : "Red Right", "systemName": "ev3-right0:red:ev3dev" },
+                    { "name" : "Green Left", "systemName": "ev3-left1:green:ev3dev" },
+                    { "name" : "Green Right", "systemName": "ev3-right1:green:ev3dev" }
+                ],
+                "groups" : [
+                    { "name" : "Red", "entries" : ["Red Left", "Red Right"] },
+                    { "name" : "Green", "entries" : ["Green Left", "Green Right"] }
+                ],
+                "colors": [
+                    { "name" : "Red", "groups" : [
+                        { "name": "Red",   "value" : 1.0 },
+                        { "name": "Green", "value" : 0.0 }
+                    ]},
+                    { "name" : "Green", "groups" : [
+                        { "name": "Red",   "value" : 0.0 },
+                        { "name": "Green", "value" : 1.0 }
+                    ]},
+                    { "name" : "Amber", "groups" : [
+                        { "name": "Red",   "value" : 1.0 },
+                        { "name": "Green", "value" : 1.0 }
+                    ]},
+                    { "name" : "Orange", "groups" : [
+                        { "name": "Red",   "value" : 1.0 },
+                        { "name": "Green", "value" : 0.5 }
+                    ]},
+                    { "name" : "Yellow", "groups" : [
+                        { "name": "Red",   "value" : 0.5 },
+                        { "name": "Green", "value" : 1.0 }
+                    ]}
+                ]
+            }
         }
     }
 }
