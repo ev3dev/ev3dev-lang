@@ -1188,7 +1188,7 @@
                 ]
             }
         },
-        "rpi": {
+        "brickpi": {
             "led": {
                 "instances": [
                     { "name" : "Blue One", "systemName": "brickpi1:blue:ev3dev" },
