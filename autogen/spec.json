@@ -1187,6 +1187,22 @@
                     ]}
                 ]
             }
+        },
+        "rpi": {
+            "led": {
+                "instances": [
+                    { "name" : "Blue One", "systemName": "brickpi1:blue:ev3dev" },
+                    { "name" : "Blue Two", "systemName": "brickpi2:blue:ev3dev" }
+                ],
+                "groups" : [
+                    { "name" : "Blue", "entries" : ["Blue One", "Blue Two"] }
+                ],
+                "colors": [
+                    { "name" : "Blue", "groups" : [
+                        { "name": "Blue", "value" : 1.0 }
+                    ]}
+                ]
+            }
         }
     }
 }
