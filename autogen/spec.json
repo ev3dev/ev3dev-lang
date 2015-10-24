@@ -703,6 +703,15 @@
                 }
             ]
         },
+	"button": {
+            "friendlyName": "Button",
+            "description": [
+                "Provides a generic button reading mechanism that can be adapted",
+	       	"to platform specific implementations. Each platform's specific",
+		"button capabilites are enumerated in the 'platforms' section",
+		"of this specification"
+            ]
+        },
         "sensor": {
             "friendlyName": "Sensor",
             "description": [
@@ -1186,6 +1195,16 @@
                         { "name": "Green", "value" : 1.0 }
                     ]}
                 ]
+            },
+            "button": {
+                "instances": [
+                    { "name" : "up", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 103 },
+                    { "name" : "down", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 108 },
+                    { "name" : "left", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 105 },
+                    { "name" : "right", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 106 },
+                    { "name" : "enter", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 28 },
+                    { "name" : "backspace", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 14 }
+		]
             }
         },
         "brickpi": {
