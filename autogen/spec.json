@@ -991,7 +991,34 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "remoteControl": {
+                "description": [
+                    "EV3 Remote Controller"
+                ],
+                "numChannels": 4,
+                "buttons": [
+                    { "name": "Red Up" },
+                    { "name": "Red Down" },
+                    { "name": "Blue Up" },
+                    { "name": "Blue Down" },
+                    { "name": "Beacon" }
+                ],
+                "values": [
+                    { "value": 0,  "state": []},
+                    { "value": 1,  "state": ["Red Up"]},
+                    { "value": 2,  "state": ["Red Down"]},
+                    { "value": 3,  "state": ["Blue Up"]},
+                    { "value": 4,  "state": ["Blue Down"]},
+                    { "value": 5,  "state": ["Red Up", "Blue Up"]},
+                    { "value": 6,  "state": ["Red Up", "Blue Down"]},
+                    { "value": 7,  "state": ["Red Down", "Blue Up"]},
+                    { "value": 8,  "state": ["Red Down", "Blue Down"]},
+                    { "value": 9,  "state": ["Beacon"]},
+                    { "value": 10, "state": ["Red Up", "Red Down"]},
+                    { "value": 11, "state": ["Blue Up", "Blue Down"]}
+                ]
+            }
         },
         "soundSensor": {
             "friendlyName": "Sound Sensor",
