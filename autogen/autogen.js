@@ -17,7 +17,7 @@ var autogenFenceComments = {
     '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
     //Lua regex: http://regex101.com/r/mI4gL1
     '.lua': { start: /-- *~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/, end: "-- ~autogen" },
-    '.py': { start: /#~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/, end: "#~autogen" }
+    '.py': { start: /# ~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/, end: "# ~autogen" }
 }
 
 //Extension and helper methods
