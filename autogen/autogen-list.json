@@ -10,7 +10,9 @@
     },
     "python": {
         "files": [
-            "python/ev3dev.py",
+            "python/ev3dev/core.py",
+            "python/ev3dev/ev3.py",
+            "python/ev3dev/brickpi.py",
             "python/spec_version.py"
         ],
         "templateDir": "python/templates/"
