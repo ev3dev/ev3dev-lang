@@ -96,6 +96,8 @@ var fs = require('fs');
 var os = require('os');
 var path = require('path');
 
+var argv = require('yargs').argv;
+
 //Register custom liquid filters
 liquidEngine.registerFilters({
     camel_case: function (input) { //camel-cases the input string
@@ -131,13 +133,12 @@ liquidEngine.registerFilters({
 //Load the spec data and list of files to process
 var specData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "spec.json")));
 var groupDefinitions = JSON.parse(fs.readFileSync(path.resolve(__dirname, "autogen-list.json")).toString());
-var args = process.argv.slice(2);
 
 var groupsToProcess = [];
 
 //Only queue the files from the group that was specified (or default to all)
 for (var groupName in groupDefinitions) {
-    if (args.length <= 0 || args.indexOf(groupName) >= 0)
+    if (argv._.indexOf(groupName) != -1)
         groupsToProcess.push(groupDefinitions[groupName]);
 }
 
@@ -145,6 +146,10 @@ if (groupsToProcess.length > 0)
     console.log("Queuing " + groupsToProcess.length + " file groups...");
 else
     console.log("Warning: No matching file groups found!");
+
+var clearTemplatedSections = false;
+if (argv.x || argv.clear)
+    clearTemplatedSections = true;
 
 
 //Call the process function on each specified file, and log the result
@@ -253,22 +258,28 @@ function processNextAutogenBlock(allData, templateDir, commentInfo, pos, callbac
         setProp(liquidContext, defParts[1], propValue);
     }
     
-    //Parse and render the liquid using the spec data
-    liquidEngine
-        .parseAndRender(loadedLiquid, liquidContext)
-        .then(function (result) {
-            //Replace the old contents of the output block with the result from the liquid engine
-            var newData =
-                allData.substring(0, startBlock)
-                + result
-                + os.EOL
-                + allData.substring(endBlock);
+    function insertTemplatedAndContinue(result) {
+        //Replace the old contents of the output block with the result from the liquid engine
+        var newData =
+            allData.substring(0, startBlock)
+            + result
+            + os.EOL
+            + allData.substring(endBlock);
             
-            //Start/continue the recursion, and update the position for the next iteration
-            processNextAutogenBlock(newData, templateDir, commentInfo,
-                startBlock
-                + result.length
-                + os.EOL.length
-                + commentInfo.end.length, callback);
-        });
+        //Start/continue the recursion, and update the position for the next iteration
+        processNextAutogenBlock(newData, templateDir, commentInfo,
+            startBlock
+            + result.length
+            + os.EOL.length
+            + commentInfo.end.length, callback);
+    }
+
+    if (clearTemplatedSections)
+        insertTemplatedAndContinue('');
+    else {
+        //Parse and render the liquid using the spec data
+        liquidEngine
+            .parseAndRender(loadedLiquid, liquidContext)
+            .then(insertTemplatedAndContinue);
+    }
 }
