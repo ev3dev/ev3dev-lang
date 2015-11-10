@@ -4,7 +4,8 @@
   "description": "Dependencies for ev3dev-lang autogen",
   "main": "autogen.js",
   "dependencies": {
-    "liquid-node": "git://github.com/WasabiFan/liquid-node.git"
+    "liquid-node": "git://github.com/WasabiFan/liquid-node.git",
+    "yargs": "~3.29.0"
   },
   "devDependencies": {},
   "scripts": {
