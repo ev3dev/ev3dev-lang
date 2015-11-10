@@ -1198,27 +1198,27 @@
                     { "name" : "Green Right", "systemName": "ev3-right1:green:ev3dev" }
                 ],
                 "groups" : [
-                    { "name" : "Left", "entries" : ["Red Left", "Green Left"] },
-                    { "name" : "Right", "entries" : ["Red Right", "Green Right"] }
+                    { "name" : "Red", "entries" : ["Red Left", "Red Right"] },
+                    { "name" : "Green", "entries" : ["Green Left", "Green Right"] }
                 ],
                 "colors": [
-                    { "name" : "Red", "mix" : [
+                    { "name" : "Red", "groups" : [
                         { "name": "Red",   "value" : 1.0 },
                         { "name": "Green", "value" : 0.0 }
                     ]},
-                    { "name" : "Green", "mix" : [
+                    { "name" : "Green", "groups" : [
                         { "name": "Red",   "value" : 0.0 },
                         { "name": "Green", "value" : 1.0 }
                     ]},
-                    { "name" : "Amber", "mix" : [
+                    { "name" : "Amber", "groups" : [
                         { "name": "Red",   "value" : 1.0 },
                         { "name": "Green", "value" : 1.0 }
                     ]},
-                    { "name" : "Orange", "mix" : [
+                    { "name" : "Orange", "groups" : [
                         { "name": "Red",   "value" : 1.0 },
                         { "name": "Green", "value" : 0.5 }
                     ]},
-                    { "name" : "Yellow", "mix" : [
+                    { "name" : "Yellow", "groups" : [
                         { "name": "Red",   "value" : 0.5 },
                         { "name": "Green", "value" : 1.0 }
                     ]}
@@ -1243,11 +1243,10 @@
                     { "name" : "Blue Two", "systemName": "brickpi2:blue:ev3dev" }
                 ],
                 "groups" : [
-                    { "name" : "One", "entries" : ["Blue One"] },
-                    { "name" : "Two", "entries" : ["Blue Two"] }
+                    { "name" : "Blue", "entries" : ["Blue One", "Blue Two"] }
                 ],
                 "colors": [
-                    { "name" : "Blue", "mix" : [
+                    { "name" : "Blue", "groups" : [
                         { "name": "Blue", "value" : 1.0 }
                     ]}
                 ]
