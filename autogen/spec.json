@@ -1202,26 +1202,11 @@
                     { "name" : "Right", "entries" : ["Red Right", "Green Right"] }
                 ],
                 "colors": [
-                    { "name" : "Red", "mix" : [
-                        { "name": "Red",   "value" : 1.0 },
-                        { "name": "Green", "value" : 0.0 }
-                    ]},
-                    { "name" : "Green", "mix" : [
-                        { "name": "Red",   "value" : 0.0 },
-                        { "name": "Green", "value" : 1.0 }
-                    ]},
-                    { "name" : "Amber", "mix" : [
-                        { "name": "Red",   "value" : 1.0 },
-                        { "name": "Green", "value" : 1.0 }
-                    ]},
-                    { "name" : "Orange", "mix" : [
-                        { "name": "Red",   "value" : 1.0 },
-                        { "name": "Green", "value" : 0.5 }
-                    ]},
-                    { "name" : "Yellow", "mix" : [
-                        { "name": "Red",   "value" : 0.5 },
-                        { "name": "Green", "value" : 1.0 }
-                    ]}
+                    { "name" : "Red", "value" : [ 1.0, 0.0 ] },
+                    { "name" : "Green", "value" : [ 0.0, 1.0 ] },
+                    { "name" : "Amber", "value" : [ 1.0, 1.0 ] },
+                    { "name" : "Orange", "value" : [ 1.0, 0.5 ] },
+                    { "name" : "Yellow", "value" : [ 0.5, 1.0 ] }
                 ]
             },
             "button": {
@@ -1243,13 +1228,11 @@
                     { "name" : "Blue Two", "systemName": "brickpi2:blue:ev3dev" }
                 ],
                 "groups" : [
-                    { "name" : "One", "entries" : ["Blue One"] },
-                    { "name" : "Two", "entries" : ["Blue Two"] }
+                    { "name" : "Blue One", "entries" : ["Blue One"] },
+                    { "name" : "Blue Two", "entries" : ["Blue Two"] }
                 ],
                 "colors": [
-                    { "name" : "Blue", "mix" : [
-                        { "name": "Blue", "value" : 1.0 }
-                    ]}
+                    { "name" : "Blue", "value" : [ 1.0 ] }
                 ]
             }
         }
