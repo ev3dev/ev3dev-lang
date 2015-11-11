@@ -28,21 +28,22 @@
                       "Returns a list of commands that are supported by the motor",
                       "controller. Possible values are `run-forever`, `run-to-abs-pos`, `run-to-rel-pos`,",
                       "`run-timed`, `run-direct`, `stop` and `reset`. Not all commands may be supported.",
-                      "`run-forever` will cause the motor to run until another command is sent.",
-                      "`run-to-abs-pos` will run to an absolute position specified by `position_sp`",
-                      "and then stop using the command specified in `stop_command`.",
-                      "`run-to-rel-pos` will run to a position relative to the current `position` value.",
-                      "The new position will be current `position` + `position_sp`. When the new",
-                      "position is reached, the motor will stop using the command specified by `stop_command`.",
-                      "`run-timed` will run the motor for the amount of time specified in `time_sp`",
-                      "and then stop the motor using the command specified by `stop_command`.",
-                      "`run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`.",
-                      "Unlike other run commands, changing `duty_cycle_sp` while running *will*",
-                      "take effect immediately.",
-                      "`stop` will stop any of the run commands before they are complete using the",
-                      "command specified by `stop_command`.",
-                      "`reset` will reset all of the motor parameter attributes to their default value.",
-                      "This will also have the effect of stopping the motor."
+                      "",
+                      "- `run-forever` will cause the motor to run until another command is sent.",
+                      "- `run-to-abs-pos` will run to an absolute position specified by `position_sp`",
+                      "  and then stop using the command specified in `stop_command`.",
+                      "- `run-to-rel-pos` will run to a position relative to the current `position` value.",
+                      "  The new position will be current `position` + `position_sp`. When the new",
+                      "  position is reached, the motor will stop using the command specified by `stop_command`.",
+                      "- `run-timed` will run the motor for the amount of time specified in `time_sp`",
+                      "  and then stop the motor using the command specified by `stop_command`.",
+                      "- `run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`.",
+                      "  Unlike other run commands, changing `duty_cycle_sp` while running *will*",
+                      "  take effect immediately.",
+                      "- `stop` will stop any of the run commands before they are complete using the",
+                      "  command specified by `stop_command`.",
+                      "- `reset` will reset all of the motor parameter attributes to their default value.",
+                      "  This will also have the effect of stopping the motor."
                   ]
                 },
                 { "name": "Count Per Rot", "systemName": "count_per_rot", "type": "int", "readAccess": true, "writeAccess": false,
@@ -991,7 +992,34 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "remoteControl": {
+                "description": [
+                    "EV3 Remote Controller"
+                ],
+                "numChannels": 4,
+                "buttons": [
+                    { "name": "Red Up" },
+                    { "name": "Red Down" },
+                    { "name": "Blue Up" },
+                    { "name": "Blue Down" },
+                    { "name": "Beacon" }
+                ],
+                "values": [
+                    { "value": 0,  "state": []},
+                    { "value": 1,  "state": ["Red Up"]},
+                    { "value": 2,  "state": ["Red Down"]},
+                    { "value": 3,  "state": ["Blue Up"]},
+                    { "value": 4,  "state": ["Blue Down"]},
+                    { "value": 5,  "state": ["Red Up", "Blue Up"]},
+                    { "value": 6,  "state": ["Red Up", "Blue Down"]},
+                    { "value": 7,  "state": ["Red Down", "Blue Up"]},
+                    { "value": 8,  "state": ["Red Down", "Blue Down"]},
+                    { "value": 9,  "state": ["Beacon"]},
+                    { "value": 10, "state": ["Red Up", "Red Down"]},
+                    { "value": 11, "state": ["Blue Up", "Blue Down"]}
+                ]
+            }
         },
         "soundSensor": {
             "friendlyName": "Sound Sensor",
@@ -1164,46 +1192,32 @@
         "ev3": {
             "led": {
                 "instances": [
-                    { "name" : "Red Left", "systemName": "ev3-left0:red:ev3dev" },
-                    { "name" : "Red Right", "systemName": "ev3-right0:red:ev3dev" },
-                    { "name" : "Green Left", "systemName": "ev3-left1:green:ev3dev" },
-                    { "name" : "Green Right", "systemName": "ev3-right1:green:ev3dev" }
+                    { "name" : "Red Left", "systemName": "ev3:left:red:ev3dev" },
+                    { "name" : "Red Right", "systemName": "ev3:right:red:ev3dev" },
+                    { "name" : "Green Left", "systemName": "ev3:left:green:ev3dev" },
+                    { "name" : "Green Right", "systemName": "ev3:right:green:ev3dev" }
                 ],
                 "groups" : [
-                    { "name" : "Red", "entries" : ["Red Left", "Red Right"] },
-                    { "name" : "Green", "entries" : ["Green Left", "Green Right"] }
+                    { "name" : "Left", "entries" : ["Red Left", "Green Left"] },
+                    { "name" : "Right", "entries" : ["Red Right", "Green Right"] }
                 ],
                 "colors": [
-                    { "name" : "Red", "groups" : [
-                        { "name": "Red",   "value" : 1.0 },
-                        { "name": "Green", "value" : 0.0 }
-                    ]},
-                    { "name" : "Green", "groups" : [
-                        { "name": "Red",   "value" : 0.0 },
-                        { "name": "Green", "value" : 1.0 }
-                    ]},
-                    { "name" : "Amber", "groups" : [
-                        { "name": "Red",   "value" : 1.0 },
-                        { "name": "Green", "value" : 1.0 }
-                    ]},
-                    { "name" : "Orange", "groups" : [
-                        { "name": "Red",   "value" : 1.0 },
-                        { "name": "Green", "value" : 0.5 }
-                    ]},
-                    { "name" : "Yellow", "groups" : [
-                        { "name": "Red",   "value" : 0.5 },
-                        { "name": "Green", "value" : 1.0 }
-                    ]}
+                    { "name" : "Red", "value" : [ 1.0, 0.0 ] },
+                    { "name" : "Green", "value" : [ 0.0, 1.0 ] },
+                    { "name" : "Amber", "value" : [ 1.0, 1.0 ] },
+                    { "name" : "Orange", "value" : [ 1.0, 0.5 ] },
+                    { "name" : "Yellow", "value" : [ 0.5, 1.0 ] }
                 ]
             },
             "button": {
+		"systemPath": "/dev/input/by-path",
                 "instances": [
-                    { "name" : "up", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 103 },
-                    { "name" : "down", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 108 },
-                    { "name" : "left", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 105 },
-                    { "name" : "right", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 106 },
-                    { "name" : "enter", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 28 },
-                    { "name" : "backspace", "systemName": "/dev/input/by-path/platform-gpio-keys.0-event", "systemValue": 14 }
+                    { "name" : "up", "systemName": "platform-gpio-keys.0-event", "systemValue": 103 },
+                    { "name" : "down", "systemName": "platform-gpio-keys.0-event", "systemValue": 108 },
+                    { "name" : "left", "systemName": "platform-gpio-keys.0-event", "systemValue": 105 },
+                    { "name" : "right", "systemName": "platform-gpio-keys.0-event", "systemValue": 106 },
+                    { "name" : "enter", "systemName": "platform-gpio-keys.0-event", "systemValue": 28 },
+                    { "name" : "backspace", "systemName": "platform-gpio-keys.0-event", "systemValue": 14 }
 		]
             }
         },
@@ -1214,12 +1228,11 @@
                     { "name" : "Blue Two", "systemName": "brickpi2:blue:ev3dev" }
                 ],
                 "groups" : [
-                    { "name" : "Blue", "entries" : ["Blue One", "Blue Two"] }
+                    { "name" : "Blue One", "entries" : ["Blue One"] },
+                    { "name" : "Blue Two", "entries" : ["Blue Two"] }
                 ],
                 "colors": [
-                    { "name" : "Blue", "groups" : [
-                        { "name": "Blue", "value" : 1.0 }
-                    ]}
+                    { "name" : "Blue", "value" : [ 1.0 ] }
                 ]
             }
         }
