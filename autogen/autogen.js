@@ -1,7 +1,7 @@
 // Node.JS script to evaluate custom liquid templates in files
 
 //Explanation of C-style regex here: http://regex101.com/r/nQ9bE3
-var cStyleAutogenStart = /\/\/~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/;
+var cStyleAutogenStart = /\/\/~autogen *([\w-]+) *((\s*[\w\."',]+>[\w\.]+)*)/;
 var cStyleAutogenEnd = "//~autogen";
 
 //TODO: allow a regex for the end tag (so that we can be more lenient on spacing)
@@ -14,10 +14,10 @@ var autogenFenceComments = {
     '.cpp': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     '.h': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     //XML-style regex here: http://regex101.com/r/cN6gE4
-    '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
+    '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\."',]+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
     //Lua regex: http://regex101.com/r/mI4gL1
-    '.lua': { start: /-- *~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/, end: "-- ~autogen" },
-    '.py': { start: /# ~autogen *([\w-]+) *((\s*[\w\."']+>[\w\.]+)*)/, end: "# ~autogen" }
+    '.lua': { start: /-- *~autogen *([\w-]+) *((\s*[\w\."',]+>[\w\.]+)*)/, end: "-- ~autogen" },
+    '.py': { start: /# ~autogen *([\w-]+) *((\s*[\w\."',]+>[\w\.]+)*)/, end: "# ~autogen" }
 }
 
 //Extension and helper methods

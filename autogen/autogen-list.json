@@ -23,7 +23,7 @@
             "js/motor.ts",
             "js/sensor.ts"
         ],
-        "templateDir": "autogen/templates/"
+        "templateDir": "js/templates/"
     },
     "lua": {
         "files": [
