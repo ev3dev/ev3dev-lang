@@ -6,7 +6,7 @@
             "cpp/ev3dev-lang-test.cpp",
             "cpp/ev3dev-lang-demo.cpp"
         ],
-        "templateDir": "autogen/templates/"
+        "templateDir": "cpp/templates/"
     },
     "python": {
         "files": [
