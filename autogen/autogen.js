@@ -63,6 +63,6 @@ function getGroupsToProcess() {
         if (argv._.indexOf(groupName) != -1)
             groupsToProcess.push(groupDefinitions[groupName]);
     }
-
+    
     return groupsToProcess;
 }

@@ -34,14 +34,6 @@ function processFile(autogenContext, commentInfo, callback) {
 
 //Recursively updates the autogen blocks
 function processNextAutogenBlock(autogenContext, allData, commentInfo, pos, callback) {
-    if (!(commentInfo.start instanceof RegExp)) {
-        var errorStr = "Comment info did not provide regex to use for content parsing!";
-
-        console.error(errorStr + " Skipping file.");
-        callback(null, errorStr);
-
-        return;
-    }
 
     //Update the position of the next block. If there isn't one, call the callback and break the recursion.
     pos = utils.regexIndexOf(allData, commentInfo.start, pos);
@@ -57,12 +49,12 @@ function processNextAutogenBlock(autogenContext, allData, commentInfo, pos, call
     //Skip over the start tag
     pos += matchInfo[0].length;
 
-    //Get the data from the capture groups
-    var filename = matchInfo[1];
-    var liquidInfo = utils.cleanArray(matchInfo[2].trim().split(' '));
+    //Get the data from the autogen tag
+    var tagContent = matchInfo[1];
+    var autogenTagData = utils.parseAutogenTag(tagContent);
 
     //Make file name in to a full path
-    filename = path.resolve(autogenContext.templateDir, filename + ".liquid");
+    var filename = path.resolve(autogenContext.templateDir, autogenTagData.templateFileName + ".liquid");
 
     //Find the end of the line (and the start of content)
     //    Handle both styles of line endings
@@ -75,19 +67,19 @@ function processNextAutogenBlock(autogenContext, allData, commentInfo, pos, call
     //Deep-copy the spec data so that we can add context
     var dataContext = utils.extend({}, autogenContext.specData);
 
-    //Iterate over the remaining chunks in the autogen definition and
-    //    copy the requested data from the spec to the liquid context
-    for (var i = 0; i < liquidInfo.length; i++) {
-        var defParts = liquidInfo[i].split(">");
-        var propValue = utils.getProp(dataContext, defParts[0]);
+    //Populate the autogen data context with property mappings from autogen tag
+    for (var mappingIndex in autogenTagData.propertyMappings) {
+        var propertyMapping = autogenTagData.propertyMappings[mappingIndex];
 
-        //If the property wasn't found, treat it as a plain string
-        if (propValue == undefined) {
-            //Trim quotes (for string literals)
-            propValue = defParts[0].replace(/^["']+|["']+$/g, '');
-        }
+        var propValue = utils.getProp(dataContext, propertyMapping.sourceString);
+        utils.setProp(dataContext, propertyMapping.destString, propValue);
+    }
 
-        utils.setProp(dataContext, defParts[1], propValue);
+    //Populate the autogen data context with value mappings from autogen tag
+    for (var mappingIndex in autogenTagData.valueMappings) {
+        var valueMapping = autogenTagData.valueMappings[mappingIndex];
+
+        utils.setProp(dataContext, valueMapping.destString, valueMapping.sourceString);
     }
 
     function insertTemplatedAndContinue(result) {

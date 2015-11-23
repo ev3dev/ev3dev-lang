@@ -67,3 +67,90 @@ exports.getProp = function(object, property) {
     else
         return exports.getProp(object[first], property);
 }
+
+
+exports.parseAutogenTag = function (tagText) {
+    var templateFileName = '';
+
+    var currentIndex = 0;
+    for (; tagText[currentIndex] != ' ' && currentIndex < tagText.length; currentIndex++) {
+        templateFileName += tagText[currentIndex];
+    }
+    
+    var mappingData = getMappingData(tagText, currentIndex + 1);
+
+    return {
+        templateFileName: templateFileName,
+        propertyMappings: mappingData.propertyMappings,
+        valueMappings: mappingData.valueMappings
+    };
+}
+
+function getMappingData(tagText, startIndex) {
+    var foundMappings = {
+        propertyMappings: [],
+        valueMappings: []
+    };
+
+    var currentNestedQuoteType = undefined;
+    var hasFoundAngleBracket = false;
+
+    var defaultMappingData = {
+        type: 'property',
+        sourceString: '',
+        destString: ''
+    };
+
+    var currentMappingData = exports.extend({}, defaultMappingData);
+
+    for (var currentIndex = startIndex; currentIndex < tagText.length; currentIndex++) {
+        var currentChar = tagText[currentIndex];
+
+        if (isQuote(currentChar)) {
+            if (currentNestedQuoteType == undefined) {
+                currentNestedQuoteType = currentChar;
+                currentMappingData.type = 'value';
+            }
+        }
+        else if (currentNestedQuoteType == undefined && currentChar == ">") {
+            hasFoundAngleBracket = true;
+            continue;
+        }
+
+        if((currentNestedQuoteType != undefined && currentChar != currentNestedQuoteType)
+                || (currentNestedQuoteType == undefined && !isWhitespace(currentChar))) {
+            if (hasFoundAngleBracket)
+                currentMappingData.destString += currentChar;
+            else
+                currentMappingData.sourceString += currentChar;
+        }
+
+        if (currentNestedQuoteType == undefined && (isWhitespace(currentChar) || currentIndex + 1 >= tagText.length)) {
+            if(currentMappingData.sourceString.length <= 0 || currentMappingData.destString.length <= 0)
+                continue;
+            
+            if (currentMappingData.type == 'property')
+                foundMappings.propertyMappings.push(currentMappingData);
+            else
+                foundMappings.valueMappings.push(currentMappingData);
+
+            currentMappingData = exports.extend({}, defaultMappingData)
+            hasFoundAngleBracket = false;
+        }
+        
+        if (isQuote(currentChar)) {
+            if (currentChar == currentNestedQuoteType)
+                currentNestedQuoteType = undefined;
+        }
+    }
+
+    return foundMappings;
+}
+
+function isWhitespace(text) {
+    return text.trim().length <= 0;
+}
+
+function isQuote(char) {
+    return char == '"' || char == "'";
+}
