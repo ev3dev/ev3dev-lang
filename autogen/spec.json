@@ -1224,12 +1224,12 @@
         "brickpi": {
             "led": {
                 "instances": [
-                    { "name" : "Blue One", "systemName": "brickpi1:blue:ev3dev" },
-                    { "name" : "Blue Two", "systemName": "brickpi2:blue:ev3dev" }
+                    { "name" : "Blue Led1", "systemName": "brickpi1:blue:ev3dev" },
+                    { "name" : "Blue Led2", "systemName": "brickpi2:blue:ev3dev" }
                 ],
                 "groups" : [
-                    { "name" : "Blue One", "entries" : ["Blue One"] },
-                    { "name" : "Blue Two", "entries" : ["Blue Two"] }
+                    { "name" : "Led1", "entries" : ["Blue Led1"] },
+                    { "name" : "Led2", "entries" : ["Blue Led2"] }
                 ],
                 "colors": [
                     { "name" : "Blue", "value" : [ 1.0 ] }

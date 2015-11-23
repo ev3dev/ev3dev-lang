@@ -21,7 +21,9 @@
 
 //-----------------------------------------------------------------------------
 //~autogen autogen-header
-    // Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 2. 
+
+// Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 2.
+
 //~autogen
 //-----------------------------------------------------------------------------
 
@@ -51,7 +53,7 @@ void test_sensor(const char *name)
     cout << endl
          << "Found " << name << " sensor" << endl
          << "  Current properties are:" << endl;
-//~autogen cpp_generic_report_status classes.sensor>currentClass
+//~autogen generic_report_status classes.sensor>currentClass
 
     cout << "    Commands: ";
     try { cout << dev.commands() << endl; }
@@ -95,7 +97,7 @@ void test_motor(const char *name)
     cout << endl
          << "Found " << name << " motor" << endl
          << "  Current properties are:" << endl;
-//~autogen cpp_generic_report_status classes.motor>currentClass
+//~autogen generic_report_status classes.motor>currentClass
 
     cout << "    Commands: ";
     try { cout << dev.commands() << endl; }
@@ -189,7 +191,7 @@ void test_dc_motor()
     cout << endl
          << "Found dc motor" << endl
          << "  Current properties are:" << endl;
-//~autogen cpp_generic_report_status classes.dcMotor>currentClass
+//~autogen generic_report_status classes.dcMotor>currentClass
 
     cout << "    Commands: ";
     try { cout << dev.commands() << endl; }
@@ -221,6 +223,9 @@ void test_dc_motor()
     cout << "    Stop Commands: ";
     try { cout << dev.stop_commands() << endl; }
     catch(...) { cout << "[" << strerror(errno) << "]" << endl; }
+    cout << "    Time SP: ";
+    try { cout << dev.time_sp() << endl; }
+    catch(...) { cout << "[" << strerror(errno) << "]" << endl; }
 
 
 //~autogen
@@ -238,7 +243,7 @@ void test_servo_motor()
     cout << endl
          << "Found servo motor" << endl
          << "  Current properties are:" << endl;
-//~autogen cpp_generic_report_status classes.servoMotor>currentClass
+//~autogen generic_report_status classes.servoMotor>currentClass
 
     cout << "    Driver Name: ";
     try { cout << dev.driver_name() << endl; }

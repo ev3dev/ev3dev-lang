@@ -202,7 +202,7 @@ void motor_action(motor &dev)
     {
     case 'i':
       cout << endl;
-//~autogen cpp_generic_report_status classes.motor>currentClass
+//~autogen generic_report_status classes.motor>currentClass
 
     cout << "    Commands: ";
     try { cout << dev.commands() << endl; }
@@ -702,17 +702,6 @@ void sound_menu()
         std::string text;
         cout << "text: "; getline(cin, text); getline(cin, text); cout << endl;
         sound::speak(text, true);
-      }
-      break;
-    case 'v':
-      {
-        cout << endl << "current volume is " << sound::volume()
-             << endl << "new volume: ";
-
-        unsigned volume = 0;
-        cin >> volume; cout << endl;
-        if (volume)
-          sound::set_volume(volume);
       }
       break;
     }

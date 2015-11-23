@@ -25,13 +25,16 @@
 
 //-----------------------------------------------------------------------------
 //~autogen autogen-header
-    // Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 2. 
+
+// Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 2.
+
 //~autogen
 //-----------------------------------------------------------------------------
 
 #include "ev3dev.h"
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <list>
 #include <map>
@@ -618,7 +621,7 @@ touch_sensor::touch_sensor(port_type port_) :
 
 //-----------------------------------------------------------------------------
 
-//~autogen cpp_generic-define-property-value classes.colorSensor>currentClass
+//~autogen generic-define-property-value classes.colorSensor>currentClass
 
 const std::string color_sensor::mode_col_reflect{ "COL-REFLECT" };
 const std::string color_sensor::mode_col_ambient{ "COL-AMBIENT" };
@@ -635,7 +638,7 @@ color_sensor::color_sensor(port_type port_) :
 
 //-----------------------------------------------------------------------------
 
-//~autogen cpp_generic-define-property-value classes.ultrasonicSensor>currentClass
+//~autogen generic-define-property-value classes.ultrasonicSensor>currentClass
 
 const std::string ultrasonic_sensor::mode_us_dist_cm{ "US-DIST-CM" };
 const std::string ultrasonic_sensor::mode_us_dist_in{ "US-DIST-IN" };
@@ -652,7 +655,7 @@ ultrasonic_sensor::ultrasonic_sensor(port_type port_) :
 
 //-----------------------------------------------------------------------------
 
-//~autogen cpp_generic-define-property-value classes.gyroSensor>currentClass
+//~autogen generic-define-property-value classes.gyroSensor>currentClass
 
 const std::string gyro_sensor::mode_gyro_ang{ "GYRO-ANG" };
 const std::string gyro_sensor::mode_gyro_rate{ "GYRO-RATE" };
@@ -669,7 +672,7 @@ gyro_sensor::gyro_sensor(port_type port_) :
 
 //-----------------------------------------------------------------------------
 
-//~autogen cpp_generic-define-property-value classes.infraredSensor>currentClass
+//~autogen generic-define-property-value classes.infraredSensor>currentClass
 
 const std::string infrared_sensor::mode_ir_prox{ "IR-PROX" };
 const std::string infrared_sensor::mode_ir_seek{ "IR-SEEK" };
@@ -686,7 +689,7 @@ infrared_sensor::infrared_sensor(port_type port_) :
 
 //-----------------------------------------------------------------------------
 
-//~autogen cpp_generic-define-property-value classes.soundSensor>currentClass
+//~autogen generic-define-property-value classes.soundSensor>currentClass
 
 const std::string sound_sensor::mode_db{ "DB" };
 const std::string sound_sensor::mode_dba{ "DBA" };
@@ -715,7 +718,7 @@ sound_sensor::sound_sensor(port_type port_) :
 
 //-----------------------------------------------------------------------------
 
-//~autogen cpp_generic-define-property-value classes.lightSensor>currentClass
+//~autogen generic-define-property-value classes.lightSensor>currentClass
 
 const std::string light_sensor::mode_reflect{ "REFLECT" };
 const std::string light_sensor::mode_ambient{ "AMBIENT" };
@@ -732,7 +735,7 @@ light_sensor::light_sensor(port_type port_) :
 const motor::motor_type motor::motor_large  { "lego-ev3-l-motor" };
 const motor::motor_type motor::motor_medium { "lego-ev3-m-motor" };
 
-//~autogen cpp_generic-define-property-value classes.motor>currentClass
+//~autogen generic-define-property-value classes.motor>currentClass
 
 const std::string motor::command_run_forever{ "run-forever" };
 const std::string motor::command_run_to_abs_pos{ "run-to-abs-pos" };
@@ -807,7 +810,7 @@ dc_motor::dc_motor(port_type port)
   connect(_strClassDir, _strPattern, {{ "port_name", { port }}});
 }
 
-//~autogen cpp_generic-define-property-value classes.dcMotor>currentClass
+//~autogen generic-define-property-value classes.dcMotor>currentClass
 
 const std::string dc_motor::command_run_forever{ "run-forever" };
 const std::string dc_motor::command_run_timed{ "run-timed" };
@@ -830,7 +833,7 @@ servo_motor::servo_motor(port_type port)
   connect(_strClassDir, _strPattern, {{ "port_name", { port }}});
 }
 
-//~autogen cpp_generic-define-property-value classes.servoMotor>currentClass
+//~autogen generic-define-property-value classes.servoMotor>currentClass
 
 const std::string servo_motor::command_run{ "run" };
 const std::string servo_motor::command_float{ "float" };
@@ -873,28 +876,62 @@ void led::flash(unsigned on_ms, unsigned off_ms)
 
 //-----------------------------------------------------------------------------
 
-led led::red_right   { "ev3-right0:red:ev3dev"   };
-led led::red_left    { "ev3-left0:red:ev3dev"    };
-led led::green_right { "ev3-right1:green:ev3dev" };
-led led::green_left  { "ev3-left1:green:ev3dev"  };
+#ifdef EV3DEV_PLATFORM_BRICKPI
+//~autogen leds-define platforms.brickpi.led>currentClass
+
+led led::blue_led1{"brickpi1:blue:ev3dev"};
+led led::blue_led2{"brickpi2:blue:ev3dev"};
+
+std::vector<led*> led::led1{ &led::blue_led1 };
+std::vector<led*> led::led2{ &led::blue_led2 };
+
+std::vector<float> led::blue{ static_cast<float>(1) };
 
 //-----------------------------------------------------------------------------
+void led::all_off() {
 
-void led::mix_colors(float red, float green) {
-  red_right.set_brightness_pct(red);
-  red_left.set_brightness_pct(red);
+    blue_led1.off();
+    blue_led2.off();
 
-  green_right.set_brightness_pct(green);
-  green_left.set_brightness_pct(green);
 }
 
+//~autogen
+#else
+//~autogen leds-define platforms.ev3.led>currentClass
+
+led led::red_left{"ev3:left:red:ev3dev"};
+led led::red_right{"ev3:right:red:ev3dev"};
+led led::green_left{"ev3:left:green:ev3dev"};
+led led::green_right{"ev3:right:green:ev3dev"};
+
+std::vector<led*> led::left{ &led::red_left, &led::green_left };
+std::vector<led*> led::right{ &led::red_right, &led::green_right };
+
+std::vector<float> led::red{ static_cast<float>(1), static_cast<float>(0) };
+std::vector<float> led::green{ static_cast<float>(0), static_cast<float>(1) };
+std::vector<float> led::amber{ static_cast<float>(1), static_cast<float>(1) };
+std::vector<float> led::orange{ static_cast<float>(1), static_cast<float>(0.5) };
+std::vector<float> led::yellow{ static_cast<float>(0.5), static_cast<float>(1) };
+
+//-----------------------------------------------------------------------------
+void led::all_off() {
+
+    red_left.off();
+    red_right.off();
+    green_left.off();
+    green_right.off();
+
+}
+
+//~autogen
+#endif
+
 //-----------------------------------------------------------------------------
 
-void led::all_off  () {
-  red_right.set_brightness(0);
-  red_left.set_brightness(0);
-  green_right.set_brightness(0);
-  green_left.set_brightness(0);
+void led::set_color(const std::vector<led*> &group, const std::vector<float> &color) {
+  const size_t n = std::min(group.size(), color.size());
+  for(size_t i = 0; i < n; ++i)
+    group[i]->set_brightness_pct(color[i]);
 }
 
 //-----------------------------------------------------------------------------
@@ -988,77 +1025,83 @@ bool button::process_all() {
 
 //-----------------------------------------------------------------------------
 
-void sound::beep()
+void sound::beep(const std::string &args, bool bSynchronous)
 {
-  tone(1000, 100);
+  std::ostringstream cmd;
+  cmd << "/usr/bin/beep " << args;
+  if (!bSynchronous) cmd << " &";
+  std::system(cmd.str().c_str());
 }
 
 //-----------------------------------------------------------------------------
 
-void sound::tone(unsigned frequency, unsigned ms)
+void sound::tone(
+    const std::vector< std::vector<float> > &sequence,
+    bool bSynchronous
+    )
 {
-  std::ofstream os(SYS_SOUND "/tone");
-  if (os.is_open())
-  {
-    os << frequency;
-    if (ms)
-      os << " " << ms;
+  std::ostringstream args;
+  bool first = true;
+
+  for(auto v : sequence) {
+    if (first) {
+      first = false;
+    } else {
+      args << " -n";
+    }
+
+    if (v.size() > 0) {
+      args << " -f " << v[0];
+    } else {
+      continue;
+    }
+
+    if (v.size() > 1) {
+      args << " -l " << v[1];
+    } else {
+      continue;
+    }
+
+    if (v.size() > 2) {
+      args << " -D " << v[2];
+    } else {
+      continue;
+    }
   }
+
+  beep(args.str(), bSynchronous);
+}
+
+//-----------------------------------------------------------------------------
+
+void sound::tone(float frequency, float ms, bool bSynchronous) {
+  tone({{frequency, ms, 0.0f}}, bSynchronous);
 }
 
 //-----------------------------------------------------------------------------
 
 void sound::play(const std::string &soundfile, bool bSynchronous)
 {
-  std::string cmd("aplay -q ");
-  cmd.append(soundfile);
-  if (!bSynchronous)
-  {
-    cmd.append(" &");
-  }
+  std::ostringstream cmd;
+  cmd << "/usr/bin/aplay -q " << soundfile;
 
-  std::system(cmd.c_str());
+  if (!bSynchronous) cmd << " &";
+
+  std::system(cmd.str().c_str());
 }
 
 //-----------------------------------------------------------------------------
 
 void sound::speak(const std::string &text, bool bSynchronous)
 {
-  std::string cmd("espeak -a 200 --stdout \"");
-  cmd.append(text);
-  cmd.append("\" | aplay -q");
-  if (!bSynchronous)
-  {
-    cmd.append(" &");
-  }
+  std::ostringstream cmd;
 
-  std::system(cmd.c_str());
-}
+  cmd << "/usr/bin/espeak -a 200 --stdout \"" << text << "\""
+      << " | /usr/bin/aplay -q";
 
-//-----------------------------------------------------------------------------
+  if (!bSynchronous) cmd << " &";
 
-unsigned sound::volume()
-{
-  unsigned result = 0;
-
-  std::ifstream is(SYS_SOUND "/volume");
-  if (is.is_open())
-  {
-    is >> result;
-  }
-
-  return result;
-}
-
-//-----------------------------------------------------------------------------
-
-void sound::set_volume(unsigned v)
-{
-  std::ofstream os(SYS_SOUND "/volume");
-  if (os.is_open())
-  {
-    os << v;
-  }
+  std::system(cmd.str().c_str());
 }
 
 //-----------------------------------------------------------------------------

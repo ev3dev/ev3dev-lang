@@ -1,11 +1,11 @@
-
+EV3DEV_PLATFORM=EV3
 
 CXX       = $(CROSS_COMPILE)g++
 AR        = $(CROSS_COMPILE)ar
 RANLIB    = $(CROSS_COMPILE)ranlib
 
 CFLAGS=-O2 -march=armv5
-CCFLAGS=-std=c++11 -D_GLIBCXX_USE_NANOSLEEP
+CCFLAGS=-std=c++11 -D_GLIBCXX_USE_NANOSLEEP -DEV3DEV_PLATFORM_$(EV3DEV_PLATFORM)
 DEPS=ev3dev.h
 LIBS=-Llib -lev3dev -lstdc++ -lm
 
@@ -34,6 +34,10 @@ bin/drive-test: lib/libev3dev.a obj/drive-test.o
 	$(CXX) -o $@ $^ $(CFLAGS) $(CCFLAGS) $(LIBS) -lpthread
 
 bin/button-test: lib/libev3dev.a obj/button-test.o
+	mkdir -p $(@D)
+	$(CXX) -o $@ $^ $(CFLAGS) $(CCFLAGS) $(LIBS)
+
+bin/sound-test: lib/libev3dev.a obj/sound-test.o
 	mkdir -p $(@D)
 	$(CXX) -o $@ $^ $(CFLAGS) $(CCFLAGS) $(LIBS)
 
