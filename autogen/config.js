@@ -11,6 +11,7 @@ exports.autogenFenceComments = {
     '.vala': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     '.cpp': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     '.h': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
+    '.java': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     //XML-style regex here: http://regex101.com/r/cN6gE4
     '.md': { start: /<!--\s*~autogen *([\w-]+) *((\s*[\w\."',]+>[\w\.]+)*)\s*-->/, end: "<!-- ~autogen -->" },
     //Lua regex: http://regex101.com/r/mI4gL1
