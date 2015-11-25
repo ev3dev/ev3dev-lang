@@ -40,6 +40,6 @@ The rest of the comment is a space-separated list of contextual variables. The s
 Just as we welcome contributions to the language bindings in this repo, we love to have people update our infrastructure. If you want to make a contribution, here are some quick tips to get started developing.
 
 - After making a change, you should run the script and tell it to re-generate some files to make sure that your changes work as expected.
-- If you are making more extensive changes, it may be helpful to create a temporary regen grouo with some test files to be able to manually test any new features or modifications.
+- If you are making more extensive changes, it may be helpful to create a temporary regen group with some test files to be able to manually test any new features or modifications.
 - Although you can use any text editor, we recommend using [Visual Studio Code](https://code.visualstudio.com/) to edit the autogen scripts. It has great autocomplete, and their debug GUI works well with node.
  
