@@ -9,7 +9,8 @@ Because this specification is meant to be implemented in multiple languages, the
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
 
 <!-- ~autogen autogen-header 'xml'>commentStyle -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 1. -->
+<!-- Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 2. -->
+
 <!-- ~autogen -->
 
 Implementation Notes (important)
@@ -54,7 +55,7 @@ Driver Name|String|The motor driver that should be driving the target motor (gen
 Property Name|Type|Accessibility|Description
 ---|---|---|---
 Command|string|Write| Sends a command to the motor controller. See `commands` for a list of possible values.
-Commands|string array|Read| Returns a list of commands that are supported by the motor controller. Possible values are `run-forever`, `run-to-abs-pos`, `run-to-rel-pos`, `run-timed`, `run-direct`, `stop` and `reset`. Not all commands may be supported. `run-forever` will cause the motor to run until another command is sent. `run-to-abs-pos` will run to an absolute position specified by `position_sp` and then stop using the command specified in `stop_command`. `run-to-rel-pos` will run to a position relative to the current `position` value. The new position will be current `position` + `position_sp`. When the new position is reached, the motor will stop using the command specified by `stop_command`. `run-timed` will run the motor for the amount of time specified in `time_sp` and then stop the motor using the command specified by `stop_command`. `run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`. Unlike other run commands, changing `duty_cycle_sp` while running *will* take effect immediately. `stop` will stop any of the run commands before they are complete using the command specified by `stop_command`. `reset` will reset all of the motor parameter attributes to their default value. This will also have the effect of stopping the motor.
+Commands|string array|Read| Returns a list of commands that are supported by the motor controller. Possible values are `run-forever`, `run-to-abs-pos`, `run-to-rel-pos`, `run-timed`, `run-direct`, `stop` and `reset`. Not all commands may be supported.  - `run-forever` will cause the motor to run until another command is sent. - `run-to-abs-pos` will run to an absolute position specified by `position_sp`   and then stop using the command specified in `stop_command`. - `run-to-rel-pos` will run to a position relative to the current `position` value.   The new position will be current `position` + `position_sp`. When the new   position is reached, the motor will stop using the command specified by `stop_command`. - `run-timed` will run the motor for the amount of time specified in `time_sp`   and then stop the motor using the command specified by `stop_command`. - `run-direct` will run the motor at the duty cycle specified by `duty_cycle_sp`.   Unlike other run commands, changing `duty_cycle_sp` while running *will*   take effect immediately. - `stop` will stop any of the run commands before they are complete using the   command specified by `stop_command`. - `reset` will reset all of the motor parameter attributes to their default value.   This will also have the effect of stopping the motor.
 Count Per Rot|int|Read| Returns the number of tacho counts in one rotation of the motor. Tacho counts are used by the position and speed attributes, so you can use this value to convert rotations or degrees to tacho counts. In the case of linear actuators, the units here will be counts per centimeter.
 Driver Name|string|Read| Returns the name of the driver that provides this tacho motor device.
 Duty Cycle|int|Read| Returns the current duty cycle of the motor. Units are percent. Values are -100 to 100.
@@ -139,6 +140,7 @@ Ramp Up SP|int|Read/Write| Sets the time in milliseconds that it take the motor 
 State|string array|Read| Gets a list of flags indicating the motor status. Possible flags are `running` and `ramping`. `running` indicates that the motor is powered. `ramping` indicates that the motor has not yet reached the `duty_cycle_sp`.
 Stop Command|string|Write| Sets the stop command that will be used when the motor stops. Read `stop_commands` to get the list of valid values.
 Stop Commands|string array|Read| Gets a list of stop commands. Valid values are `coast` and `brake`.
+Time SP|int|Read/Write| Writing specifies the amount of time the motor will run when using the `run-timed` command. Reading returns the current value. Units are in milliseconds.
 
 
 <!-- ~autogen -->
@@ -365,16 +367,6 @@ Flash | void | ON interval: Number, OFF interval: Number | Enables `timer` trigg
 <!-- ~autogen md_led-color-methods -->
 Method name | Return type | Arguments | Description
 ---|---|---|---
-Set Red | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear red, using the specified intensity percentage (0-1).
-Red On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear red at full intensity.
-Set Green | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear green, using the specified intensity percentage (0-1).
-Green On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear green at full intensity.
-Set Amber | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear amber, using the specified intensity percentage (0-1).
-Amber On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear amber at full intensity.
-Set Orange | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear orange, using the specified intensity percentage (0-1).
-Orange On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear orange at full intensity.
-Set Yellow | void | Intensity: Number | Sets the brightness of the built-in EV3 LEDs so that they appear yellow, using the specified intensity percentage (0-1).
-Yellow On | void | None | Sets the brightness of the built-in EV3 LEDs so that they appear yellow at full intensity.
 Mix Colors| void | Red Percent: Number, Green Percent: Number | Sets the LEDs to the specified percentage (0-1) of their max brightness.
 All Off   | void | None | Turns all leds off.
 <!-- ~autogen -->
