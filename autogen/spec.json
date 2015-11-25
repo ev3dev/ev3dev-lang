@@ -704,13 +704,13 @@
                 }
             ]
         },
-	"button": {
+        "button": {
             "friendlyName": "Button",
             "description": [
                 "Provides a generic button reading mechanism that can be adapted",
-	       	"to platform specific implementations. Each platform's specific",
-		"button capabilites are enumerated in the 'platforms' section",
-		"of this specification"
+                "to platform specific implementations. Each platform's specific",
+                "button capabilites are enumerated in the 'platforms' section",
+                "of this specification"
             ]
         },
         "sensor": {
@@ -1077,17 +1077,6 @@
                 }
             ]
         },
-        "touchSensor": {
-            "friendlyName": "Touch Sensor",
-            "description": [
-                "Touch Sensor"
-            ],
-            "driverName": [
-                "lego-ev3-touch",
-                "lego-nxt-touch"
-            ],
-            "inheritance": "sensor"
-        },
         "powerSupply": {
             "friendlyName": "Power Supply",
             "description": [
@@ -1183,6 +1172,31 @@
                         "cases where there is an `auto` mode additional values may be returned,",
                         "such as `no-device` or `error`. See individual port driver documentation",
                         "for the full list of possible values."
+                    ]
+                }
+            ]
+        }
+    },
+    "specialSensorTypes": {
+        "touchSensor": {
+            "friendlyName": "Touch Sensor",
+            "description": [
+                "Touch Sensor"
+            ],
+            "driverName": [
+                "lego-ev3-touch",
+                "lego-nxt-touch"
+            ],
+            "inheritance": "sensor",
+            "sensorValueMappings": [
+                {
+                    "name": "Is Pressed",
+                    "sourceValue": 0,
+                    "type": "boolean",
+                    "requiredMode": "TOUCH",
+                    "description": [
+                        "A boolean indicating whether the current touch sensor is being",
+                        "pressed."
                     ]
                 }
             ]
