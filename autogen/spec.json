@@ -1077,6 +1077,29 @@
                 }
             ]
         },
+        "touchSensor": {
+            "friendlyName": "Touch Sensor",
+            "description": [
+                "Touch Sensor"
+            ],
+            "driverName": [
+                "lego-ev3-touch",
+                "lego-nxt-touch"
+            ],
+            "inheritance": "sensor",
+            "sensorValueMappings": [
+                {
+                    "name": "Is Pressed",
+                    "sourceValue": 0,
+                    "type": "boolean",
+                    "requiredMode": "TOUCH",
+                    "description": [
+                        "A boolean indicating whether the current touch sensor is being",
+                        "pressed."
+                    ]
+                }
+            ]
+        },
         "powerSupply": {
             "friendlyName": "Power Supply",
             "description": [
@@ -1172,31 +1195,6 @@
                         "cases where there is an `auto` mode additional values may be returned,",
                         "such as `no-device` or `error`. See individual port driver documentation",
                         "for the full list of possible values."
-                    ]
-                }
-            ]
-        }
-    },
-    "specialSensorTypes": {
-        "touchSensor": {
-            "friendlyName": "Touch Sensor",
-            "description": [
-                "Touch Sensor"
-            ],
-            "driverName": [
-                "lego-ev3-touch",
-                "lego-nxt-touch"
-            ],
-            "inheritance": "sensor",
-            "sensorValueMappings": [
-                {
-                    "name": "Is Pressed",
-                    "sourceValue": 0,
-                    "type": "boolean",
-                    "requiredMode": "TOUCH",
-                    "description": [
-                        "A boolean indicating whether the current touch sensor is being",
-                        "pressed."
                     ]
                 }
             ]
