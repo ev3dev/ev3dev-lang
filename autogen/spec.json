@@ -817,289 +817,6 @@
                 }
             ]
         },
-        "colorSensor": {
-            "friendlyName": "Color Sensor",
-            "description": [
-                "LEGO EV3 color sensor."
-            ],
-            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-color-sensor/",
-            "driverName": [
-                "lego-ev3-color"
-            ],
-            "inheritance": "sensor",
-            "propertyValues": [
-                {
-                    "propertyName": "Mode",
-                    "values": [
-                        { "name": "COL-REFLECT",
-                            "description": [
-                                "Reflected light. Red LED on."
-                            ]
-                        },
-                        { "name": "COL-AMBIENT",
-                            "description": [
-                                "Ambient light. Red LEDs off."
-                            ]
-                        },
-                        { "name": "COL-COLOR",
-                            "description": [
-                                "Color. All LEDs rapidly cycling, appears white."
-                            ]
-                        },
-                        { "name": "REF-RAW",
-                            "description": [
-                                "Raw reflected. Red LED on"
-                            ]
-                        },
-                        { "name": "RGB-RAW",
-                            "description": [
-                                "Raw Color Components. All LEDs rapidly cycling, appears white."
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "ultrasonicSensor": {
-            "friendlyName": "Ultrasonic Sensor",
-            "description": [
-                "LEGO EV3 ultrasonic sensor."
-            ],
-            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-ultrasonic-sensor/",
-            "driverName": [
-                "lego-ev3-us",
-                "lego-nxt-us"
-            ],
-            "inheritance": "sensor",
-            "propertyValues": [
-                {
-                    "propertyName": "Mode",
-                    "values": [
-                        { "name": "US-DIST-CM",
-                            "description": [
-                                "Continuous measurement in centimeters.",
-                                "LEDs: On, steady"
-                            ]
-                        },
-                        { "name": "US-DIST-IN",
-                            "description": [
-                                "Continuous measurement in inches.",
-                                "LEDs: On, steady"
-                            ]
-                        },
-                        { "name": "US-LISTEN",
-                            "description": [
-                                "Listen.  LEDs: On, blinking"
-                            ]
-                        },
-                        { "name": "US-SI-CM",
-                            "description": [
-                                "Single measurement in centimeters.",
-                                "LEDs: On momentarily when mode is set, then off"
-                            ]
-                        },
-                        { "name": "US-SI-IN",
-                            "description": [
-                                "Single measurement in inches.",
-                                "LEDs: On momentarily when mode is set, then off"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "gyroSensor": {
-            "friendlyName": "Gyro Sensor",
-            "description": [
-                "LEGO EV3 gyro sensor."
-            ],
-            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-gyro-sensor/",
-            "driverName": [
-                "lego-ev3-gyro"
-            ],
-            "inheritance": "sensor",
-            "propertyValues": [
-                {
-                    "propertyName": "Mode",
-                    "values": [
-                        { "name": "GYRO-ANG",
-                            "description": [
-                                "Angle"
-                            ]
-                        },
-                        { "name": "GYRO-RATE",
-                            "description": [
-                                "Rotational speed"
-                            ]
-                        },
-                        { "name": "GYRO-FAS",
-                            "description": [
-                                "Raw sensor value"
-                            ]
-                        },
-                        { "name": "GYRO-G&A",
-                            "description": [
-                                "Angle and rotational speed"
-                            ]
-                        },
-                        { "name": "GYRO-CAL",
-                            "description": [
-                                "Calibration ???"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "infraredSensor": {
-            "friendlyName": "Infrared Sensor",
-            "description": [
-                "LEGO EV3 infrared sensor."
-            ],
-            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-infrared-sensor/",
-            "driverName": [
-                "lego-ev3-ir"
-            ],
-            "inheritance": "sensor",
-            "propertyValues": [
-                {
-                    "propertyName": "Mode",
-                    "values": [
-                        { "name": "IR-PROX",
-                            "description": [
-                                "Proximity"
-                            ]
-                        },
-                        { "name": "IR-SEEK",
-                            "description": [
-                                "IR Seeker"
-                            ]
-                        },
-                        { "name": "IR-REMOTE",
-                            "description": [
-                                "IR Remote Control"
-                            ]
-                        },
-                        { "name": "IR-REM-A",
-                            "description": [
-                                "IR Remote Control. State of the buttons is coded in binary"
-                            ]
-                        },
-                        { "name": "IR-CAL",
-                            "description": [
-                                "Calibration ???"
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "remoteControl": {
-                "description": [
-                    "EV3 Remote Controller"
-                ],
-                "numChannels": 4,
-                "buttons": [
-                    { "name": "Red Up" },
-                    { "name": "Red Down" },
-                    { "name": "Blue Up" },
-                    { "name": "Blue Down" },
-                    { "name": "Beacon" }
-                ],
-                "values": [
-                    { "value": 0,  "state": []},
-                    { "value": 1,  "state": ["Red Up"]},
-                    { "value": 2,  "state": ["Red Down"]},
-                    { "value": 3,  "state": ["Blue Up"]},
-                    { "value": 4,  "state": ["Blue Down"]},
-                    { "value": 5,  "state": ["Red Up", "Blue Up"]},
-                    { "value": 6,  "state": ["Red Up", "Blue Down"]},
-                    { "value": 7,  "state": ["Red Down", "Blue Up"]},
-                    { "value": 8,  "state": ["Red Down", "Blue Down"]},
-                    { "value": 9,  "state": ["Beacon"]},
-                    { "value": 10, "state": ["Red Up", "Red Down"]},
-                    { "value": 11, "state": ["Blue Up", "Blue Down"]}
-                ]
-            }
-        },
-        "soundSensor": {
-            "friendlyName": "Sound Sensor",
-            "description": [
-                "LEGO NXT Sound Sensor"
-            ],
-            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-sound-sensor/",
-            "driverName": [
-                "lego-nxt-sound"
-            ],
-            "inheritance": "sensor",
-            "propertyValues": [
-                {
-                    "propertyName": "Mode",
-                    "values": [
-                        { "name": "DB",
-                            "description": [
-                                "Sound pressure level. Flat weighting"
-                            ]
-                        },
-                        { "name": "DBA",
-                            "description": [
-                                "Sound pressure level. A weighting"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "lightSensor": {
-            "friendlyName": "Light Sensor",
-            "description": [
-                "LEGO NXT Light Sensor"
-            ],
-            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-light-sensor/",
-            "driverName": [
-                "lego-nxt-light"
-            ],
-            "inheritance": "sensor",
-            "propertyValues": [
-                {
-                    "propertyName": "Mode",
-                    "values": [
-                        { "name": "REFLECT",
-                            "description": [
-                                "Reflected light. LED on"
-                            ]
-                        },
-                        { "name": "AMBIENT",
-                            "description": [
-                                "Ambient light. LED off"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "touchSensor": {
-            "friendlyName": "Touch Sensor",
-            "description": [
-                "Touch Sensor"
-            ],
-            "driverName": [
-                "lego-ev3-touch",
-                "lego-nxt-touch"
-            ],
-            "inheritance": "sensor",
-            "sensorValueMappings": [
-                {
-                    "name": "Is Pressed",
-                    "sourceValue": 0,
-                    "type": "boolean",
-                    "requiredMode": "TOUCH",
-                    "description": [
-                        "A boolean indicating whether the current touch sensor is being",
-                        "pressed."
-                    ]
-                }
-            ]
-        },
         "powerSupply": {
             "friendlyName": "Power Supply",
             "description": [
@@ -1195,6 +912,469 @@
                         "cases where there is an `auto` mode additional values may be returned,",
                         "such as `no-device` or `error`. See individual port driver documentation",
                         "for the full list of possible values."
+                    ]
+                }
+            ]
+        }
+    },
+    "specialSensorTypes": {
+        "touchSensor": {
+            "friendlyName": "Touch Sensor",
+            "description": [
+                "Touch Sensor"
+            ],
+            "driverName": [
+                "lego-ev3-touch",
+                "lego-nxt-touch"
+            ],
+            "inheritance": "sensor",
+            "sensorValueMappings": [
+                {
+                    "name": "Is Pressed",
+                    "sourceValue": 0,
+                    "type": "boolean",
+                    "requiredMode": "TOUCH",
+                    "description": [
+                        "A boolean indicating whether the current touch sensor is being",
+                        "pressed."
+                    ]
+                }
+            ]
+        },
+        
+        "colorSensor": {
+            "friendlyName": "Color Sensor",
+            "description": [
+                "LEGO EV3 color sensor."
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-color-sensor/",
+            "driverName": [
+                "lego-ev3-color"
+            ],
+            "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        {
+                            "name": "COL-REFLECT",
+                            "description": [
+                                "Reflected light. Red LED on."
+                            ]
+                        },
+                        {
+                            "name": "COL-AMBIENT",
+                            "description": [
+                                "Ambient light. Red LEDs off."
+                            ]
+                        },
+                        {
+                            "name": "COL-COLOR",
+                            "description": [
+                                "Color. All LEDs rapidly cycling, appears white."
+                            ]
+                        },
+                        {
+                            "name": "REF-RAW",
+                            "description": [
+                                "Raw reflected. Red LED on"
+                            ]
+                        },
+                        {
+                            "name": "RGB-RAW",
+                            "description": [
+                                "Raw Color Components. All LEDs rapidly cycling, appears white."
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "sensorValueMappings":  [
+                {
+                    "name": "Reflected Light Intensity",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "COL-REFLECT",
+                    "description": [
+                        "Reflected light intensity as a percentage. Light on sensor is red."
+                    ]
+                },
+                {
+                    "name": "Ambient Light Intensity",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "COL-AMBIENT",
+                    "description": [
+                        "Ambient light intensity. Light on sensor is dimly lit blue."
+                    ]
+                },
+                {
+                    "name": "Color",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "COL-COLOR",
+                    "description": [
+                        "Color detected by the sensor, categorized by overall value.",
+                        "  - 0: No color",
+                        "  - 1: Black",
+                        "  - 2: Blue",
+                        "  - 3: Green",
+                        "  - 4: Yellow",
+                        "  - 5: Red",
+                        "  - 6: White",
+                        "  - 7: Brown"
+                    ]
+                },
+                {
+                    "name": "Red",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Red component of the detected color, in the range 0-1020."
+                    ]
+                },
+                {
+                    "name": "Green",
+                    "sourceValue": 1,
+                    "type": "int",
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Green component of the detected color, in the range 0-1020."
+                    ]
+                },
+                {
+                    "name": "Blue",
+                    "sourceValue": 2,
+                    "type": "int",
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Blue component of the detected color, in the range 0-1020."
+                    ]
+                }
+            ]
+        },
+        "ultrasonicSensor": {
+            "friendlyName": "Ultrasonic Sensor",
+            "description": [
+                "LEGO EV3 ultrasonic sensor."
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-ultrasonic-sensor/",
+            "driverName": [
+                "lego-ev3-us",
+                "lego-nxt-us"
+            ],
+            "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "US-DIST-CM",
+                            "description": [
+                                "Continuous measurement in centimeters."
+                            ]
+                        },
+                        { "name": "US-DIST-IN",
+                            "description": [
+                                "Continuous measurement in inches."
+                            ]
+                        },
+                        { "name": "US-LISTEN",
+                            "description": [
+                                "Listen."
+                            ]
+                        },
+                        { "name": "US-SI-CM",
+                            "description": [
+                                "Single measurement in centimeters."
+                            ]
+                        },
+                        { "name": "US-SI-IN",
+                            "description": [
+                                "Single measurement in inches."
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Distance Centimeters",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "US-DIST-CM",
+                    "description": [
+                        "Measurement of the distance detected by the sensor,",
+                        "in centimeters."
+                    ]
+                },
+                {
+                    "name": "Distance Inches",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "US-DIST-IN",
+                    "description": [
+                        "Measurement of the distance detected by the sensor,",
+                        "in inches."
+                    ]
+                },
+                {
+                    "name": "Other Sensor Present",
+                    "sourceValue": 0,
+                    "type": "boolean",
+                    "requiredMode": "US-LISTEN",
+                    "description": [
+                        "Value indicating whether another ultrasonic sensor could",
+                        "be heard nearby."
+                    ]
+                }
+            ]
+        },
+        "gyroSensor": {
+            "friendlyName": "Gyro Sensor",
+            "description": [
+                "LEGO EV3 gyro sensor."
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-gyro-sensor/",
+            "driverName": [
+                "lego-ev3-gyro"
+            ],
+            "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        {
+                            "name": "GYRO-ANG",
+                            "description": [
+                                "Angle"
+                            ]
+                        },
+                        {
+                            "name": "GYRO-RATE",
+                            "description": [
+                                "Rotational speed"
+                            ]
+                        },
+                        {
+                            "name": "GYRO-FAS",
+                            "description": [
+                                "Raw sensor value"
+                            ]
+                        },
+                        {
+                            "name": "GYRO-G&A",
+                            "description": [
+                                "Angle and rotational speed"
+                            ]
+                        },
+                        {
+                            "name": "GYRO-CAL",
+                            "description": [
+                                "Calibration ???"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Angle",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "GYRO-ANG",
+                    "description": [
+                        "The number of degrees that the sensor has been rotated",
+                        "since it was put into this mode."
+                    ]
+                },
+                {
+                    "name": "Rate",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "GYRO-RATE",
+                    "description": [
+                        "The rate at which the sensor is rotating, in degrees/second."
+                    ]
+                }
+            ]
+        },
+        "infraredSensor": {
+            "friendlyName": "Infrared Sensor",
+            "description": [
+                "LEGO EV3 infrared sensor."
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-ev3-infrared-sensor/",
+            "driverName": [
+                "lego-ev3-ir"
+            ],
+            "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "IR-PROX",
+                            "description": [
+                                "Proximity"
+                            ]
+                        },
+                        { "name": "IR-SEEK",
+                            "description": [
+                                "IR Seeker"
+                            ]
+                        },
+                        { "name": "IR-REMOTE",
+                            "description": [
+                                "IR Remote Control"
+                            ]
+                        },
+                        { "name": "IR-REM-A",
+                            "description": [
+                                "IR Remote Control. State of the buttons is coded in binary"
+                            ]
+                        },
+                        { "name": "IR-CAL",
+                            "description": [
+                                "Calibration ???"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "remoteControl": {
+                "description": [
+                    "EV3 Remote Controller"
+                ],
+                "numChannels": 4,
+                "buttons": [
+                    { "name": "Red Up" },
+                    { "name": "Red Down" },
+                    { "name": "Blue Up" },
+                    { "name": "Blue Down" },
+                    { "name": "Beacon" }
+                ],
+                "values": [
+                    { "value": 0,  "state": []},
+                    { "value": 1,  "state": ["Red Up"]},
+                    { "value": 2,  "state": ["Red Down"]},
+                    { "value": 3,  "state": ["Blue Up"]},
+                    { "value": 4,  "state": ["Blue Down"]},
+                    { "value": 5,  "state": ["Red Up", "Blue Up"]},
+                    { "value": 6,  "state": ["Red Up", "Blue Down"]},
+                    { "value": 7,  "state": ["Red Down", "Blue Up"]},
+                    { "value": 8,  "state": ["Red Down", "Blue Down"]},
+                    { "value": 9,  "state": ["Beacon"]},
+                    { "value": 10, "state": ["Red Up", "Red Down"]},
+                    { "value": 11, "state": ["Blue Up", "Blue Down"]}
+                ]
+            },
+            "sensorValueMappings": [
+                {
+                    "name": "Proximity",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "IR-PROX",
+                    "description": [
+                        "A measurement of the distance between the sensor and the remote,",
+                        "as a percentage. 100% is approximately 70cm/27in."
+                    ]
+                }
+            ]
+        },
+        "soundSensor": {
+            "friendlyName": "Sound Sensor",
+            "description": [
+                "LEGO NXT Sound Sensor"
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-sound-sensor/",
+            "driverName": [
+                "lego-nxt-sound"
+            ],
+            "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "DB",
+                            "description": [
+                                "Sound pressure level. Flat weighting"
+                            ]
+                        },
+                        { "name": "DBA",
+                            "description": [
+                                "Sound pressure level. A weighting"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Sound Pressure",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "DB",
+                    "description": [
+                        "A measurement of the measured sound pressure level, as a",
+                        "percent. Uses a flat weighting."
+                    ]
+                },
+                {
+                    "name": "Sound Pressure Low",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "DBA",
+                    "description": [
+                        "A measurement of the measured sound pressure level, as a",
+                        "percent. Uses A-weighting, which focuses on levels up to 55 dB."
+                    ]
+                }
+            ]
+        },
+        "lightSensor": {
+            "friendlyName": "Light Sensor",
+            "description": [
+                "LEGO NXT Light Sensor"
+            ],
+            "docsLink": "http://www.ev3dev.org/docs/sensors/lego-nxt-light-sensor/",
+            "driverName": [
+                "lego-nxt-light"
+            ],
+            "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        { "name": "REFLECT",
+                            "description": [
+                                "Reflected light. LED on"
+                            ]
+                        },
+                        { "name": "AMBIENT",
+                            "description": [
+                                "Ambient light. LED off"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Reflected Light Intensity",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "REFLECT",
+                    "description": [
+                        "A measurement of the reflected light intensity, as a percentage."
+                    ]
+                },
+                {
+                    "name": "Ambient Light Intensity",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "AMBIENT",
+                    "description": [
+                        "A measurement of the ambient light intensity, as a percentage."
                     ]
                 }
             ]
