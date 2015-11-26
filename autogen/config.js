@@ -45,6 +45,16 @@ exports.extraLiquidFilters = {
     eq: function (a, b) {
         return a == b;
     },
+    //filters the given collection using the provided condition statement, which is
+    // evaluated as a JavaScript string (it should return a boolean)
+    filter: function(collection, condition) {
+        return [].filter(function(item, itemIndex, wholeArray) {
+            return eval(condition);
+        });
+    },
+    json_stringify: function(value) {
+        return JSON.stringify(value);
+    },
     //evaluates expression as JavaScript in the given context
     eval: function (expression, context) {
         var vm = require('vm');
