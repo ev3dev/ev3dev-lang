@@ -20,8 +20,9 @@
     "js": {
         "files": [
             "js/extras.ts",
-            "js/motor.ts",
-            "js/sensor.ts"
+            "js/motors.ts",
+            "js/sensors.ts",
+            "js/index.ts"
         ],
         "templateDir": "js/templates/"
     },

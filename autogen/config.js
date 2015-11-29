@@ -15,11 +15,18 @@ exports.autogenFenceComments = {
 }
 
 exports.extraLiquidFilters = {
-    //camel-cases the input string
+    //camel-cases the input string. If the parameter is an array, applies to all items.
     camel_case: function (input) {
-        return String(input).toLowerCase().replace(/[-|\s](.)/g, function (match, group1) {
-            return group1.toUpperCase();
-        });
+        function camelCaseSingle(input) {
+            return String(input).toLowerCase().replace(/[-|\s](.)/g, function (match, group1) {
+                return group1.toUpperCase();
+            });
+        }
+        
+        if(typeof input == 'string')
+            return camelCaseSingle(input);
+        else
+            return input.map(camelCaseSingle);
     },
     //replaces sections of whitespace with underscores
     underscore_spaces: function (input) {
@@ -45,9 +52,19 @@ exports.extraLiquidFilters = {
     eq: function (a, b) {
         return a == b;
     },
-    //evaluates expression as JavaScript in the given context
-    eval: function (expression, context) {
-        var vm = require('vm');
-        return vm.runInNewContext(expression, context || {});
+    prepend_all: function (array, prependStr) {
+        return array.map(function(item) {
+           return  prependStr + item;
+        });
+    },
+    append_all: function (array, appendStr) {
+        return array.map(function(item) {
+           return  item + appendStr;
+        });
+    },
+    select: function(array, property) {
+        return array.map(function(item) {
+           return utils.getProp(item, property); 
+        });
     }
 };
