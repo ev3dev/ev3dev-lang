@@ -1141,7 +1141,7 @@
                 "related to the actual port at all - use the `port_name` attribute to find",
                 "a specific port."
             ],
-            "systemClassName":  "lego_port",
+            "systemClassName":  "lego-port",
             "systemProperties": [
                 { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
