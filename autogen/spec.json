@@ -90,7 +90,7 @@
                       "Valid values are `normal` and `inversed`."
                   ]
                 },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Returns the name of the port that the motor is connected to."
                   ]
@@ -411,7 +411,7 @@
                       "Sets the polarity of the motor. Valid values are `normal` and `inversed`."
                   ]
                 },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                { "name": "Address", "systemName": "Address", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Returns the name of the port that the motor is connected to."
                   ]
@@ -580,7 +580,7 @@
                       "correspond to `min_pulse_sp`."
                   ]
                 },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Returns the name of the port that the motor is connected to."
                   ]
@@ -775,7 +775,7 @@
                       "for the current mode."
                   ]
                 },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Returns the name of the port that the sensor is connected to, e.g. `ev3:in1`.",
                       "I2C sensors also include the I2C address (decimal), e.g. `ev3:in1:i2c8`."
@@ -891,7 +891,7 @@
                         "this will depend on the individual driver implementing this class."
                     ]
                 },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false,
                     "description": [
                         "Returns the name of the port. See individual driver documentation for",
                         "the name that will be returned."
