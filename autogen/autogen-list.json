@@ -26,13 +26,7 @@
         ],
         "templateDir": "js/templates/"
     },
-    "lua": {
-        "files": [
-            "lua/ev3dev.lua"
-        ],
-        "templateDir": "autogen/templates/"
-    },
-    "docs": {
+   "docs": {
         "files": [
             "wrapper-specification.md"
         ],
