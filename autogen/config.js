@@ -18,9 +18,9 @@ exports.extraLiquidFilters = {
     //camel-cases the input string. If the parameter is an array, applies to all items.
     camel_case: function (input) {
         function camelCaseSingle(input) {
-            return String(input).toLowerCase().replace(/[-|\s](.)/g, function (match, group1) {
-                return group1.toUpperCase();
-            });
+        return String(input).toLowerCase().replace(/[-|\s](.)/g, function (match, group1) {
+            return group1.toUpperCase();
+        });
         }
         
         if(typeof input == 'string')
@@ -64,7 +64,22 @@ exports.extraLiquidFilters = {
     },
     select: function(array, property) {
         return array.map(function(item) {
-           return utils.getProp(item, property); 
+            return utils.getProp(item, property); 
         });
+    },
+    //filters the given collection using the provided condition statement, which is
+    // evaluated as a JavaScript string (it should return a boolean)
+    filter: function(collection, condition) {
+        return [].filter(function(item, itemIndex, wholeArray) {
+            return eval(condition);
+        });
+    },
+    json_stringify: function(value) {
+        return JSON.stringify(value);
+    },
+    //evaluates expression as JavaScript in the given context
+    eval: function (expression, context) {
+        var vm = require('vm');
+        return vm.runInNewContext(expression, context || {});
     }
 };

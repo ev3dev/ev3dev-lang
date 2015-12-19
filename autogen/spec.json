@@ -817,6 +817,131 @@
                 }
             ]
         },
+        "powerSupply": {
+            "friendlyName": "Power Supply",
+            "description": [
+                "A generic interface to read data from the system's power_supply class.",
+                "Uses the built-in legoev3-battery if none is specified."
+            ],
+            "systemClassName":  "power_supply",
+            "systemProperties": [
+                { "name": "Measured Current", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "The measured current that the battery is supplying (in microamps)"
+                  ]
+                },
+                { "name": "Measured Voltage", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false,
+                    "description": [
+                        "The measured voltage that the battery is supplying (in microvolts)"
+                    ]
+                },
+                { "name": "Max Voltage", "systemName": "voltage_max_design", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Min Voltage", "systemName": "voltage_min_design", "type": "int", "readAccess": true, "writeAccess": false },
+                { "name": "Technology", "systemName": "technology", "type": "string", "readAccess": true, "writeAccess": false },
+                { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
+            ]
+        },
+        "legoPort": {
+            "friendlyName": "Lego Port",
+            "description": [
+                "The `lego-port` class provides an interface for working with input and",
+                "output ports that are compatible with LEGO MINDSTORMS RCX/NXT/EV3, LEGO",
+                "WeDo and LEGO Power Functions sensors and motors. Supported devices include",
+                "the LEGO MINDSTORMS EV3 Intelligent Brick, the LEGO WeDo USB hub and",
+                "various sensor multiplexers from 3rd party manufacturers.",
+                "",
+                "Some types of ports may have multiple modes of operation. For example, the",
+                "input ports on the EV3 brick can communicate with sensors using UART, I2C",
+                "or analog validate signals - but not all at the same time. Therefore there",
+                "are multiple modes available to connect to the different types of sensors.",
+                "",
+                "In most cases, ports are able to automatically detect what type of sensor",
+                "or motor is connected. In some cases though, this must be manually specified",
+                "using the `mode` and `set_device` attributes. The `mode` attribute affects",
+                "how the port communicates with the connected device. For example the input",
+                "ports on the EV3 brick can communicate using UART, I2C or analog voltages,",
+                "but not all at the same time, so the mode must be set to the one that is",
+                "appropriate for the connected sensor. The `set_device` attribute is used to",
+                "specify the exact type of sensor that is connected. Note: the mode must be",
+                "correctly set before setting the sensor type.",
+                "",
+                "Ports can be found at `/sys/class/lego-port/port<N>` where `<N>` is",
+                "incremented each time a new port is registered. Note: The number is not",
+                "related to the actual port at all - use the `port_name` attribute to find",
+                "a specific port."
+            ],
+            "systemClassName":  "lego_port",
+            "systemProperties": [
+                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the name of the driver that loaded this device. You can find the",
+                      "complete list of drivers in the [list of port drivers]."
+                  ]
+                },
+                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false,
+                    "description": [
+                        "Returns a list of the available modes of the port."
+                    ]
+                },
+                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true,
+                    "description": [
+                        "Reading returns the currently selected mode. Writing sets the mode.",
+                        "Generally speaking when the mode changes any sensor or motor devices",
+                        "associated with the port will be removed new ones loaded, however this",
+                        "this will depend on the individual driver implementing this class."
+                    ]
+                },
+                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
+                    "description": [
+                        "Returns the name of the port. See individual driver documentation for",
+                        "the name that will be returned."
+                    ]
+                },
+                { "name": "Set Device", "systemName": "set_device", "type": "string", "readAccess": false, "writeAccess": true,
+                    "description": [
+                        "For modes that support it, writing the name of a driver will cause a new",
+                        "device to be registered for that driver and attached to this port. For",
+                        "example, since NXT/Analog sensors cannot be auto-detected, you must use",
+                        "this attribute to load the correct driver. Returns -EOPNOTSUPP if setting a",
+                        "device is not supported."
+                    ]
+                },
+                { "name": "Status", "systemName": "status", "type": "string", "readAccess": true, "writeAccess": false,
+                    "description": [
+                        "In most cases, reading status will return the same value as `mode`. In",
+                        "cases where there is an `auto` mode additional values may be returned,",
+                        "such as `no-device` or `error`. See individual port driver documentation",
+                        "for the full list of possible values."
+                    ]
+                }
+            ]
+        }
+    },
+    "specialSensorTypes": {
+        "touchSensor": {
+            "friendlyName": "Touch Sensor",
+            "description": [
+                "Touch Sensor"
+            ],
+            "driverName": [
+                "lego-ev3-touch",
+                "lego-nxt-touch"
+            ],
+            "inheritance": "sensor",
+            "sensorValueMappings": [
+                {
+                    "name": "Is Pressed",
+                    "sourceValue": 0,
+                    "type": "boolean",
+                    "requiredMode": "TOUCH",
+                    "description": [
+                        "A boolean indicating whether the current touch sensor is being",
+                        "pressed."
+                    ]
+                }
+            ]
+        },
+        
         "colorSensor": {
             "friendlyName": "Color Sensor",
             "description": [
@@ -831,31 +956,100 @@
                 {
                     "propertyName": "Mode",
                     "values": [
-                        { "name": "COL-REFLECT",
+                        {
+                            "name": "COL-REFLECT",
                             "description": [
                                 "Reflected light. Red LED on."
                             ]
                         },
-                        { "name": "COL-AMBIENT",
+                        {
+                            "name": "COL-AMBIENT",
                             "description": [
                                 "Ambient light. Red LEDs off."
                             ]
                         },
-                        { "name": "COL-COLOR",
+                        {
+                            "name": "COL-COLOR",
                             "description": [
                                 "Color. All LEDs rapidly cycling, appears white."
                             ]
                         },
-                        { "name": "REF-RAW",
+                        {
+                            "name": "REF-RAW",
                             "description": [
                                 "Raw reflected. Red LED on"
                             ]
                         },
-                        { "name": "RGB-RAW",
+                        {
+                            "name": "RGB-RAW",
                             "description": [
                                 "Raw Color Components. All LEDs rapidly cycling, appears white."
                             ]
                         }
+                    ]
+                }
+            ],
+            "sensorValueMappings":  [
+                {
+                    "name": "Reflected Light Intensity",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "COL-REFLECT",
+                    "description": [
+                        "Reflected light intensity as a percentage. Light on sensor is red."
+            ]
+        },
+                {
+                    "name": "Ambient Light Intensity",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "COL-AMBIENT",
+                    "description": [
+                        "Ambient light intensity. Light on sensor is dimly lit blue."
+                    ]
+                },
+                {
+                    "name": "Color",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "COL-COLOR",
+                    "description": [
+                        "Color detected by the sensor, categorized by overall value.",
+                        "  - 0: No color",
+                        "  - 1: Black",
+                        "  - 2: Blue",
+                        "  - 3: Green",
+                        "  - 4: Yellow",
+                        "  - 5: Red",
+                        "  - 6: White",
+                        "  - 7: Brown"
+                    ]
+                },
+                {
+                    "name": "Red",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Red component of the detected color, in the range 0-1020."
+                    ]
+                },
+                {
+                    "name": "Green",
+                    "sourceValue": 1,
+                    "type": "int",
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Green component of the detected color, in the range 0-1020."
+                    ]
+                },
+                {
+                    "name": "Blue",
+                    "sourceValue": 2,
+                    "type": "int",
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Blue component of the detected color, in the range 0-1020."
                     ]
                 }
             ]
@@ -877,33 +1071,61 @@
                     "values": [
                         { "name": "US-DIST-CM",
                             "description": [
-                                "Continuous measurement in centimeters.",
-                                "LEDs: On, steady"
+                                "Continuous measurement in centimeters."
                             ]
                         },
                         { "name": "US-DIST-IN",
                             "description": [
-                                "Continuous measurement in inches.",
-                                "LEDs: On, steady"
+                                "Continuous measurement in inches."
                             ]
                         },
                         { "name": "US-LISTEN",
                             "description": [
-                                "Listen.  LEDs: On, blinking"
+                                "Listen."
                             ]
                         },
                         { "name": "US-SI-CM",
                             "description": [
-                                "Single measurement in centimeters.",
-                                "LEDs: On momentarily when mode is set, then off"
+                                "Single measurement in centimeters."
                             ]
                         },
                         { "name": "US-SI-IN",
                             "description": [
-                                "Single measurement in inches.",
-                                "LEDs: On momentarily when mode is set, then off"
+                                "Single measurement in inches."
                             ]
                         }
+                            ]
+                        }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Distance Centimeters",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "US-DIST-CM",
+                    "description": [
+                        "Measurement of the distance detected by the sensor,",
+                        "in centimeters."
+                    ]
+                },
+                {
+                    "name": "Distance Inches",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "US-DIST-IN",
+                    "description": [
+                        "Measurement of the distance detected by the sensor,",
+                        "in inches."
+                    ]
+                },
+                {
+                    "name": "Other Sensor Present",
+                    "sourceValue": 0,
+                    "type": "boolean",
+                    "requiredMode": "US-LISTEN",
+                    "description": [
+                        "Value indicating whether another ultrasonic sensor could",
+                        "be heard nearby."
                     ]
                 }
             ]
@@ -922,31 +1144,57 @@
                 {
                     "propertyName": "Mode",
                     "values": [
-                        { "name": "GYRO-ANG",
+                        {
+                            "name": "GYRO-ANG",
                             "description": [
                                 "Angle"
                             ]
                         },
-                        { "name": "GYRO-RATE",
+                        {
+                            "name": "GYRO-RATE",
                             "description": [
                                 "Rotational speed"
                             ]
                         },
-                        { "name": "GYRO-FAS",
+                        {
+                            "name": "GYRO-FAS",
                             "description": [
                                 "Raw sensor value"
                             ]
                         },
-                        { "name": "GYRO-G&A",
+                        {
+                            "name": "GYRO-G&A",
                             "description": [
                                 "Angle and rotational speed"
                             ]
                         },
-                        { "name": "GYRO-CAL",
+                        {
+                            "name": "GYRO-CAL",
                             "description": [
                                 "Calibration ???"
                             ]
                         }
+                    ]
+                }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Angle",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "GYRO-ANG",
+                    "description": [
+                        "The number of degrees that the sensor has been rotated",
+                        "since it was put into this mode."
+                    ]
+                },
+                {
+                    "name": "Rate",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "GYRO-RATE",
+                    "description": [
+                        "The rate at which the sensor is rotating, in degrees/second."
                     ]
                 }
             ]
@@ -1019,7 +1267,19 @@
                     { "value": 10, "state": ["Red Up", "Red Down"]},
                     { "value": 11, "state": ["Blue Up", "Blue Down"]}
                 ]
+            },
+            "sensorValueMappings": [
+                {
+                    "name": "Proximity",
+                    "sourceValue": 0,
+                    "type": "int",
+                    "requiredMode": "IR-PROX",
+                    "description": [
+                        "A measurement of the distance between the sensor and the remote,",
+                        "as a percentage. 100% is approximately 70cm/27in."
+                    ]
             }
+            ]
         },
         "soundSensor": {
             "friendlyName": "Sound Sensor",
@@ -1045,6 +1305,28 @@
                                 "Sound pressure level. A weighting"
                             ]
                         }
+                    ]
+                }
+            ],
+            "sensorValueMappings": [
+                {
+                    "name": "Sound Pressure",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "DB",
+                    "description": [
+                        "A measurement of the measured sound pressure level, as a",
+                        "percent. Uses a flat weighting."
+                    ]
+                },
+                {
+                    "name": "Sound Pressure Low",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "DBA",
+                    "description": [
+                        "A measurement of the measured sound pressure level, as a",
+                        "percent. Uses A-weighting, which focuses on levels up to 55 dB."
                     ]
                 }
             ]
@@ -1075,114 +1357,24 @@
                         }
                     ]
                 }
-            ]
-        },
-        "touchSensor": {
-            "friendlyName": "Touch Sensor",
-            "description": [
-                "Touch Sensor"
             ],
-            "driverName": [
-                "lego-ev3-touch",
-                "lego-nxt-touch"
-            ],
-            "inheritance": "sensor"
-        },
-        "powerSupply": {
-            "friendlyName": "Power Supply",
-            "description": [
-                "A generic interface to read data from the system's power_supply class.",
-                "Uses the built-in legoev3-battery if none is specified."
-            ],
-            "systemClassName":  "power_supply",
-            "systemProperties": [
-                { "name": "Measured Current", "systemName": "current_now", "type": "int", "readAccess": true, "writeAccess": false,
-                  "description": [
-                      "The measured current that the battery is supplying (in microamps)"
-                  ]
-                },
-                { "name": "Measured Voltage", "systemName": "voltage_now", "type": "int", "readAccess": true, "writeAccess": false,
+            "sensorValueMappings": [
+                {
+                    "name": "Reflected Light Intensity",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "REFLECT",
                     "description": [
-                        "The measured voltage that the battery is supplying (in microvolts)"
+                        "A measurement of the reflected light intensity, as a percentage."
                     ]
                 },
-                { "name": "Max Voltage", "systemName": "voltage_max_design", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Min Voltage", "systemName": "voltage_min_design", "type": "int", "readAccess": true, "writeAccess": false },
-                { "name": "Technology", "systemName": "technology", "type": "string", "readAccess": true, "writeAccess": false },
-                { "name": "Type", "systemName": "type", "type": "string", "readAccess": true, "writeAccess": false }
-            ]
-        },
-        "legoPort": {
-            "friendlyName": "Lego Port",
-            "description": [
-                "The `lego-port` class provides an interface for working with input and",
-                "output ports that are compatible with LEGO MINDSTORMS RCX/NXT/EV3, LEGO",
-                "WeDo and LEGO Power Functions sensors and motors. Supported devices include",
-                "the LEGO MINDSTORMS EV3 Intelligent Brick, the LEGO WeDo USB hub and",
-                "various sensor multiplexers from 3rd party manufacturers.",
-                "",
-                "Some types of ports may have multiple modes of operation. For example, the",
-                "input ports on the EV3 brick can communicate with sensors using UART, I2C",
-                "or analog validate signals - but not all at the same time. Therefore there",
-                "are multiple modes available to connect to the different types of sensors.",
-                "",
-                "In most cases, ports are able to automatically detect what type of sensor",
-                "or motor is connected. In some cases though, this must be manually specified",
-                "using the `mode` and `set_device` attributes. The `mode` attribute affects",
-                "how the port communicates with the connected device. For example the input",
-                "ports on the EV3 brick can communicate using UART, I2C or analog voltages,",
-                "but not all at the same time, so the mode must be set to the one that is",
-                "appropriate for the connected sensor. The `set_device` attribute is used to",
-                "specify the exact type of sensor that is connected. Note: the mode must be",
-                "correctly set before setting the sensor type.",
-                "",
-                "Ports can be found at `/sys/class/lego-port/port<N>` where `<N>` is",
-                "incremented each time a new port is registered. Note: The number is not",
-                "related to the actual port at all - use the `port_name` attribute to find",
-                "a specific port."
-            ],
-            "systemClassName":  "lego-port",
-            "systemProperties": [
-                { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
-                  "description": [
-                      "Returns the name of the driver that loaded this device. You can find the",
-                      "complete list of drivers in the [list of port drivers]."
-                  ]
-                },
-                { "name": "Modes", "systemName": "modes", "type": "string array", "readAccess": true, "writeAccess": false,
+                {
+                    "name": "Ambient Light Intensity",
+                    "sourceValue": 0,
+                    "type": "float",
+                    "requiredMode": "AMBIENT",
                     "description": [
-                        "Returns a list of the available modes of the port."
-                    ]
-                },
-                { "name": "Mode", "systemName": "mode", "type": "string", "readAccess": true, "writeAccess": true,
-                    "description": [
-                        "Reading returns the currently selected mode. Writing sets the mode.",
-                        "Generally speaking when the mode changes any sensor or motor devices",
-                        "associated with the port will be removed new ones loaded, however this",
-                        "this will depend on the individual driver implementing this class."
-                    ]
-                },
-                { "name": "Port Name", "systemName": "port_name", "type": "string", "readAccess": true, "writeAccess": false,
-                    "description": [
-                        "Returns the name of the port. See individual driver documentation for",
-                        "the name that will be returned."
-                    ]
-                },
-                { "name": "Set Device", "systemName": "set_device", "type": "string", "readAccess": false, "writeAccess": true,
-                    "description": [
-                        "For modes that support it, writing the name of a driver will cause a new",
-                        "device to be registered for that driver and attached to this port. For",
-                        "example, since NXT/Analog sensors cannot be auto-detected, you must use",
-                        "this attribute to load the correct driver. Returns -EOPNOTSUPP if setting a",
-                        "device is not supported."
-                    ]
-                },
-                { "name": "Status", "systemName": "status", "type": "string", "readAccess": true, "writeAccess": false,
-                    "description": [
-                        "In most cases, reading status will return the same value as `mode`. In",
-                        "cases where there is an `auto` mode additional values may be returned,",
-                        "such as `no-device` or `error`. See individual port driver documentation",
-                        "for the full list of possible values."
+                        "A measurement of the ambient light intensity, as a percentage."
                     ]
                 }
             ]
