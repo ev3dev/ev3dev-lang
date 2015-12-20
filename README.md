@@ -5,7 +5,6 @@ This repository provides several language bindings for the sensor, motor, and ot
 
 We currently have libraries for the following languages here:
 - C++
-- Lua
 - Node.JS
 - Python
 
