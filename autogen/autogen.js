@@ -53,7 +53,7 @@ function getTargetFileInfo() {
     var pathCandidates = argv._.concat(process.cwd());
     
     var configFilePath = pathCandidates.map(function(possiblePath) {
-        var stat = fs.stat(possiblePath);
+        var stat = fs.statSync(possiblePath);
         
         if(stat.isFile())
             return path.resolve(possiblePath);
@@ -62,9 +62,9 @@ function getTargetFileInfo() {
         else
             return null;
         
-    }).find(function(configPath) {
-        return !!configPath && fs.accessSync(configPath);
-    });
+    }).filter(function(configPath) {
+        return !!configPath && fs.existsSync(configPath);
+    })[0];
     
     if(!configFilePath)
         return null;
@@ -73,7 +73,7 @@ function getTargetFileInfo() {
     
     return {
         templateDir: path.resolve(path.dirname(configFilePath), loadedTargetFileInfo.templateDir),
-        files: loadedTargetFileInfo.map(function(configRelativePath) {
+        files: loadedTargetFileInfo.files.map(function(configRelativePath) {
             return path.resolve(path.dirname(configFilePath), configRelativePath);
         })
     };
