@@ -1,12 +1,3 @@
-*.o
-cpp/bin/*
-cpp/lib/*
-cpp/obj/*
-js/bin/*
-*.TMP
-/js/node_modules
-/js/bin
-/vala/bin
 /autogen/node_modules
 /autogen/npm-debug.log
 *.orig
