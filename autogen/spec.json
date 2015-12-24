@@ -928,6 +928,19 @@
                 "lego-nxt-touch"
             ],
             "inheritance": "sensor",
+            "propertyValues": [
+                {
+                    "propertyName": "Mode",
+                    "values": [
+                        {
+                            "name": "TOUCH",
+                            "description": [
+                                "Button state"
+                            ]
+                        }
+                    ]
+                }
+            ],
             "sensorValueMappings": [
                 {
                     "name": "Is Pressed",
@@ -941,7 +954,7 @@
                 }
             ]
         },
-        
+
         "colorSensor": {
             "friendlyName": "Color Sensor",
             "description": [
