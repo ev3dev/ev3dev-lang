@@ -9,14 +9,14 @@ To help us maintain our language bindings, we have written a script to automatic
 - If you have not yet done so yet, run `npm install` to install the dependencies for auto-generation
 
 ### Running from the command line
-If you run the script without any parameters, it will auto-generate all language groups:
+If you run the script without any parameters, it will look for an `autogen-config.json` file in your current working directory. The autogen-config file specifies the locations to look for templates and source files.
 ```
-$ node autogen.js
+$ node path/to/autogen.js
 ```
 
-If you would like to only process a single group (as defined in `autogen-list.json`), you can provide the name of the group as a command-line parameter:
+If you want to specify a config file manually, you can include use a full file path for the target JSON config file.
 ```
-$ node autogen.js docs
+$ node path/to/autogen.js other/path/to/config.json
 ```
 
 ## How it works
