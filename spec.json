@@ -1,8 +1,7 @@
 {
     "meta": {
-        "version": "0.9.3-pre",
-        "specRevision": 2,
-        "supportedKernel": "v3.16.7-ckt16-7-ev3dev-ev3"
+        "version": "1.0.0",
+        "supportedKernel": "v3.16.7-ckt21-9-ev3dev"
     },
     "classes": {
         "motor": {

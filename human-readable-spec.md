@@ -1,4 +1,4 @@
-ev3dev Language Wrapper Specification (DRAFT ver `0.9.3`, rev 1)
+ev3dev Language Wrapper Specification `v1.0.0`
 ===
 This is an unofficial specification that defines a unified interface for language wrappers to expose the [ev3dev](http://www.ev3dev.org) device APIs.
 
@@ -7,11 +7,6 @@ General Notes
 Because this specification is meant to be implemented in multiple languages, the specific naming conventions of properties, methods and classes are not defined here. Depending on the language, names will be slightly different (ex. "touchSensor" or "TouchSensor" or "touch-sensor") so that they fit the language's naming conventions.
 
 Some concepts that apply to multiple classes are described as "abstracts". These abstract sections explain how the class should handle specific situations, and do not necessarily translate in to their own class in the wrapper.
-
-<!-- ~autogen autogen-header 'xml'>commentStyle -->
-<!-- Sections of the following code were auto-generated based on spec v0.9.3-pre, rev 2. -->
-
-<!-- ~autogen -->
 
 Implementation Notes (important)
 ---
@@ -484,11 +479,11 @@ If an error occurs after the initial connection, an exception should be thrown b
 
 Compatibility
 ---
-Starting after version `0.9.0`, we will be documenting the versions of ev3dev that the libraries are compatible with.
 
 Compatibility table:
 
-Language Binding Version|Fully Supported Kernel Version
+Spec Version|Fully Supported Kernel Version
 ---|---|---
 `v0.9.1`|`v3.16.1-7-ev3dev`
-`v0.9.2`|`v3.16.7-ckt10-4-ev3dev-ev3`
+`v0.9.2`|`v3.16.7-ckt10-4-ev3dev`
+`v1.0.0`|`v3.16.7-ckt21-9-ev3dev`
