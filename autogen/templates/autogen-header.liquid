@@ -1,7 +1,0 @@
-{% case commentStyle %}{%
-           when 'lua' %}    --{%
-           when 'xml' %}<!--{%
-           when 'py'  %}    #{%
-           else %}    //{%
-       endcase
-%} Sections of the following code were auto-generated based on spec v{{ meta.version }}{% if meta.specRevision %}, rev {{meta.specRevision}}{% endif %}. {{ commentStyle | eq: 'xml' | ternary_if: '-->' }}
