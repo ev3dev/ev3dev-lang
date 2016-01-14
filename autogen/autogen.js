@@ -16,7 +16,7 @@ var liquidEngine = new (require("liquid-node").Engine)();
 liquidEngine.registerFilters(config.extraLiquidFilters);
 
 //Load the spec data and list of files to process
-var specData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "spec.json")));
+var specData = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../", "spec.json")));
 var targetInfo = getTargetFileInfo();
 
 if(!targetInfo) {
