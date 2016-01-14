@@ -409,9 +409,9 @@ appropriate for the connected sensor. The `set_device` attribute is used to
 specify the exact type of sensor that is connected. Note: the mode must be
 correctly set before setting the sensor type.
 
-Ports can be found at `/sys/class/lego-port/port<N>` where `<N>` is
+Ports can be found at `/sys/class/lego-port/port<N>` where `<N>` may be
 incremented each time a new port is registered. Note: The number is not
-related to the actual port at all - use the `port_name` attribute to find
+related to the actual port at all - use the `address` attribute to find
 a specific port.
 
 <!-- ~autogen -->
