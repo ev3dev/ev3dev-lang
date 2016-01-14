@@ -1,0 +1,6 @@
+{
+    "files": [
+        "../human-readable-spec.md"
+    ],
+    "templateDir": "./"
+}
