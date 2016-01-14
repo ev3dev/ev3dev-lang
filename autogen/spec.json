@@ -128,7 +128,7 @@
                 },
                 { "name": "Speed", "systemName": "speed", "type": "int", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Returns the current motor speed in tacho counts per second. Not, this is",
+                      "Returns the current motor speed in tacho counts per second. Note, this is",
                       "not necessarily degrees (although it is for LEGO motors). Use the `count_per_rot`",
                       "attribute to convert this value to RPM or deg/sec."
                   ]
