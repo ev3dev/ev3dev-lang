@@ -1,5 +1,7 @@
 var utils = require('./utils.js');
 
+exports.defaultConfigFileName = 'autogen-config.json';
+
 var cStyleAutogenStart = /\/\/\s*~autogen *(.+)/;
 var cStyleAutogenEnd = "//~autogen";
 
