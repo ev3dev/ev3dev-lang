@@ -51,26 +51,26 @@ for (var fileIndex = 0; fileIndex < targetInfo.files.length; fileIndex++) {
 
 function getTargetFileInfo() {
     var pathCandidates = argv._.concat(process.cwd());
-    
+
     var configFilePath = pathCandidates.map(function(possiblePath) {
         var stat = fs.statSync(possiblePath);
-        
+
         if(stat.isFile())
             return path.resolve(possiblePath);
         else if (stat.isDirectory())
             return path.resolve(possiblePath, config.defaultConfigFileName);
         else
             return null;
-        
+
     }).filter(function(configPath) {
         return !!configPath && fs.existsSync(configPath);
     })[0];
-    
+
     if(!configFilePath)
         return null;
-    
+
     var loadedTargetFileInfo = JSON.parse(fs.readFileSync(configFilePath).toString());
-    
+
     return {
         templateDir: path.resolve(path.dirname(configFilePath), loadedTargetFileInfo.templateDir),
         files: loadedTargetFileInfo.files.map(function(configRelativePath) {

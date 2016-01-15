@@ -1,6 +1,6 @@
 {
     "files": [
-        "../human-readable-spec.md"
+        "../docs/classes.rst"
     ],
     "templateDir": "./"
 }

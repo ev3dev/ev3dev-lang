@@ -13,7 +13,8 @@ exports.autogenFenceComments = {
     '.java': { start: cStyleAutogenStart, end: cStyleAutogenEnd },
     '.md': { start: /<!--\s*~autogen *(.+)-->/, end: "<!-- ~autogen -->" },
     '.lua': { start: /--\s*~autogen *(.+)/, end: "-- ~autogen" },
-    '.py': { start: /#\s*~autogen *(.+)/, end: "# ~autogen" }
+    '.py': { start: /#\s*~autogen *(.+)/, end: "# ~autogen" },
+    '.rst': { start: /\.\. ~autogen *(.+)/, end: "\.\. ~autogen" }
 }
 
 exports.extraLiquidFilters = {
@@ -24,7 +25,7 @@ exports.extraLiquidFilters = {
             return group1.toUpperCase();
         });
         }
-        
+
         if(typeof input == 'string')
             return camelCaseSingle(input);
         else
@@ -66,7 +67,7 @@ exports.extraLiquidFilters = {
     },
     select: function(array, property) {
         return array.map(function(item) {
-            return utils.getProp(item, property); 
+            return utils.getProp(item, property);
         });
     },
     //filters the given collection using the provided condition statement, which is
