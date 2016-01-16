@@ -1,5 +1,5 @@
-ev3dev-lang language bindings
-=============================
+ev3dev language bindings
+========================
 
 This repository stores the utilities and metadata information for the
 ev3dev-lang family of libraries. These libraries are easy-to-use interfaces for
