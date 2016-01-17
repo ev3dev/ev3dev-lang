@@ -1,0 +1,1 @@
+.. include:: ../autogen/README.rst

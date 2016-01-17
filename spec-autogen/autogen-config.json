@@ -1,0 +1,6 @@
+{
+    "files": [
+        "../docs/classes.rst"
+    ],
+    "templateDir": "./"
+}

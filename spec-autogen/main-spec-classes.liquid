@@ -1,0 +1,33 @@
+{% for classPair in classes %}{%
+assign class = classPair[1] %}
+{{ class.friendlyName }}
+########################
+
+.. py:class:: {{ class.friendlyName | underscore_spaces }}
+{% for line in class.description %}
+    {{ line }}{%
+endfor %}
+
+{% if class.inheritance %}
+    .. rubric:: inherits from: :py:class:`{{ class.inheritance }}`
+{% endif%}
+{% if class.driverName %}
+    .. rubric:: Target driver(s): ``{{ class.driverName | join: ', ' }}``{%
+endif %}{%
+if class.docsLink %}
+    .. rubric:: ev3dev docs link: {{class.docsLink}}{% endif
+%}
+{% if class.systemProperties %}
+    .. rubric:: System properties
+{% for prop in class.systemProperties %}
+    .. py:attribute:: {{prop.name | underscore_spaces }}
+
+        :class:`{{prop.type}}, {{ '(readAccess ? "read" : "") + (readAccess && writeAccess ? "/" : "") + (writeAccess ? "write" : "")' | eval: prop }}`
+
+{% for line in prop.description %}
+        {{line}}{%
+endfor %}
+{% endfor %}{%
+endif %}
+
+{% endfor %}
