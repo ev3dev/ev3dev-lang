@@ -1,0 +1,37 @@
+{% for classPair in specialSensorTypes %}{%
+assign class = classPair[1] %}
+{{ class.friendlyName }}
+########################
+
+.. py:class:: {{ class.friendlyName | underscore_spaces }}
+{% for line in class.description %}
+    {{ line }}{%
+endfor %}
+
+{% if class.inheritance %}
+    .. rubric:: inherits from: :py:class:`{{ class.inheritance }}`
+{% endif%}
+{% if class.driverName %}
+    .. rubric:: Target driver(s): ``{{ class.driverName | join: ', ' }}``{%
+endif %}{%
+if class.docsLink %}
+    .. rubric:: ev3dev docs link: {{class.docsLink}}{% endif
+%}
+{% if class.sensorValueMappings %}
+    .. rubric:: Special properties
+{% for prop in class.sensorValueMappings %}
+    .. py:attribute:: {{prop.name | underscore_spaces }}
+
+        :class:`{{prop.type}}, read`
+
+{% for line in prop.description %}
+        {{line}}{%
+endfor %}
+
+        .. rubric:: Required mode: ``{{ prop.requiredMode }}``
+        .. rubric:: Value index: ``{{ prop.sourceValue }}``
+
+{% endfor %}{%
+endif %}
+
+{% endfor %}

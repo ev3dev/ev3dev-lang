@@ -47,6 +47,7 @@ wrapper.
     :maxdepth: 2
 
     classes
+    sensors
     constants
 
 .. rubric:: Compatibility table
