@@ -1428,8 +1428,8 @@
         "brickpi": {
             "led": {
                 "instances": [
-                    { "name" : "Blue Led1", "systemName": "brickpi1:blue:ev3dev" },
-                    { "name" : "Blue Led2", "systemName": "brickpi2:blue:ev3dev" }
+                    { "name" : "Blue Led1", "systemName": "brickpi:led1:blue:ev3dev" },
+                    { "name" : "Blue Led2", "systemName": "brickpi:led2:blue:ev3dev" }
                 ],
                 "groups" : [
                     { "name" : "Led1", "entries" : ["Blue Led1"] },
