@@ -10,11 +10,16 @@
                 "The motor class provides a uniform interface for using motors with",
                 "positional and directional feedback such as the EV3 and NXT motors.",
                 "This feedback allows for precise control of the motors. This is the",
-                "most common type of motor, so we just call it `motor`."
+                "most common type of motor, so we just call it `motor`.",
+                "",
+                "The way to configure a motor is to set the '_sp' attributes when",
+                "calling a command or before. Only in 'run_direct' mode attribute",
+                "changes are processed immediately, in the other modes they only",
+                "take place when a new command is issued."
                 ],
             "docsLink": "http://www.ev3dev.org/docs/drivers/tacho-motor-class/",
             "systemClassName":  "tacho-motor",
-            "systemDeviceNameConvention":  "motor{0}",
+            "systemDeviceNameConvention":  "*",
             "systemProperties": [
                 { "name": "Address", "systemName": "address", "type": "string", "readAccess": true, "writeAccess": false,
                   "description": [
@@ -54,8 +59,14 @@
                   "description": [
                       "Returns the number of tacho counts in one rotation of the motor. Tacho counts",
                       "are used by the position and speed attributes, so you can use this value",
-                      "to convert rotations or degrees to tacho counts. In the case of linear",
-                      "actuators, the units here will be counts per centimeter."
+                      "to convert rotations or degrees to tacho counts. (rotation motors only)"
+                  ]
+                },
+                { "name": "Count Per Meter", "systemName": "count_per_m", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the number of tacho counts in one meter of travel of the motor. Tacho",
+                      "counts are used by the position and speed attributes, so you can use this",
+                      "value to convert from distance to tacho counts. (linear motors only)"
                   ]
                 },
                 { "name": "Driver Name", "systemName": "driver_name", "type": "string", "readAccess": true, "writeAccess": false,
@@ -73,8 +84,7 @@
                   "description": [
                       "Writing sets the duty cycle setpoint. Reading returns the current value.",
                       "Units are in percent. Valid values are -100 to 100. A negative value causes",
-                      "the motor to rotate in reverse. This value is only used when `speed_regulation`",
-                      "is off."
+                      "the motor to rotate in reverse."
                   ]
                 },
                 { "name": "Encoder Polarity", "systemName": "encoder_polarity", "type": "string", "readAccess": true, "writeAccess": true,
@@ -125,6 +135,13 @@
                       "rotations or degrees."
                   ]
                 },
+                { "name": "Max Speed", "systemName": "max_speed", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the maximum value that is accepted by the `speed_sp` attribute. This",
+                      "may be slightly different than the maximum speed that a particular motor can",
+                      "reach - it's the maximum theoretical speed."
+                  ]
+                },
                 { "name": "Speed", "systemName": "speed", "type": "int", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Returns the current motor speed in tacho counts per second. Note, this is",
@@ -134,49 +151,43 @@
                 },
                 { "name": "Speed SP", "systemName": "speed_sp", "type": "int", "readAccess": true, "writeAccess": true,
                   "description": [
-                      "Writing sets the target speed in tacho counts per second used when `speed_regulation`",
-                      "is on. Reading returns the current value.  Use the `count_per_rot` attribute",
-                      "to convert RPM or deg/sec to tacho counts per second."
+                      "Writing sets the target speed in tacho counts per second used for all `run-*`",
+                      "commands except `run-direct`. Reading returns the current value. A negative",
+                      "value causes the motor to rotate in reverse with the exception of `run-to-*-pos`",
+                      "commands where the sign is ignored. Use the `count_per_rot` attribute to convert",
+                      "RPM or deg/sec to tacho counts per second. Use the `count_per_m` attribute to",
+                      "convert m/s to tacho counts per second."
                   ]
                 },
                 { "name": "Ramp Up SP", "systemName": "ramp_up_sp", "type": "int", "readAccess": true, "writeAccess": true,
                   "description": [
                       "Writing sets the ramp up setpoint. Reading returns the current value. Units",
-                      "are in milliseconds. When set to a value > 0, the motor will ramp the power",
-                      "sent to the motor from 0 to 100% duty cycle over the span of this setpoint",
-                      "when starting the motor. If the maximum duty cycle is limited by `duty_cycle_sp`",
-                      "or speed regulation, the actual ramp time duration will be less than the setpoint."
+                      "are in milliseconds and must be positive. When set to a non-zero value, the",
+                      "motor speed will increase from 0 to 100% of `max_speed` over the span of this",
+                      "setpoint. The actual ramp time is the ratio of the difference between the",
+                      "`speed_sp` and the current `speed` and max_speed multiplied by `ramp_up_sp`."
                   ]
                 },
                 { "name": "Ramp Down SP", "systemName": "ramp_down_sp", "type": "int", "readAccess": true, "writeAccess": true,
                   "description": [
                       "Writing sets the ramp down setpoint. Reading returns the current value. Units",
-                      "are in milliseconds. When set to a value > 0, the motor will ramp the power",
-                      "sent to the motor from 100% duty cycle down to 0 over the span of this setpoint",
-                      "when stopping the motor. If the starting duty cycle is less than 100%, the",
-                      "ramp time duration will be less than the full span of the setpoint."
+                      "are in milliseconds and must be positive. When set to a non-zero value, the",
+                      "motor speed will decrease from 0 to 100% of `max_speed` over the span of this",
+                      "setpoint. The actual ramp time is the ratio of the difference between the",
+                      "`speed_sp` and the current `speed` and max_speed multiplied by `ramp_down_sp`."
                   ]
                 },
-                { "name": "Speed Regulation Enabled", "systemName": "speed_regulation", "type": "string", "readAccess": true, "writeAccess": true,
-                  "description": [
-                      "Turns speed regulation on or off. If speed regulation is on, the motor",
-                      "controller will vary the power supplied to the motor to try to maintain the",
-                      "speed specified in `speed_sp`. If speed regulation is off, the controller",
-                      "will use the power specified in `duty_cycle_sp`. Valid values are `on` and",
-                      "`off`."
-                  ]
-                },
-                { "name": "Speed Regulation P", "systemName": "speed_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true,
+                { "name": "Speed P", "systemName": "speed_pid/Kp", "type": "int", "readAccess": true, "writeAccess": true,
                   "description": [
                       "The proportional constant for the speed regulation PID."
                   ]
                 },
-                { "name": "Speed Regulation I", "systemName": "speed_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true,
+                { "name": "Speed I", "systemName": "speed_pid/Ki", "type": "int", "readAccess": true, "writeAccess": true,
                   "description": [
                       "The integral constant for the speed regulation PID."
                   ]
                 },
-                { "name": "Speed Regulation D", "systemName": "speed_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true,
+                { "name": "Speed D", "systemName": "speed_pid/Kd", "type": "int", "readAccess": true, "writeAccess": true,
                   "description": [
                       "The derivative constant for the speed regulation PID."
                   ]
@@ -300,22 +311,6 @@
                     ]
                 },
                 {
-                    "propertyName": "Speed Regulation",
-                    "values": [
-                        { "name": "on",
-                            "description": [
-                                "The motor controller will vary the power supplied to the motor",
-                                "to try to maintain the speed specified in `speed_sp`."
-                            ]
-                        },
-                        { "name": "off",
-                            "description": [
-                                "The motor controller will use the power specified in `duty_cycle_sp`."
-                            ]
-                        }
-                    ]
-                },
-                {
                     "propertyName": "Stop Command",
                     "values": [
                         { "name": "coast",
@@ -344,6 +339,7 @@
         },
         "largeMotor": {
             "friendlyName": "Large Motor",
+            "systemDeviceNameConvention": "motor{0}",
             "description": [
                 "EV3 large servo motor"
             ],
@@ -354,6 +350,7 @@
         },
         "mediumMotor": {
             "friendlyName": "Medium Motor",
+            "systemDeviceNameConvention": "motor{0}",
             "description": [
                 "EV3 medium servo motor"
             ],
@@ -362,7 +359,40 @@
             ],
             "inheritance": "motor"
         },
-        "dcMotor": {
+        "nxtMotor": {
+            "friendlyName": "NXT Motor",
+            "systemDeviceNameConvention": "motor{0}",
+            "description": [
+                "NXT servo motor"
+            ],
+            "driverName": [
+                "lego-nxt-motor"
+            ],
+            "inheritance": "motor"
+        },
+        "firgelli50Motor": {
+            "friendlyName": "Firgelli L12 50 Motor",
+            "systemDeviceNameConvention": "linear{0}",
+            "description": [
+                "Firgelli L12 50 linear servo motor"
+            ],
+            "driverName": [
+                "fi-l12-ev3-50"
+            ],
+            "inheritance": "motor"
+        },
+        "firgelli100Motor": {
+            "friendlyName": "Firgelli L12 100 Motor",
+            "systemDeviceNameConvention": "linear{0}",
+            "description": [
+                "Firgelli L12 100 linear servo motor"
+            ],
+            "driverName": [
+                "fi-l12-ev3-100"
+            ],
+            "inheritance": "motor"
+        },
+         "dcMotor": {
             "friendlyName": "DC Motor",
             "description": [
                 "The DC motor class provides a uniform interface for using regular DC motors",
