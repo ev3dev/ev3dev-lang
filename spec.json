@@ -62,7 +62,7 @@
                       "to convert rotations or degrees to tacho counts. (rotation motors only)"
                   ]
                 },
-                { "name": "Count Per Meter", "systemName": "count_per_m", "type": "int", "readAccess": true, "writeAccess": false,
+                { "name": "Count Per M", "systemName": "count_per_m", "type": "int", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Returns the number of tacho counts in one meter of travel of the motor. Tacho",
                       "counts are used by the position and speed attributes, so you can use this",
@@ -94,6 +94,13 @@
                       "be set correctly by the driver of a device. It You only need to change this",
                       "value if you are using a unsupported device. Valid values are `normal` and",
                       "`inversed`."
+                  ]
+                },
+                { "name": "Full Travel Count", "systemName": "full_travel_count", "type": "int", "readAccess": true, "writeAccess": false,
+                  "description": [
+                      "Returns the number of tacho counts in the full travel of the motor. When",
+                      "combined with the `count_per_m` atribute, you can use this value to",
+                      "calculate the maximum travel distance of the motor. (linear motors only)"
                   ]
                 },
                 { "name": "Polarity", "systemName": "polarity", "type": "string", "readAccess": true, "writeAccess": true,
