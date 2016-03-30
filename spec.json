@@ -1411,11 +1411,12 @@
                     { "name" : "Right", "entries" : ["Red Right", "Green Right"] }
                 ],
                 "colors": [
+                    { "name" : "Black", "value" : [ 0.0, 0.0 ] },
                     { "name" : "Red", "value" : [ 1.0, 0.0 ] },
                     { "name" : "Green", "value" : [ 0.0, 1.0 ] },
                     { "name" : "Amber", "value" : [ 1.0, 1.0 ] },
                     { "name" : "Orange", "value" : [ 1.0, 0.5 ] },
-                    { "name" : "Yellow", "value" : [ 0.5, 1.0 ] }
+                    { "name" : "Yellow", "value" : [ 0.1, 1.0 ] }
                 ]
             },
             "button": {
@@ -1441,6 +1442,7 @@
                     { "name" : "Led2", "entries" : ["Blue Led2"] }
                 ],
                 "colors": [
+                    { "name" : "Black", "value" : [ 0.0 ] },
                     { "name" : "Blue", "value" : [ 1.0 ] }
                 ]
             }
