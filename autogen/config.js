@@ -80,6 +80,9 @@ exports.extraLiquidFilters = {
     json_stringify: function(value) {
         return JSON.stringify(value);
     },
+    trim: function(value) {
+        return value.trim();
+    },
     //evaluates expression as JavaScript in the given context
     eval: function (expression, context) {
         var vm = require('vm');
