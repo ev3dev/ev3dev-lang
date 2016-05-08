@@ -353,7 +353,7 @@
         },
         "largeMotor": {
             "friendlyName": "Large Motor",
-            "systemDeviceNameConvention": "motor{0}",
+            "systemDeviceNameConvention": "*",
             "description": [
                 "EV3 large servo motor"
             ],
@@ -364,7 +364,7 @@
         },
         "mediumMotor": {
             "friendlyName": "Medium Motor",
-            "systemDeviceNameConvention": "motor{0}",
+            "systemDeviceNameConvention": "*",
             "description": [
                 "EV3 medium servo motor"
             ],
@@ -375,7 +375,7 @@
         },
         "nxtMotor": {
             "friendlyName": "NXT Motor",
-            "systemDeviceNameConvention": "motor{0}",
+            "systemDeviceNameConvention": "*",
             "description": [
                 "NXT servo motor"
             ],
@@ -406,7 +406,7 @@
             ],
             "inheritance": "motor"
         },
-         "dcMotor": {
+        "dcMotor": {
             "friendlyName": "DC Motor",
             "description": [
                 "The DC motor class provides a uniform interface for using regular DC motors",
@@ -1450,11 +1450,12 @@
                     { "name" : "Right", "entries" : ["Red Right", "Green Right"] }
                 ],
                 "colors": [
+                    { "name" : "Black", "value" : [ 0.0, 0.0 ] },
                     { "name" : "Red", "value" : [ 1.0, 0.0 ] },
                     { "name" : "Green", "value" : [ 0.0, 1.0 ] },
                     { "name" : "Amber", "value" : [ 1.0, 1.0 ] },
                     { "name" : "Orange", "value" : [ 1.0, 0.5 ] },
-                    { "name" : "Yellow", "value" : [ 0.5, 1.0 ] }
+                    { "name" : "Yellow", "value" : [ 0.1, 1.0 ] }
                 ]
             },
             "button": {
@@ -1480,9 +1481,11 @@
                     { "name" : "Led2", "entries" : ["Blue Led2"] }
                 ],
                 "colors": [
+                    { "name" : "Black", "value" : [ 0.0 ] },
                     { "name" : "Blue", "value" : [ 1.0 ] }
                 ]
             }
         }
     }
 }
+
