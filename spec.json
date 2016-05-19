@@ -470,15 +470,15 @@
                       "`duty_cycle_sp`."
                   ]
                 },
-                { "name": "Stop Command", "systemName": "stop_command", "type": "string", "readAccess": false, "writeAccess": true,
+                { "name": "Stop Action", "systemName": "stop_action", "type": "string", "readAccess": false, "writeAccess": true,
                   "description": [
-                      "Sets the stop command that will be used when the motor stops. Read",
+                      "Sets the stop action that will be used when the motor stops. Read",
                       "`stop_commands` to get the list of valid values."
                   ]
                 },
-                { "name": "Stop Commands", "systemName": "stop_commands", "type": "string array", "readAccess": true, "writeAccess": false,
+                { "name": "Stop Actions", "systemName": "stop_actions", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
-                      "Gets a list of stop commands. Valid values are `coast`",
+                      "Gets a list of stop actions. Valid values are `coast`",
                       "and `brake`."
                   ]
 		},
@@ -538,7 +538,7 @@
                     ]
                 },
                 {
-                    "propertyName": "Stop Command",
+                    "propertyName": "Stop Action",
                     "values": [
                         { "name": "coast",
                             "description": [
