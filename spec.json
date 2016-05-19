@@ -316,7 +316,7 @@
                     ]
                 },
                 {
-                    "propertyName": "Stop Command",
+                    "propertyName": "Stop Action",
                     "values": [
                         { "name": "coast",
                             "description": [
