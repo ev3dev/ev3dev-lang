@@ -316,6 +316,36 @@
                     ]
                 },
                 {
+                    "propertyName": "State",
+                    "values": [
+                        { "name": "running",
+                            "description": [
+                                "Power is being sent to the motor."
+                            ]
+                        },
+                        { "name": "ramping",
+                            "description": [
+                                "The motor is ramping up or down and has not yet reached a constant output level."
+                            ]
+                        },
+                        { "name": "holding",
+                            "description": [
+                                "The motor is not turning, but rather attempting to hold a fixed position."
+                            ]
+                        },
+                        { "name": "overloaded",
+                            "description": [
+                                "The motor is turning, but cannot reach its `speed_sp`."
+                            ]
+                        },
+                        { "name": "stalled",
+                            "description": [
+                                "The motor is not turning when it should be."
+                            ]
+                        }
+                    ]
+                },
+                {
                     "propertyName": "Stop Action",
                     "values": [
                         { "name": "coast",
@@ -335,7 +365,7 @@
                             "description": [
                                 "Does not remove power from the motor. Instead it actively try to hold the motor",
                                 "at the current position. If an external force tries to turn the motor, the motor",
-                                "will ``push back`` to maintain its position."
+                                "will `push back` to maintain its position."
                             ]
                         }
                     ]
