@@ -200,7 +200,7 @@
                 { "name": "State", "systemName": "state", "type": "string array", "readAccess": true, "writeAccess": false,
                   "description": [
                       "Reading returns a list of state flags. Possible flags are",
-                      "`running`, `ramping` `holding` and `stalled`."
+                      "`running`, `ramping`, `holding`, `overloaded` and `stalled`."
                   ]
                 },
                 { "name": "Stop Action", "systemName": "stop_action", "type": "string", "readAccess": true, "writeAccess": true,
