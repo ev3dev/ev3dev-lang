@@ -405,25 +405,25 @@
             ],
             "inheritance": "motor"
         },
-        "firgelli50Motor": {
-            "friendlyName": "Firgelli L12 50 Motor",
+        "actuonix50Motor": {
+            "friendlyName": "Actuonix L12 50 Motor",
             "systemDeviceNameConvention": "linear{0}",
             "description": [
-                "Firgelli L12 50 linear servo motor"
+                "Actuonix L12 50 linear servo motor"
             ],
             "driverName": [
-                "fi-l12-ev3-50"
+                "act-l12-ev3-50"
             ],
             "inheritance": "motor"
         },
-        "firgelli100Motor": {
-            "friendlyName": "Firgelli L12 100 Motor",
+        "actuonix100Motor": {
+            "friendlyName": "Actuonix L12 100 Motor",
             "systemDeviceNameConvention": "linear{0}",
             "description": [
-                "Firgelli L12 100 linear servo motor"
+                "Actuonix L12 100 linear servo motor"
             ],
             "driverName": [
-                "fi-l12-ev3-100"
+                "act-l12-ev3-100"
             ],
             "inheritance": "motor"
         },
