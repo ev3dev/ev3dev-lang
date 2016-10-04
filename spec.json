@@ -1008,8 +1008,8 @@
             "sensorValueMappings": [
                 {
                     "name": "Is Pressed",
-                    "sourceValue": 0,
-                    "type": "boolean",
+                    "sourceValue": [0],
+                    "type": ["boolean"],
                     "requiredMode": "TOUCH",
                     "description": [
                         "A boolean indicating whether the current touch sensor is being",
@@ -1069,8 +1069,8 @@
             "sensorValueMappings":  [
                 {
                     "name": "Reflected Light Intensity",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "COL-REFLECT",
                     "description": [
                         "Reflected light intensity as a percentage. Light on sensor is red."
@@ -1078,8 +1078,8 @@
                 },
                 {
                     "name": "Ambient Light Intensity",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "COL-AMBIENT",
                     "description": [
                         "Ambient light intensity. Light on sensor is dimly lit blue."
@@ -1087,8 +1087,8 @@
                 },
                 {
                     "name": "Color",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "COL-COLOR",
                     "description": [
                         "Color detected by the sensor, categorized by overall value.",
@@ -1104,8 +1104,8 @@
                 },
                 {
                     "name": "Red",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "RGB-RAW",
                     "description": [
                         "Red component of the detected color, in the range 0-1020."
@@ -1113,8 +1113,8 @@
                 },
                 {
                     "name": "Green",
-                    "sourceValue": 1,
-                    "type": "int",
+                    "sourceValue": [1],
+                    "type": ["int"],
                     "requiredMode": "RGB-RAW",
                     "description": [
                         "Green component of the detected color, in the range 0-1020."
@@ -1122,8 +1122,8 @@
                 },
                 {
                     "name": "Blue",
-                    "sourceValue": 2,
-                    "type": "int",
+                    "sourceValue": [2],
+                    "type": ["int"],
                     "requiredMode": "RGB-RAW",
                     "description": [
                         "Blue component of the detected color, in the range 0-1020."
@@ -1177,8 +1177,8 @@
             "sensorValueMappings": [
                 {
                     "name": "Distance Centimeters",
-                    "sourceValue": 0,
-                    "type": "float",
+                    "sourceValue": [0],
+                    "type": ["float"],
                     "requiredMode": "US-DIST-CM",
                     "description": [
                         "Measurement of the distance detected by the sensor,",
@@ -1187,8 +1187,8 @@
                 },
                 {
                     "name": "Distance Inches",
-                    "sourceValue": 0,
-                    "type": "float",
+                    "sourceValue": [0],
+                    "type": ["float"],
                     "requiredMode": "US-DIST-IN",
                     "description": [
                         "Measurement of the distance detected by the sensor,",
@@ -1197,8 +1197,8 @@
                 },
                 {
                     "name": "Other Sensor Present",
-                    "sourceValue": 0,
-                    "type": "boolean",
+                    "sourceValue": [0],
+                    "type": ["boolean"],
                     "requiredMode": "US-LISTEN",
                     "description": [
                         "Value indicating whether another ultrasonic sensor could",
@@ -1257,8 +1257,8 @@
             "sensorValueMappings": [
                 {
                     "name": "Angle",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "GYRO-ANG",
                     "description": [
                         "The number of degrees that the sensor has been rotated",
@@ -1267,11 +1267,20 @@
                 },
                 {
                     "name": "Rate",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "GYRO-RATE",
                     "description": [
                         "The rate at which the sensor is rotating, in degrees/second."
+                    ]
+                },
+                {
+                    "name": "Rate and Angle",
+                    "sourceValue": [0, 1],
+                    "type": ["int", "int"],
+                    "requiredMode": "GYRO-G&A",
+                    "description": [
+                        "Angle (degrees) and Rotational Speed (degrees/second)."
                     ]
                 }
             ]
@@ -1348,8 +1357,8 @@
             "sensorValueMappings": [
                 {
                     "name": "Proximity",
-                    "sourceValue": 0,
-                    "type": "int",
+                    "sourceValue": [0],
+                    "type": ["int"],
                     "requiredMode": "IR-PROX",
                     "description": [
                         "A measurement of the distance between the sensor and the remote,",
@@ -1388,8 +1397,8 @@
             "sensorValueMappings": [
                 {
                     "name": "Sound Pressure",
-                    "sourceValue": 0,
-                    "type": "float",
+                    "sourceValue": [0],
+                    "type": ["float"],
                     "requiredMode": "DB",
                     "description": [
                         "A measurement of the measured sound pressure level, as a",
@@ -1398,8 +1407,8 @@
                 },
                 {
                     "name": "Sound Pressure Low",
-                    "sourceValue": 0,
-                    "type": "float",
+                    "sourceValue": [0],
+                    "type": ["float"],
                     "requiredMode": "DBA",
                     "description": [
                         "A measurement of the measured sound pressure level, as a",
@@ -1438,8 +1447,8 @@
             "sensorValueMappings": [
                 {
                     "name": "Reflected Light Intensity",
-                    "sourceValue": 0,
-                    "type": "float",
+                    "sourceValue": [0],
+                    "type": ["float"],
                     "requiredMode": "REFLECT",
                     "description": [
                         "A measurement of the reflected light intensity, as a percentage."
@@ -1447,8 +1456,8 @@
                 },
                 {
                     "name": "Ambient Light Intensity",
-                    "sourceValue": 0,
-                    "type": "float",
+                    "sourceValue": [0],
+                    "type": ["float"],
                     "requiredMode": "AMBIENT",
                     "description": [
                         "A measurement of the ambient light intensity, as a percentage."
