@@ -1103,6 +1103,15 @@
                     ]
                 },
                 {
+                    "name": "Raw",
+                    "sourceValue": [0, 1, 2],
+                    "type": ["int", "int", "int"],
+                    "requiredMode": "RGB-RAW",
+                    "description": [
+                        "Red, green, and blue components of the detected color, in the range 0-1020."
+                    ]
+                },
+                {
                     "name": "Red",
                     "sourceValue": [0],
                     "type": ["int"],
