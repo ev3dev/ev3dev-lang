@@ -376,10 +376,11 @@
             "friendlyName": "Large Motor",
             "systemDeviceNameConvention": "*",
             "description": [
-                "EV3 large servo motor"
+                "EV3/NXT large servo motor"
             ],
             "driverName": [
-                "lego-ev3-l-motor"
+                "lego-ev3-l-motor",
+                "lego-nxt-motor"
             ],
             "inheritance": "motor"
         },
@@ -391,17 +392,6 @@
             ],
             "driverName": [
                 "lego-ev3-m-motor"
-            ],
-            "inheritance": "motor"
-        },
-        "nxtMotor": {
-            "friendlyName": "NXT Motor",
-            "systemDeviceNameConvention": "*",
-            "description": [
-                "NXT servo motor"
-            ],
-            "driverName": [
-                "lego-nxt-motor"
             ],
             "inheritance": "motor"
         },
