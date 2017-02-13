@@ -1054,6 +1054,18 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "propertyName": "Color",
+                    "values": [
+                        { "name" : "Black",  "value" : "1", "type" : "int", "description": [ "Red color." ] },
+                        { "name" : "Blue",   "value" : "2", "type" : "int", "description": [ "Blue color." ] },
+                        { "name" : "Green",  "value" : "3", "type" : "int", "description": [ "Green color." ] },
+                        { "name" : "Yellow", "value" : "4", "type" : "int", "description": [ "Yellow color." ] },
+                        { "name" : "Red",    "value" : "5", "type" : "int", "description": [ "Red color." ] },
+                        { "name" : "White",  "value" : "6", "type" : "int", "description": [ "White color." ] },
+                        { "name" : "Brown",  "value" : "7", "type" : "int", "description": [ "Brown color." ] }
+                    ]
                 }
             ],
             "sensorValueMappings":  [
