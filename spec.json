@@ -1527,6 +1527,33 @@
                     { "name" : "Blue", "value" : [ 1.0 ] }
                 ]
             }
+        },
+		"pistorms": {
+            "led": {
+                "instances": [
+                    { "name" : "Red Left", "systemName": "pistorms:BB:red:ev3dev" },
+                    { "name" : "Red Right", "systemName": "pistorms:BA:red:ev3dev" },
+                    { "name" : "Green Left", "systemName": "pistorms:BB:green:ev3dev" },
+                    { "name" : "Green Right", "systemName": "pistorms:BA:green:ev3dev" },
+					{ "name" : "Blue Left", "systemName": "pistorms:BB:blue:ev3dev" },
+                    { "name" : "Blue Right", "systemName": "pistorms:BA:blue:ev3dev" }
+                ],
+                "groups" : [
+                    { "name" : "Left", "entries" : ["Red Left", "Green Left", "Blue Left"] },
+                    { "name" : "Right", "entries" : ["Red Right", "Green Right", "Blue Right"] }
+                ],
+                "colors": [
+                    { "name" : "Black", "value" : [ 0.0, 0.0, 0.0 ] },
+                    { "name" : "Red", "value" : [ 1.0, 0.0, 0.0 ] },
+                    { "name" : "Green", "value" : [ 0.0, 1.0, 0.0 ] },
+                    { "name" : "Blue", "value" : [ 0.0, 0.0, 1.0 ] },
+                    { "name" : "Yellow", "value" : [ 1.0, 1.0, 0.0 ] },
+                    { "name" : "Purple", "value" : [ 1.0, 0.0, 1.0 ] },
+					{ "name" : "Cyan", "value" : [ 0.0, 1.0, 1.0 ] },
+					{ "name" : "White", "value" : [ 1.0, 1.0, 1.0 ] },
+					{ "name" : "Orange", "value" : [ 1.0, 0.5, 0.0 ] }
+                ]
+            }
         }
     }
 }
