@@ -1503,12 +1503,12 @@
             "button": {
 		"systemPath": "/dev/input/by-path",
                 "instances": [
-                    { "name" : "up", "systemName": "platform-gpio-keys.0-event", "systemValue": 103 },
-                    { "name" : "down", "systemName": "platform-gpio-keys.0-event", "systemValue": 108 },
-                    { "name" : "left", "systemName": "platform-gpio-keys.0-event", "systemValue": 105 },
-                    { "name" : "right", "systemName": "platform-gpio-keys.0-event", "systemValue": 106 },
-                    { "name" : "enter", "systemName": "platform-gpio-keys.0-event", "systemValue": 28 },
-                    { "name" : "backspace", "systemName": "platform-gpio-keys.0-event", "systemValue": 14 }
+                    { "name" : "up", "systemName": "platform-gpio_keys-event", "systemValue": 103 },
+                    { "name" : "down", "systemName": "platform-gpio_keys-event", "systemValue": 108 },
+                    { "name" : "left", "systemName": "platform-gpio_keys-event", "systemValue": 105 },
+                    { "name" : "right", "systemName": "platform-gpio_keys-event", "systemValue": 106 },
+                    { "name" : "enter", "systemName": "platform-gpio_keys-event", "systemValue": 28 },
+                    { "name" : "backspace", "systemName": "platform-gpio_keys-event", "systemValue": 14 }
 		]
             }
         },
