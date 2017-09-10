@@ -1482,10 +1482,10 @@
         "ev3": {
             "led": {
                 "instances": [
-                    { "name" : "Red Left", "systemName": "ev3:left:red:ev3dev" },
-                    { "name" : "Red Right", "systemName": "ev3:right:red:ev3dev" },
-                    { "name" : "Green Left", "systemName": "ev3:left:green:ev3dev" },
-                    { "name" : "Green Right", "systemName": "ev3:right:green:ev3dev" }
+                    { "name" : "Red Left", "systemName": "led0:red:brick-status" },
+                    { "name" : "Red Right", "systemName": "led1:red:brick-status" },
+                    { "name" : "Green Left", "systemName": "led0:green:brick-status" },
+                    { "name" : "Green Right", "systemName": "led1:green:brick-status" }
                 ],
                 "groups" : [
                     { "name" : "Left", "entries" : ["Red Left", "Green Left"] },
